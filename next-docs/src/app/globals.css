@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f4f4f5;
+  --foreground: #09090b;
+}
+
+.dark {
+  --background: #060608;
+  --foreground: #f4f4f5;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.4);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Disable prose default rules on CodeBlocks */
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *))::before,
+.prose :where(code):not(:where([class~="not-prose"] *))::after {
+  content: "" !important;
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+  font-weight: inherit !important;
+  color: inherit !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Custom HLD Word Document Renderer Styling */
+.docx-render h1 {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #09090b;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.dark .docx-render h1 {
+  color: #f4f4f5;
+}
+
+.docx-render h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #18181b;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.dark .docx-render h2 {
+  color: #e4e4e7;
+}
+
+.docx-render h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #27272a;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.dark .docx-render h3 {
+  color: #d4d4d8;
+}
+
+.docx-render p {
+  color: #52525b;
+  line-height: 1.7;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.dark .docx-render p {
+  color: #a1a1aa;
+}
+
+.docx-render table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: rgba(0, 0, 0, 0.01);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.dark .docx-render table {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.docx-render th, .docx-render td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.875rem;
+}
+.dark .docx-render th, .dark .docx-render td {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.docx-render th {
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: 600;
+  color: #000000;
+}
+.dark .docx-render th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.docx-render tr:hover {
+  background: rgba(0, 0, 0, 0.005);
+}
+.dark .docx-render tr:hover {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.docx-render img {
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+  margin: 1.5rem auto;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+}
+.dark .docx-render img {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
