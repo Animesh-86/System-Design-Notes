@@ -5,6 +5,7 @@ next-docs/out/
 
 # Environment files
 next-docs/.env*.local
+next-docs/.env.local
 
 # System files
 .DS_Store
