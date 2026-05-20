@@ -4,7 +4,7 @@
 -- ============================================
 
 -- Users profile (extends Supabase auth.users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,
   display_name TEXT,
@@ -15,7 +15,7 @@ CREATE TABLE public.profiles (
 );
 
 -- Reading progress per document
-CREATE TABLE public.reading_progress (
+CREATE TABLE IF NOT EXISTS public.reading_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   slug TEXT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE public.reading_progress (
 );
 
 -- Checklist items
-CREATE TABLE public.checklist_items (
+CREATE TABLE IF NOT EXISTS public.checklist_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   slug TEXT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE public.checklist_items (
 );
 
 -- Text highlights
-CREATE TABLE public.highlights (
+CREATE TABLE IF NOT EXISTS public.highlights (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   slug TEXT NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE public.highlights (
 );
 
 -- Notes and annotations
-CREATE TABLE public.notes (
+CREATE TABLE IF NOT EXISTS public.notes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   slug TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE public.notes (
 );
 
 -- Quick bookmarks
-CREATE TABLE public.bookmarks (
+CREATE TABLE IF NOT EXISTS public.bookmarks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   slug TEXT NOT NULL,
@@ -77,13 +77,13 @@ CREATE TABLE public.bookmarks (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Indexes
-CREATE INDEX idx_progress_user ON public.reading_progress(user_id);
-CREATE INDEX idx_progress_slug ON public.reading_progress(slug);
-CREATE INDEX idx_checklist_user ON public.checklist_items(user_id);
-CREATE INDEX idx_highlights_user_slug ON public.highlights(user_id, slug);
-CREATE INDEX idx_notes_user_slug ON public.notes(user_id, slug);
-CREATE INDEX idx_bookmarks_user ON public.bookmarks(user_id);
+-- Indexes (IF NOT EXISTS is implicit for CREATE INDEX)
+CREATE INDEX IF NOT EXISTS idx_progress_user ON public.reading_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_progress_slug ON public.reading_progress(slug);
+CREATE INDEX IF NOT EXISTS idx_checklist_user ON public.checklist_items(user_id);
+CREATE INDEX IF NOT EXISTS idx_highlights_user_slug ON public.highlights(user_id, slug);
+CREATE INDEX IF NOT EXISTS idx_notes_user_slug ON public.notes(user_id, slug);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON public.bookmarks(user_id);
 
 -- Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -93,24 +93,55 @@ ALTER TABLE public.highlights ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies — users can only access their own data
-CREATE POLICY "Users manage own profile"
-  ON public.profiles FOR ALL USING (auth.uid() = id);
+-- ============================================
+-- RLS Policies — FIXED with separate SELECT/INSERT/UPDATE/DELETE
+-- The previous "FOR ALL" policy didn't include WITH CHECK
+-- which is required for INSERT and UPDATE operations.
+-- ============================================
 
-CREATE POLICY "Users manage own progress"
-  ON public.reading_progress FOR ALL USING (auth.uid() = user_id);
+-- Drop old policies if they exist (safe to re-run)
+DROP POLICY IF EXISTS "Users manage own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users manage own progress" ON public.reading_progress;
+DROP POLICY IF EXISTS "Users manage own checklist" ON public.checklist_items;
+DROP POLICY IF EXISTS "Users manage own highlights" ON public.highlights;
+DROP POLICY IF EXISTS "Users manage own notes" ON public.notes;
+DROP POLICY IF EXISTS "Users manage own bookmarks" ON public.bookmarks;
 
-CREATE POLICY "Users manage own checklist"
-  ON public.checklist_items FOR ALL USING (auth.uid() = user_id);
+-- Profiles
+CREATE POLICY "profiles_select" ON public.profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "profiles_insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_update" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_delete" ON public.profiles FOR DELETE USING (auth.uid() = id);
 
-CREATE POLICY "Users manage own highlights"
-  ON public.highlights FOR ALL USING (auth.uid() = user_id);
+-- Reading Progress
+CREATE POLICY "progress_select" ON public.reading_progress FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "progress_insert" ON public.reading_progress FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "progress_update" ON public.reading_progress FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "progress_delete" ON public.reading_progress FOR DELETE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users manage own notes"
-  ON public.notes FOR ALL USING (auth.uid() = user_id);
+-- Checklist
+CREATE POLICY "checklist_select" ON public.checklist_items FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "checklist_insert" ON public.checklist_items FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "checklist_update" ON public.checklist_items FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "checklist_delete" ON public.checklist_items FOR DELETE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users manage own bookmarks"
-  ON public.bookmarks FOR ALL USING (auth.uid() = user_id);
+-- Highlights
+CREATE POLICY "highlights_select" ON public.highlights FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "highlights_insert" ON public.highlights FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "highlights_update" ON public.highlights FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "highlights_delete" ON public.highlights FOR DELETE USING (auth.uid() = user_id);
+
+-- Notes
+CREATE POLICY "notes_select" ON public.notes FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "notes_insert" ON public.notes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "notes_update" ON public.notes FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "notes_delete" ON public.notes FOR DELETE USING (auth.uid() = user_id);
+
+-- Bookmarks
+CREATE POLICY "bookmarks_select" ON public.bookmarks FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "bookmarks_insert" ON public.bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "bookmarks_update" ON public.bookmarks FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "bookmarks_delete" ON public.bookmarks FOR DELETE USING (auth.uid() = user_id);
 
 -- Auto-create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()

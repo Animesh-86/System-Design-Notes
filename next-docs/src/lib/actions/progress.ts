@@ -2,6 +2,27 @@
 
 import { createClient } from '@/lib/supabase/server';
 
+/**
+ * Shared helper — ensure a profile row exists before writing to child tables.
+ */
+async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
+  const { data: existing } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .single();
+
+  if (!existing) {
+    const meta = user.user_metadata ?? {};
+    await supabase.from('profiles').insert({
+      id: user.id,
+      email: user.email,
+      display_name: (meta['full_name'] ?? meta['display_name'] ?? user.email?.split('@')[0]) as string,
+      avatar_url: (meta['avatar_url'] ?? null) as string | null,
+    });
+  }
+}
+
 export async function upsertProgress(slug: string, data: {
   scroll_percentage?: number;
   is_completed?: boolean;
@@ -10,6 +31,8 @@ export async function upsertProgress(slug: string, data: {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: 'Not authenticated' };
+
+  await ensureProfile(supabase, user);
 
   const { error } = await supabase
     .from('reading_progress')
@@ -23,7 +46,10 @@ export async function upsertProgress(slug: string, data: {
       onConflict: 'user_id,slug',
     });
 
-  if (error) return { error: error.message };
+  if (error) {
+    console.error('[upsertProgress] DB error:', error.message);
+    return { error: error.message };
+  }
   return { success: true };
 }
 

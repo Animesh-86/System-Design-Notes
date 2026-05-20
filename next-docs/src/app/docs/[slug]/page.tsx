@@ -2,7 +2,6 @@ import { getContentBySlug, getAllContent } from '@/lib/content';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import { CodeBlock } from '@/components/CodeBlock';
 import { ReaderToolbar } from '@/components/reader/ReaderToolbar';
@@ -78,7 +77,7 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
           <article className="prose dark:prose-invert prose-blue prose-headings:text-gray-800 dark:prose-headings:text-gray-100 prose-a:text-blue-500 dark:prose-a:text-blue-400 prose-img:rounded-2xl max-w-none bg-white/60 dark:bg-[#0e0e11]/80 p-6 md:p-12 rounded-3xl border border-black/5 dark:border-white/10 backdrop-blur-lg shadow-2xl select-text">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw, rehypeHighlight]}
+              rehypePlugins={[rehypeHighlight]}
               components={{
                 h1: ({node, ...props}) => <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mt-0 mb-6" {...props} />,
                 h2: ({node, ...props}) => <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100 mt-8 mb-4 border-b border-black/5 dark:border-white/5 pb-2" {...props} />,

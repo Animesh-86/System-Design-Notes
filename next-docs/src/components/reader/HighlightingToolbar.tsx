@@ -1,35 +1,36 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Highlighter, MessageSquarePlus, X, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquarePlus, X, Check } from 'lucide-react';
 
 interface HighlightingToolbarProps {
   x: number;
   y: number;
   onHighlight: (color: string) => void;
   onAnnotate: (text: string) => void;
+  onEnter?: () => void;
+  onLeave?: () => void;
 }
 
 const colors = [
-  { name: 'yellow', class: 'bg-yellow-400 hover:bg-yellow-300 ring-yellow-400/30' },
-  { name: 'green', class: 'bg-emerald-400 hover:bg-emerald-300 ring-emerald-400/30' },
-  { name: 'blue', class: 'bg-blue-400 hover:bg-blue-300 ring-blue-400/30' },
-  { name: 'pink', class: 'bg-pink-400 hover:bg-pink-300 ring-pink-400/30' },
-  { name: 'purple', class: 'bg-purple-400 hover:bg-purple-300 ring-purple-400/30' },
+  { name: 'yellow', bg: '#FACC15', hover: '#FDE047' },
+  { name: 'green', bg: '#34D399', hover: '#6EE7B7' },
+  { name: 'blue', bg: '#60A5FA', hover: '#93C5FD' },
+  { name: 'pink', bg: '#F472B6', hover: '#F9A8D4' },
+  { name: 'purple', bg: '#C084FC', hover: '#D8B4FE' },
 ];
 
-export function HighlightingToolbar({ x, y, onHighlight, onAnnotate }: HighlightingToolbarProps) {
+export function HighlightingToolbar({ x, y, onHighlight, onAnnotate, onEnter, onLeave }: HighlightingToolbarProps) {
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Position toolbar relative to viewport/scrolling offset
   const style: React.CSSProperties = {
     position: 'absolute',
     left: `${x}px`,
     top: `${y}px`,
     transform: 'translateX(-50%)',
+    zIndex: 9999,
   };
 
   useEffect(() => {
@@ -48,19 +49,32 @@ export function HighlightingToolbar({ x, y, onHighlight, onAnnotate }: Highlight
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (noteText.trim()) {
+        onAnnotate(noteText.trim());
+        setNoteText('');
+        setShowNoteInput(false);
+      }
+    }
+  };
+
   return (
     <div
       ref={containerRef}
       style={style}
-      className="z-50 bg-gray-900/95 dark:bg-[#141417]/95 border border-white/10 rounded-2xl shadow-2xl p-1.5 flex flex-col gap-2 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 max-w-[280px]"
+      className="bg-gray-900/95 dark:bg-[#141417]/95 border border-white/10 rounded-2xl shadow-2xl p-1.5 flex flex-col gap-2 backdrop-blur-md max-w-[280px]"
       onMouseDown={(e) => {
-        // Prevent selection collapse unless the user is clicking on an input or textarea
+        // Prevent selection collapse for buttons, allow focus for textareas
         const target = e.target as HTMLElement;
         if (target.tagName !== 'TEXTAREA' && target.tagName !== 'INPUT') {
           e.preventDefault();
         }
         e.stopPropagation();
       }}
+      onMouseEnter={() => onEnter?.()}
+      onMouseLeave={() => onLeave?.()}
     >
       {!showNoteInput ? (
         <div className="flex items-center gap-1.5">
@@ -70,7 +84,8 @@ export function HighlightingToolbar({ x, y, onHighlight, onAnnotate }: Highlight
               <button
                 key={color.name}
                 onClick={() => onHighlight(color.name)}
-                className={`w-5 h-5 rounded-full ${color.class} hover:scale-110 active:scale-95 transition-all ring-2 ring-transparent hover:ring-offset-2 hover:ring-offset-gray-900 cursor-pointer`}
+                style={{ backgroundColor: color.bg }}
+                className="w-5 h-5 rounded-full hover:scale-110 active:scale-95 transition-all cursor-pointer ring-2 ring-transparent hover:ring-white/30"
                 title={`Highlight in ${color.name}`}
               />
             ))}
@@ -103,11 +118,7 @@ export function HighlightingToolbar({ x, y, onHighlight, onAnnotate }: Highlight
             onChange={(e) => setNoteText(e.target.value)}
             placeholder="Write annotation for selected text..."
             className="w-full text-xs p-2 rounded-lg bg-black/30 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none h-16"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                handleAnnotateSubmit(e);
-              }
-            }}
+            onKeyDown={handleKeyDown}
           />
           <div className="flex justify-between items-center">
             <span className="text-[9px] text-gray-500">Ctrl+Enter to save</span>
