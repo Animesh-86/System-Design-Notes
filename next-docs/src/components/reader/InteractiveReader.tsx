@@ -39,7 +39,8 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
   // Render highlights visually on the page
   const renderHighlights = (highlights: any[]) => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     highlights.forEach((highlight) => {
       try {
@@ -53,7 +54,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
         // Find and wrap the highlighted text
         const walker = document.createTreeWalker(
-          containerRef.current,
+          container as Node,
           NodeFilter.SHOW_TEXT,
           null
         );
