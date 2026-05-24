@@ -1,7 +1,38 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-// Supabase removed — middleware is a no-op pass-through.
+// Protect dashboard, notes, and doc pages behind authentication.
+// Public pages: /, /auth/login, /api/auth/*, static assets.
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Always allow: auth routes, API auth routes, static assets, home page
+  const publicPaths = [
+    '/',
+    '/auth/login',
+    '/api/auth',
+  ];
+
+  const isPublic = publicPaths.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|pdf|ico|css|js)$/.test(pathname);
+  const isNextInternal = pathname.startsWith('/_next');
+
+  if (isPublic || isStaticAsset || isNextInternal) {
+    return NextResponse.next();
+  }
+
+  // Check for NextAuth session token
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  if (!token) {
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
   return NextResponse.next();
 }
 

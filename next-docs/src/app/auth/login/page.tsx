@@ -1,11 +1,26 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { signInWithEmail, signUpWithEmail } from '@/lib/actions/auth';
 import { signIn } from 'next-auth/react';
 import { BookOpen, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#060608]">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    }>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -80,7 +95,7 @@ export default function LoginPage() {
           {/* Google OAuth */}
           <button
             type="button"
-            onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+            onClick={() => signIn('google', { callbackUrl })}
             className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
