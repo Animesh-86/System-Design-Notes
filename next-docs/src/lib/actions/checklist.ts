@@ -1,63 +1,39 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { connectToMongo } from '@/lib/mongodb';
+import ChecklistItemModel from '@/lib/models/ChecklistItem';
+import ProfileModel from '@/lib/models/Profile';
 
-/**
- * Shared helper — ensure a profile row exists before writing to child tables.
- */
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single();
+const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
+import { getUserIdFromSession } from '@/lib/authServer';
 
-  if (!existing) {
-    const meta = user.user_metadata ?? {};
-    await supabase.from('profiles').insert({
-      id: user.id,
-      email: user.email,
-      display_name: (meta['full_name'] ?? meta['display_name'] ?? user.email?.split('@')[0]) as string,
-      avatar_url: (meta['avatar_url'] ?? null) as string | null,
-    });
-  }
+async function ensureProfile(userId: string) {
+  await connectToMongo();
+  const existing = await ProfileModel.findOne({ id: userId }).lean();
+  if (!existing) await ProfileModel.create({ id: userId });
 }
 
 export async function upsertChecklist(slug: string, status: 'pending' | 'in_progress' | 'completed') {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
+  try {
+    await connectToMongo();
+    const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+    await ensureProfile(userId);
 
-  await ensureProfile(supabase, user);
+    const payload: any = { user_id: userId, slug, status };
+    if (status === 'completed') payload.completed_at = new Date();
+    else payload.completed_at = null;
 
-  const { error } = await supabase
-    .from('checklist_items')
-    .upsert({
-      user_id: user.id,
-      slug,
-      status,
-      ...(status === 'completed' ? { completed_at: new Date().toISOString() } : { completed_at: null }),
-    }, {
-      onConflict: 'user_id,slug',
-    });
-
-  if (error) {
-    console.error('[upsertChecklist] DB error:', error.message);
-    return { error: error.message };
+    await ChecklistItemModel.updateOne({ user_id: userId, slug }, { $set: payload }, { upsert: true });
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to upsert checklist:', error);
+    return { success: false, error: error.message || 'Failed to update checklist' };
   }
-  return { success: true };
 }
 
 export async function getAllChecklist() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
-
-  const { data, error } = await supabase
-    .from('checklist_items')
-    .select('*')
-    .eq('user_id', user.id);
-
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+  const items = await ChecklistItemModel.find({ user_id: userId }).lean();
+  return { data: items };
 }

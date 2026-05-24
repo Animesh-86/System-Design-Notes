@@ -1,27 +1,18 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { connectToMongo } from '@/lib/mongodb';
+import HighlightModel from '@/lib/models/Highlight';
+import { getUserIdFromSession } from '@/lib/authServer';
 
-/**
- * Ensure the user has a profile row — creates one if missing.
- * This fixes "foreign key violation" errors when notes/highlights fail to save.
- */
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
-  const { data: existingProfile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single();
+const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
-  if (!existingProfile) {
-    const meta = user.user_metadata ?? {};
-    await supabase.from('profiles').insert({
-      id: user.id,
-      email: user.email,
-      display_name: (meta['full_name'] ?? meta['display_name'] ?? user.email?.split('@')[0]) as string,
-      avatar_url: (meta['avatar_url'] ?? null) as string | null,
-    });
-  }
+/** Normalize Mongoose document: map _id → id and stringify */
+function normalize(doc: any) {
+  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
+  obj.id = (obj._id ?? obj.id)?.toString();
+  delete obj._id;
+  delete obj.__v;
+  return obj;
 }
 
 export async function createHighlight(data: {
@@ -32,56 +23,41 @@ export async function createHighlight(data: {
   end_offset: number;
   anchor_node_path: string;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
-
-  // Guarantee profile exists before inserting
-  await ensureProfile(supabase, user);
-
-  const { data: highlight, error } = await supabase
-    .from('highlights')
-    .insert({
-      user_id: user.id,
+  try {
+    await connectToMongo();
+    const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+    const h = await HighlightModel.create({
+      user_id: userId,
       ...data,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    console.error('[createHighlight] DB error:', error.message, error.details);
-    return { error: error.message };
+    });
+    return { data: normalize(h) };
+  } catch (error: any) {
+    console.error('Failed to create highlight:', error);
+    return { error: error.message || 'Failed to create highlight' };
   }
-  return { data: highlight };
 }
 
 export async function getHighlights(slug: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
-
-  const { data, error } = await supabase
-    .from('highlights')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('slug', slug)
-    .order('start_offset', { ascending: true });
-
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  try {
+    await connectToMongo();
+    const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+    const items = await HighlightModel.find({ user_id: userId, slug }).sort({ start_offset: 1 }).lean();
+    return { data: items.map(normalize) };
+  } catch (error: any) {
+    console.error('Failed to get highlights:', error);
+    return { data: [] };
+  }
 }
 
 export async function deleteHighlight(id: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
-
-  const { error } = await supabase
-    .from('highlights')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id);
-
-  if (error) return { error: error.message };
-  return { success: true };
+  try {
+    await connectToMongo();
+    const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+    const res = await HighlightModel.deleteOne({ _id: id, user_id: userId });
+    if (res.deletedCount === 1) return { success: true };
+    return { error: 'Not found or not allowed' };
+  } catch (error: any) {
+    console.error('Failed to delete highlight:', error);
+    return { error: error.message || 'Failed to delete highlight' };
+  }
 }

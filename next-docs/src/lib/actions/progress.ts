@@ -1,26 +1,16 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { connectToMongo } from '@/lib/mongodb';
+import ReadingProgressModel from '@/lib/models/ReadingProgress';
+import { getUserIdFromSession } from '@/lib/authServer';
+import ProfileModel from '@/lib/models/Profile';
 
-/**
- * Shared helper — ensure a profile row exists before writing to child tables.
- */
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single();
+const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
-  if (!existing) {
-    const meta = user.user_metadata ?? {};
-    await supabase.from('profiles').insert({
-      id: user.id,
-      email: user.email,
-      display_name: (meta['full_name'] ?? meta['display_name'] ?? user.email?.split('@')[0]) as string,
-      avatar_url: (meta['avatar_url'] ?? null) as string | null,
-    });
-  }
+async function ensureProfile(userId: string) {
+  await connectToMongo();
+  const existing = await ProfileModel.findOne({ id: userId }).lean();
+  if (!existing) await ProfileModel.create({ id: userId });
 }
 
 export async function upsertProgress(slug: string, data: {
@@ -28,61 +18,40 @@ export async function upsertProgress(slug: string, data: {
   is_completed?: boolean;
   read_time_seconds?: number;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+  await ensureProfile(userId);
 
-  await ensureProfile(supabase, user);
-
-  const { error } = await supabase
-    .from('reading_progress')
-    .upsert({
-      user_id: user.id,
-      slug,
-      ...data,
-      last_read_at: new Date().toISOString(),
-      ...(data.is_completed ? { completed_at: new Date().toISOString() } : {}),
-    }, {
-      onConflict: 'user_id,slug',
-    });
-
-  if (error) {
-    console.error('[upsertProgress] DB error:', error.message);
-    return { error: error.message };
+  const payload: any = {
+    user_id: userId,
+    slug,
+    last_read_at: new Date(),
+    ...(data.scroll_percentage !== undefined ? { scroll_percentage: data.scroll_percentage } : {}),
+    ...(data.read_time_seconds !== undefined ? { read_time_seconds: data.read_time_seconds } : {}),
+  };
+  if (data.is_completed) {
+    payload.is_completed = true;
+    payload.completed_at = new Date();
   }
+
+  await ReadingProgressModel.updateOne({ user_id: userId, slug }, { $set: payload }, { upsert: true });
   return { success: true };
 }
 
 export async function getProgress(slug?: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  let query = supabase
-    .from('reading_progress')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('last_read_at', { ascending: false });
+  const query: any = { user_id: userId };
+  if (slug) query.slug = slug;
 
-  if (slug) {
-    query = query.eq('slug', slug);
-  }
-
-  const { data, error } = await query;
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  const items = await ReadingProgressModel.find(query).sort({ last_read_at: -1 }).lean();
+  return { data: items };
 }
 
 export async function getAllProgress() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
-
-  const { data, error } = await supabase
-    .from('reading_progress')
-    .select('*')
-    .eq('user_id', user.id);
-
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+  const items = await ReadingProgressModel.find({ user_id: userId }).lean();
+  return { data: items };
 }

@@ -1,26 +1,26 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { connectToMongo } from '@/lib/mongodb';
+import NoteModel from '@/lib/models/Note';
+import ProfileModel from '@/lib/models/Profile';
+import { getUserIdFromSession } from '@/lib/authServer';
 
-/**
- * Ensure the user has a profile row — creates one if missing.
- * This fixes "foreign key violation" errors for users who signed in before the SQL schema was applied.
- */
-async function ensureProfile(supabase: Awaited<ReturnType<typeof createClient>>, user: { id: string; email?: string; user_metadata?: Record<string, unknown> }) {
-  const { data: existingProfile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single();
+const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
-  if (!existingProfile) {
-    const meta = user.user_metadata ?? {};
-    await supabase.from('profiles').insert({
-      id: user.id,
-      email: user.email,
-      display_name: (meta['full_name'] ?? meta['display_name'] ?? user.email?.split('@')[0]) as string,
-      avatar_url: (meta['avatar_url'] ?? null) as string | null,
-    });
+/** Normalize Mongoose document: map _id → id and stringify */
+function normalize(doc: any) {
+  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
+  obj.id = (obj._id ?? obj.id)?.toString();
+  delete obj._id;
+  delete obj.__v;
+  return obj;
+}
+
+async function ensureProfile(userId: string, email?: string, displayName?: string) {
+  await connectToMongo();
+  const existing = await ProfileModel.findOne({ id: userId }).lean();
+  if (!existing) {
+    await ProfileModel.create({ id: userId, email: email || null, display_name: displayName || null });
   }
 }
 
@@ -32,93 +32,57 @@ export async function createNote(data: {
   anchor_node_path?: string | null;
   referenced_text?: string | null;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
+  try {
+    await connectToMongo();
+    const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
+    await ensureProfile(userId);
 
-  // Guarantee profile exists before inserting
-  await ensureProfile(supabase, user);
-
-  const { data: note, error } = await supabase
-    .from('notes')
-    .insert({
-      user_id: user.id,
-      note_type: 'sticky',
+    const note = await NoteModel.create({
+      user_id: userId,
+      note_type: data.note_type ?? 'sticky',
       ...data,
-    })
-    .select()
-    .single();
+    });
 
-  if (error) {
-    console.error('[createNote] DB error:', error.message, error.details);
-    return { error: error.message };
+    return { data: normalize(note) };
+  } catch (error: any) {
+    console.error('Failed to create note:', error);
+    return { error: error.message || 'Failed to create note' };
   }
-  return { data: note };
 }
 
 export async function getNotes(slug?: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  let query = supabase
-    .from('notes')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+  const query: any = { user_id: userId };
+  if (slug) query.slug = slug;
 
-  if (slug) {
-    query = query.eq('slug', slug);
-  }
-
-  const { data, error } = await query;
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  const items = await NoteModel.find(query).sort({ created_at: -1 }).lean();
+  return { data: items.map(normalize) };
 }
 
 export async function updateNote(id: string, content: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const { error } = await supabase
-    .from('notes')
-    .update({ content, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('user_id', user.id);
-
-  if (error) return { error: error.message };
-  return { success: true };
+  const res = await NoteModel.updateOne({ _id: id, user_id: userId }, { content, updated_at: new Date() });
+  if (res.modifiedCount === 1) return { success: true };
+  return { error: 'Not found or not allowed' };
 }
 
 export async function deleteNote(id: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated' };
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const { error } = await supabase
-    .from('notes')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id);
-
-  if (error) return { error: error.message };
-  return { success: true };
+  const res = await NoteModel.deleteOne({ _id: id, user_id: userId });
+  if (res.deletedCount === 1) return { success: true };
+  return { error: 'Not found or not allowed' };
 }
 
-export async function searchNotes(query: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: [] };
+export async function searchNotes(q: string) {
+  await connectToMongo();
+  const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const { data, error } = await supabase
-    .from('notes')
-    .select('*')
-    .eq('user_id', user.id)
-    .ilike('content', `%${query}%`)
-    .order('updated_at', { ascending: false })
-    .limit(20);
-
-  if (error) return { data: [], error: error.message };
-  return { data: data || [] };
+  const items = await NoteModel.find({ user_id: userId, content: { $regex: q, $options: 'i' } }).sort({ updated_at: -1 }).limit(20).lean();
+  return { data: items.map(normalize) };
 }

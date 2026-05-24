@@ -1,43 +1,34 @@
 "use client";
 
 import { useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { useAppStore } from '@/lib/store';
+import { SessionProvider, useSession } from 'next-auth/react';
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+function SessionSync({ children }: { children: React.ReactNode }) {
   const setUser = useAppStore((s) => s.setUser);
+  const { data: session } = useSession();
 
   useEffect(() => {
-    const supabase = createClient();
-
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUser({
-          id: user.id,
-          email: user.email || '',
-          display_name: user.user_metadata?.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || '',
-          avatar_url: user.user_metadata?.avatar_url || null,
-        });
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          display_name: session.user.user_metadata?.display_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || '',
-          avatar_url: session.user.user_metadata?.avatar_url || null,
-        });
+    if (session?.user) {
+      const u = session.user as any;
+      setUser({ id: u.id || u.email || '', email: u.email || '', display_name: u.name || u.email || '', avatar_url: u.image || null });
+    } else {
+      const defaultId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID;
+      if (defaultId) {
+        setUser({ id: defaultId, email: '', display_name: defaultId, avatar_url: null });
       } else {
         setUser(null);
       }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [setUser]);
+    }
+  }, [session, setUser]);
 
   return <>{children}</>;
+}
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionProvider>
+      <SessionSync>{children}</SessionSync>
+    </SessionProvider>
+  );
 }
