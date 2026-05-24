@@ -1,14 +1,13 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-// Protect dashboard, notes, and doc pages behind authentication.
-// Public pages: /, /auth/login, /api/auth/*, static assets.
+// Protect all pages behind authentication except the login page itself
+// and NextAuth API routes.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Always allow: auth routes, API auth routes, static assets, home page
+  // Always allow: login page, NextAuth API routes
   const publicPaths = [
-    '/',
     '/auth/login',
     '/api/auth',
   ];
@@ -18,6 +17,14 @@ export async function middleware(request: NextRequest) {
   const isNextInternal = pathname.startsWith('/_next');
 
   if (isPublic || isStaticAsset || isNextInternal) {
+    // If user is already signed in and visits login page, redirect to home
+    if (pathname === '/auth/login') {
+      const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+      if (token) {
+        const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/';
+        return NextResponse.redirect(new URL(callbackUrl, request.url));
+      }
+    }
     return NextResponse.next();
   }
 

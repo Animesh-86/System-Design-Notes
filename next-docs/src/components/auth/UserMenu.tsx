@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { LogOut, User, BarChart3, Settings } from 'lucide-react';
-import { signOut } from '@/lib/actions/auth';
+import { LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import { useAppStore } from '@/lib/store';
-import Link from 'next/link';
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -57,24 +56,13 @@ export function UserMenu() {
 
       {open && (
         <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-[#141417] border border-black/10 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <Link
-            href="/dashboard"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+          <button
+            onClick={() => signOut({ callbackUrl: '/auth/login' })}
+            className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-500/5 transition-colors w-full text-left cursor-pointer"
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            Dashboard
-          </Link>
-          <div className="h-px bg-black/5 dark:bg-white/5" />
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-red-500/5 transition-colors w-full text-left cursor-pointer"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-          </form>
+            <LogOut className="w-3.5 h-3.5" />
+            Sign Out
+          </button>
         </div>
       )}
     </div>
