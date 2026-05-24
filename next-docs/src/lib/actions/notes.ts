@@ -7,13 +7,21 @@ import { getUserIdFromSession } from '@/lib/authServer';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
+type NoteRecord = Record<string, unknown> & {
+  _id?: unknown;
+  id?: unknown;
+  __v?: unknown;
+  toObject?: () => Record<string, unknown>;
+};
+
 /** Normalize Mongoose document: map _id → id and stringify */
-function normalize(doc: any) {
+function normalize(doc: NoteRecord) {
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
-  obj.id = (obj._id ?? obj.id)?.toString();
-  delete obj._id;
-  delete obj.__v;
-  return obj;
+  const normalized = obj as NoteRecord;
+  normalized.id = String(normalized._id ?? normalized.id ?? '');
+  delete normalized._id;
+  delete normalized.__v;
+  return normalized;
 }
 
 async function ensureProfile(userId: string, email?: string, displayName?: string) {
@@ -44,9 +52,9 @@ export async function createNote(data: {
     });
 
     return { data: normalize(note) };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to create note:', error);
-    return { error: error.message || 'Failed to create note' };
+    return { error: error instanceof Error ? error.message : 'Failed to create note' };
   }
 }
 
@@ -54,7 +62,7 @@ export async function getNotes(slug?: string) {
   await connectToMongo();
   const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const query: any = { user_id: userId };
+  const query: Record<string, unknown> = { user_id: userId };
   if (slug) query.slug = slug;
 
   const items = await NoteModel.find(query).sort({ created_at: -1 }).lean();

@@ -10,7 +10,7 @@ function SessionSync({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (session?.user) {
-      const u = session.user as any;
+      const u = session.user as { id?: string; email?: string | null; name?: string | null; image?: string | null };
       setUser({ id: u.id || u.email || '', email: u.email || '', display_name: u.name || u.email || '', avatar_url: u.image || null });
     } else {
       const defaultId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID;

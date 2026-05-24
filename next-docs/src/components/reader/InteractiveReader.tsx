@@ -43,18 +43,38 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
   // Track whether user is interacting with the toolbar so we don't dismiss it
   const toolbarActiveRef = useRef(false);
 
-  // Load existing highlights on mount
-  useEffect(() => {
-    async function loadHighlights() {
-      const res = await getHighlights(slug);
-      if (res.data) {
-        setHighlights(slug, res.data);
-        // Visually display all loaded highlights
-        renderHighlights(res.data);
-      }
-    }
-    loadHighlights();
-  }, [slug, setHighlights]);
+  /** Attach a click handler to a highlight span that shows the inline delete tooltip */
+  const attachDeleteHandler = useCallback((span: HTMLSpanElement, highlightId: string) => {
+    span.onclick = (event: Event) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      const rect = span.getBoundingClientRect();
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      if (!containerRect) return;
+
+      setDeleteTooltip({
+        highlightId,
+        spanElement: span,
+        x: rect.left - containerRect.left + rect.width / 2,
+        y: rect.top - containerRect.top - 8,
+      });
+    };
+  }, []);
+
+  /** Create a styled highlight span element */
+  const createHighlightSpan = useCallback((color: string, highlightId: string, text: string) => {
+    const span = document.createElement('span');
+    span.style.backgroundColor = COLOR_MAP[color] || COLOR_MAP.yellow;
+    span.style.borderBottom = `2px solid ${COLOR_MAP[color]?.replace('0.3', '0.8') || 'rgba(250, 204, 21, 0.8)'}`;
+    span.style.cursor = 'pointer';
+    span.style.transition = 'all 0.2s';
+    span.style.borderRadius = '2px';
+    span.setAttribute('data-highlight-id', highlightId);
+    span.appendChild(document.createTextNode(text));
+    attachDeleteHandler(span, highlightId);
+    return span;
+  }, [attachDeleteHandler]);
 
   // Close delete tooltip when clicking outside
   useEffect(() => {
@@ -77,89 +97,56 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
     };
   }, [deleteTooltip]);
 
-  /** Attach a click handler to a highlight span that shows the inline delete tooltip */
-  const attachDeleteHandler = (span: HTMLSpanElement, highlightId: string) => {
-    span.onclick = (e: Event) => {
-      e.stopPropagation();
-      e.preventDefault();
+  // Load existing highlights on mount
+  useEffect(() => {
+    async function loadHighlights() {
+      const res = await getHighlights(slug);
+      if (res.data) {
+        setHighlights(slug, res.data);
 
-      const rect = span.getBoundingClientRect();
-      const containerRect = containerRef.current?.getBoundingClientRect();
-      if (!containerRect) return;
+        const container = containerRef.current;
+        if (!container) return;
 
-      setDeleteTooltip({
-        highlightId,
-        spanElement: span,
-        x: rect.left - containerRect.left + rect.width / 2,
-        y: rect.top - containerRect.top - 8,
-      });
-    };
-  };
+        res.data.forEach((highlight) => {
+          try {
+            const walker = document.createTreeWalker(container as Node, NodeFilter.SHOW_TEXT, null);
 
-  /** Create a styled highlight span element */
-  const createHighlightSpan = (color: string, highlightId: string, text: string) => {
-    const span = document.createElement('span');
-    span.style.backgroundColor = COLOR_MAP[color] || COLOR_MAP.yellow;
-    span.style.borderBottom = `2px solid ${COLOR_MAP[color]?.replace('0.3', '0.8') || 'rgba(250, 204, 21, 0.8)'}`;
-    span.style.cursor = 'pointer';
-    span.style.transition = 'all 0.2s';
-    span.style.borderRadius = '2px';
-    span.setAttribute('data-highlight-id', highlightId);
-    span.appendChild(document.createTextNode(text));
-    attachDeleteHandler(span, highlightId);
-    return span;
-  };
+            const textToFind = highlight.highlighted_text;
+            const nodesToProcess: Node[] = [];
+            let node: Node | null;
 
-  // Render highlights visually on the page
-  const renderHighlights = (highlights: any[]) => {
-    const container = containerRef.current;
-    if (!container) return;
+            while ((node = walker.nextNode())) {
+              nodesToProcess.push(node);
+            }
 
-    highlights.forEach((highlight) => {
-      try {
-        // Find and wrap the highlighted text
-        const walker = document.createTreeWalker(
-          container as Node,
-          NodeFilter.SHOW_TEXT,
-          null
-        );
+            nodesToProcess.forEach((textNode) => {
+              const content = textNode.textContent || '';
+              if (content.includes(textToFind)) {
+                const parts = content.split(textToFind);
+                const fragment = document.createDocumentFragment();
 
-        const textToFind = highlight.highlighted_text;
-        const nodesToProcess: Node[] = [];
-        let node;
+                parts.forEach((part, index) => {
+                  if (part) {
+                    fragment.appendChild(document.createTextNode(part));
+                  }
 
-        // Collect all text nodes
-        while ((node = walker.nextNode())) {
-          nodesToProcess.push(node);
-        }
+                  if (index < parts.length - 1) {
+                    const span = createHighlightSpan(highlight.color, highlight.id, textToFind);
+                    fragment.appendChild(span);
+                  }
+                });
 
-        // Process nodes to find and wrap the highlighted text
-        nodesToProcess.forEach((textNode) => {
-          const content = textNode.textContent || '';
-          if (content.includes(textToFind)) {
-            const parts = content.split(textToFind);
-            const fragment = document.createDocumentFragment();
-
-            parts.forEach((part, index) => {
-              if (part) {
-                fragment.appendChild(document.createTextNode(part));
-              }
-
-              // Add highlighted span between parts (except after last part)
-              if (index < parts.length - 1) {
-                const span = createHighlightSpan(highlight.color, highlight.id, textToFind);
-                fragment.appendChild(span);
+                textNode.parentNode?.replaceChild(fragment, textNode);
               }
             });
-
-            textNode.parentNode?.replaceChild(fragment, textNode);
+          } catch (err) {
+            console.error('Error rendering highlight:', err);
           }
         });
-      } catch (err) {
-        console.error('Error rendering highlight:', err);
       }
-    });
-  };
+    }
+    loadHighlights();
+  }, [slug, setHighlights, createHighlightSpan]);
 
   /** Handle deleting a highlight via the inline tooltip */
   const handleDeleteHighlight = async () => {
@@ -222,7 +209,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
   // Dismiss toolbar when clicking outside (but not on the toolbar itself)
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = () => {
       if (toolbarActiveRef.current) return;
 
       const selection = window.getSelection();
@@ -279,8 +266,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       } else {
         toast.error(result.error || 'Failed to save highlight', { id: 'highlight-save' });
       }
-    } catch (err) {
-      console.error('[handleHighlight] error:', err);
+    } catch {
       toast.error('Network error saving highlight', { id: 'highlight-save' });
     }
   };

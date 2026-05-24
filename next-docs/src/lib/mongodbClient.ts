@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb';
 
-let cached = ((globalThis as any)['__mongoClient'] || ((globalThis as any)['__mongoClient'] = {})) as { client?: MongoClient };
+type MongoClientCache = { client?: MongoClient };
+const globalForMongoClient = globalThis as typeof globalThis & { __mongoClient?: MongoClientCache };
+const cached = globalForMongoClient.__mongoClient || (globalForMongoClient.__mongoClient = {});
 
 export async function getMongoClient(): Promise<MongoClient> {
   const uri = process.env.MONGO_URI;

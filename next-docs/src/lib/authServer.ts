@@ -3,9 +3,10 @@ import { authOptions } from './nextAuthOptions';
 
 export async function getUserIdFromSession() {
   try {
-    const session = await getServerSession(authOptions as any) as any;
-    return session?.user?.id ?? null;
-  } catch (e) {
+    const session = await getServerSession(authOptions);
+    const user = session?.user as { id?: string } | undefined;
+    return user?.id ?? null;
+  } catch {
     return null;
   }
 }

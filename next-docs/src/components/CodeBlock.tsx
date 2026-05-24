@@ -9,12 +9,12 @@ interface CodeBlockProps {
 }
 
 // Extract plain text from React nodes for copying
-const getRawText = (node: any): string => {
+const getRawText = (node: React.ReactNode): string => {
   if (!node) return '';
   if (typeof node === 'string') return node;
   if (typeof node === 'number') return String(node);
   if (Array.isArray(node)) return node.map(getRawText).join('');
-  if (node && node.props && node.props.children !== undefined) {
+  if (React.isValidElement(node) && node.props.children !== undefined) {
     return getRawText(node.props.children);
   }
   return '';

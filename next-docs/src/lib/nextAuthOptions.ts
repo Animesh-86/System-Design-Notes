@@ -1,10 +1,11 @@
+import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import getMongoClient from './mongodbClient';
 
 const clientPromise = getMongoClient();
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
@@ -17,8 +18,9 @@ export const authOptions = {
     strategy: 'database',
   },
   callbacks: {
-    async session({ session, user }: any) {
-      return { ...session, user: { ...session.user, id: user.id } };
+    async session({ session, user }) {
+      const authUser = user as { id?: string } | undefined;
+      return { ...session, user: { ...session.user, id: authUser?.id ?? '' } };
     },
   },
 };

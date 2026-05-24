@@ -13,7 +13,12 @@ import { useAppStore } from '@/lib/store';
 export function Sidebar({ items }: { items: ContentItem[] }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return savedTheme || (prefersDark ? 'dark' : 'light');
+  });
   const { sidebarOpen, setSidebarOpen, checklist } = useAppStore();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     lld: false,
@@ -22,14 +27,9 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
     resource: true,
   });
 
-  // Load and apply theme
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   // Close sidebar on mobile when navigating
   useEffect(() => {

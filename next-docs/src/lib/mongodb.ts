@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-let cached = ((globalThis as any)['__mongoose'] || ((globalThis as any)['__mongoose'] = {})) as { conn?: typeof mongoose };
+type MongooseCache = { conn?: typeof mongoose };
+const globalForMongoose = globalThis as typeof globalThis & { __mongoose?: MongooseCache };
+const cached = globalForMongoose.__mongoose || (globalForMongoose.__mongoose = {});
 
 export async function connectToMongo(uri?: string) {
   const mongoUri = uri || process.env.MONGO_URI;

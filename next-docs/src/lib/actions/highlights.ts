@@ -6,13 +6,23 @@ import { getUserIdFromSession } from '@/lib/authServer';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
+type HighlightRecord = Record<string, unknown> & {
+  _id?: unknown;
+  id?: unknown;
+  __v?: unknown;
+  toObject?: () => Record<string, unknown>;
+  highlighted_text: string;
+  color: string;
+};
+
 /** Normalize Mongoose document: map _id → id and stringify */
-function normalize(doc: any) {
+function normalize(doc: HighlightRecord) {
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
-  obj.id = (obj._id ?? obj.id)?.toString();
-  delete obj._id;
-  delete obj.__v;
-  return obj;
+  const normalized = obj as HighlightRecord;
+  normalized.id = String(normalized._id ?? normalized.id ?? '');
+  delete normalized._id;
+  delete normalized.__v;
+  return normalized;
 }
 
 export async function createHighlight(data: {
@@ -31,9 +41,9 @@ export async function createHighlight(data: {
       ...data,
     });
     return { data: normalize(h) };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to create highlight:', error);
-    return { error: error.message || 'Failed to create highlight' };
+    return { error: error instanceof Error ? error.message : 'Failed to create highlight' };
   }
 }
 
@@ -43,7 +53,7 @@ export async function getHighlights(slug: string) {
     const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
     const items = await HighlightModel.find({ user_id: userId, slug }).sort({ start_offset: 1 }).lean();
     return { data: items.map(normalize) };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to get highlights:', error);
     return { data: [] };
   }
@@ -56,8 +66,8 @@ export async function deleteHighlight(id: string) {
     const res = await HighlightModel.deleteOne({ _id: id, user_id: userId });
     if (res.deletedCount === 1) return { success: true };
     return { error: 'Not found or not allowed' };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to delete highlight:', error);
-    return { error: error.message || 'Failed to delete highlight' };
+    return { error: error instanceof Error ? error.message : 'Failed to delete highlight' };
   }
 }

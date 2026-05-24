@@ -3,9 +3,16 @@
 import { connectToMongo } from '@/lib/mongodb';
 import ChecklistItemModel from '@/lib/models/ChecklistItem';
 import ProfileModel from '@/lib/models/Profile';
+import { getUserIdFromSession } from '@/lib/authServer';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
-import { getUserIdFromSession } from '@/lib/authServer';
+
+type ChecklistPayload = {
+  user_id: string;
+  slug: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  completed_at: Date | null;
+};
 
 async function ensureProfile(userId: string) {
   await connectToMongo();
@@ -19,15 +26,14 @@ export async function upsertChecklist(slug: string, status: 'pending' | 'in_prog
     const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
     await ensureProfile(userId);
 
-    const payload: any = { user_id: userId, slug, status };
+    const payload: ChecklistPayload = { user_id: userId, slug, status, completed_at: null };
     if (status === 'completed') payload.completed_at = new Date();
-    else payload.completed_at = null;
 
     await ChecklistItemModel.updateOne({ user_id: userId, slug }, { $set: payload }, { upsert: true });
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to upsert checklist:', error);
-    return { success: false, error: error.message || 'Failed to update checklist' };
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to update checklist' };
   }
 }
 

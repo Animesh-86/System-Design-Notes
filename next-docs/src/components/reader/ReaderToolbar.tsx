@@ -4,9 +4,9 @@ import { ReadingProgressBar } from './ReadingProgressBar';
 import { NotesPanel } from './NotesPanel';
 import { ChecklistToggle } from '@/components/ChecklistToggle';
 import { useAppStore } from '@/lib/store';
-import { StickyNote, Bookmark } from 'lucide-react';
+import { StickyNote } from 'lucide-react';
 
-export function ReaderToolbar({ slug, title }: { slug: string; title: string }) {
+export function ReaderToolbar({ slug }: { slug: string }) {
   const { setNotesPanel, notesPanel } = useAppStore();
 
   return (

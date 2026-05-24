@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ConditionalSidebar } from "@/components/ConditionalSidebar";
+import { AppShell } from "@/components/AppShell";
 import { getAllContent } from "@/lib/content";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Toaster } from "sonner";
@@ -24,13 +24,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-background text-foreground antialiased flex h-screen overflow-hidden selection:bg-blue-500/30`}>
         <AuthProvider>
-          <ConditionalSidebar items={contentItems} />
-          <main className="flex-1 h-screen overflow-y-auto custom-scrollbar relative">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
-            <div className="relative z-10 p-4 md:p-8 max-w-5xl mx-auto">
-              {children}
-            </div>
-          </main>
+          <AppShell items={contentItems}>{children}</AppShell>
           <Toaster
             position="bottom-right"
             toastOptions={{

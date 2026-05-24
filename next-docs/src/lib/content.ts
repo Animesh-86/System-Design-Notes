@@ -35,7 +35,7 @@ export function getAllContent(): ContentItem[] {
   
   return items.sort((a, b) => {
     if (a.type !== b.type) {
-      const typeOrder: any = { lld: 1, docx: 2, pdf: 3, resource: 4, other: 5 };
+      const typeOrder: Record<string, number> = { lld: 1, docx: 2, pdf: 3, resource: 4, other: 5 };
       return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
     }
     return a.order - b.order;

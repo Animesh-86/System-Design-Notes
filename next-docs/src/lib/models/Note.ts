@@ -1,5 +1,17 @@
 import mongoose from 'mongoose';
 
+interface NoteDoc {
+  user_id: string;
+  slug: string;
+  content: string;
+  note_type: 'annotation' | 'sticky' | 'bookmark_note';
+  position_offset: number | null;
+  anchor_node_path: string | null;
+  referenced_text: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
 const noteSchema = new mongoose.Schema({
   user_id: { type: String, required: true },
   slug: { type: String, required: true },
@@ -12,4 +24,4 @@ const noteSchema = new mongoose.Schema({
   updated_at: { type: Date, default: () => new Date() },
 });
 
-export default (mongoose.models.Note as mongoose.Model<any>) || mongoose.model('Note', noteSchema);
+export default (mongoose.models.Note as mongoose.Model<NoteDoc>) || mongoose.model<NoteDoc>('Note', noteSchema);

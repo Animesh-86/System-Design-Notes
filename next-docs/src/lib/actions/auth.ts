@@ -5,11 +5,13 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/nextAuthOptions';
 
 export async function signInWithEmail(formData?: FormData) {
+  void formData;
   // Email/password auth is not implemented — use Google OAuth via NextAuth
   return { error: 'Email sign-in is not available. Please use "Continue with Google".' };
 }
 
 export async function signUpWithEmail(formData?: FormData) {
+  void formData;
   // Email/password auth is not implemented — use Google OAuth via NextAuth
   return { error: 'Email sign-up is not available. Please use "Continue with Google".' };
 }
@@ -24,6 +26,6 @@ export async function signOut() {
 }
 
 export async function getSession() {
-  const session = await getServerSession(authOptions as any) as any;
+  const session = await getServerSession(authOptions);
   return session;
 }

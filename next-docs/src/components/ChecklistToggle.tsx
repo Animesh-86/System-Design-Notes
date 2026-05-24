@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { CheckCircle2, Circle, Clock, ChevronDown } from 'lucide-react';
+import { CheckCircle2, Circle, Clock } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { upsertChecklist } from '@/lib/actions/checklist';
 import { toast } from 'sonner';

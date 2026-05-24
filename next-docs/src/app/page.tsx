@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { ArrowRight, BookOpen, Layers, LayoutTemplate } from 'lucide-react';
+import { BookOpen, Layers, LayoutTemplate } from 'lucide-react';
 
 export default function Home() {
   return (

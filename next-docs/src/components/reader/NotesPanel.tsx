@@ -11,25 +11,22 @@ export function NotesPanel({ slug }: { slug: string }) {
   const { notesPanel, setNotesPanel, notes, setNotes, addNote, removeNote } = useAppStore();
   const [newNote, setNewNote] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const currentNotes = notes[slug] || [];
+
+  async function loadNotes() {
+    const result = await getNotes(slug);
+    if (result.data) {
+      setNotes(slug, result.data);
+    }
+  }
 
   useEffect(() => {
     if (notesPanel) {
       loadNotes();
     }
   }, [notesPanel, slug]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const loadNotes = async () => {
-    setLoading(true);
-    const result = await getNotes(slug);
-    if (result.data) {
-      setNotes(slug, result.data);
-    }
-    setLoading(false);
-  };
 
   const handleAddNote = async () => {
     if (!newNote.trim()) return;
@@ -121,11 +118,7 @@ export function NotesPanel({ slug }: { slug: string }) {
 
             {/* Notes List */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
-                </div>
-              ) : filteredNotes.length === 0 ? (
+              {filteredNotes.length === 0 ? (
                 <div className="text-center py-12">
                   <StickyNote className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                   <p className="text-xs text-gray-400">

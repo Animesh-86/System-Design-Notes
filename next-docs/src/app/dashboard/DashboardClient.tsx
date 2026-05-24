@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { BookOpen, Clock, CheckCircle2, StickyNote, ArrowRight, BarChart3, Flame, Trophy } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle2, StickyNote, ArrowRight, BarChart3, Trophy } from 'lucide-react';
 import type { ContentItem } from '@/lib/content';
 
 interface ProgressEntry {
@@ -35,7 +35,6 @@ interface DashboardClientProps {
 export function DashboardClient({ progress, checklist, recentNotes, contentItems, userName }: DashboardClientProps) {
   const totalItems = contentItems.length;
   const completedCount = checklist.filter(c => c.status === 'completed').length;
-  const inProgressCount = checklist.filter(c => c.status === 'in_progress').length;
   const totalReadTime = progress.reduce((sum, p) => sum + (p.read_time_seconds || 0), 0);
   const recentlyRead = progress.slice(0, 5);
 

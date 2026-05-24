@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { LogOut } from 'lucide-react';
+import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { useAppStore } from '@/lib/store';
 
@@ -36,9 +37,11 @@ export function UserMenu() {
         className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer w-full"
       >
         {user.avatar_url ? (
-          <img
+          <Image
             src={user.avatar_url}
             alt={user.display_name || 'Avatar'}
+            width={32}
+            height={32}
             className="w-8 h-8 rounded-lg object-cover border border-black/10 dark:border-white/10"
           />
         ) : (

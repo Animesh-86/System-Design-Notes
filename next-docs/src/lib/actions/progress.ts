@@ -7,6 +7,16 @@ import ProfileModel from '@/lib/models/Profile';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
+type ProgressPayload = {
+  user_id: string;
+  slug: string;
+  last_read_at: Date;
+  scroll_percentage?: number;
+  read_time_seconds?: number;
+  is_completed?: boolean;
+  completed_at?: Date | null;
+};
+
 async function ensureProfile(userId: string) {
   await connectToMongo();
   const existing = await ProfileModel.findOne({ id: userId }).lean();
@@ -22,7 +32,7 @@ export async function upsertProgress(slug: string, data: {
   const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
   await ensureProfile(userId);
 
-  const payload: any = {
+  const payload: ProgressPayload = {
     user_id: userId,
     slug,
     last_read_at: new Date(),
@@ -42,7 +52,7 @@ export async function getProgress(slug?: string) {
   await connectToMongo();
   const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const query: any = { user_id: userId };
+  const query: Record<string, unknown> = { user_id: userId };
   if (slug) query.slug = slug;
 
   const items = await ReadingProgressModel.find(query).sort({ last_read_at: -1 }).lean();
