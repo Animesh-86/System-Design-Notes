@@ -14,12 +14,7 @@ import { toast } from 'sonner';
 export function Sidebar({ items }: { items: ContentItem[] }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return savedTheme || (prefersDark ? 'dark' : 'light');
-  });
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const { sidebarOpen, setSidebarOpen, checklist } = useAppStore();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     lld: false,
@@ -27,6 +22,15 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
     pdf: true,
     resource: true,
   });
+
+  // Load theme from localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    setTheme(initialTheme);
+    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
