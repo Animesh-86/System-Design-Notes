@@ -6,23 +6,28 @@ import { getUserIdFromSession } from '@/lib/authServer';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
-type HighlightRecord = Record<string, unknown> & {
-  _id?: unknown;
-  id?: unknown;
-  __v?: unknown;
-  toObject?: () => Record<string, unknown>;
+export type HighlightDTO = {
+  id: string;
+  slug: string;
   highlighted_text: string;
   color: string;
+  start_offset: number;
+  end_offset: number;
+  anchor_node_path: string;
 };
 
-/** Normalize Mongoose document: map _id → id and stringify */
-function normalize(doc: HighlightRecord) {
+/** Normalize Mongoose document into a stable DTO for the client */
+function normalize(doc: any): HighlightDTO {
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
-  const normalized = obj as HighlightRecord;
-  normalized.id = String(normalized._id ?? normalized.id ?? '');
-  delete normalized._id;
-  delete normalized.__v;
-  return normalized;
+  return {
+    id: String(obj._id ?? obj.id ?? ''),
+    slug: String(obj.slug ?? ''),
+    highlighted_text: String(obj.highlighted_text ?? ''),
+    color: String(obj.color ?? 'yellow'),
+    start_offset: Number(obj.start_offset ?? 0),
+    end_offset: Number(obj.end_offset ?? 0),
+    anchor_node_path: String(obj.anchor_node_path ?? 'p'),
+  };
 }
 
 export async function createHighlight(data: {
@@ -47,11 +52,11 @@ export async function createHighlight(data: {
   }
 }
 
-export async function getHighlights(slug: string) {
+export async function getHighlights(slug: string): Promise<{ data: HighlightDTO[] } | { data: [] }> {
   try {
     await connectToMongo();
     const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
-    const items = await HighlightModel.find({ user_id: userId, slug }).sort({ start_offset: 1 }).lean();
+    const items = await HighlightModel.find({ user_id: userId, slug }).sort({ start_offset: 1 });
     return { data: items.map(normalize) };
   } catch (error: unknown) {
     console.error('Failed to get highlights:', error);

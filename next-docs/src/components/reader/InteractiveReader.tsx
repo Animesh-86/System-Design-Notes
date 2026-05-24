@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAppStore } from '@/lib/store';
 import { createHighlight, getHighlights, deleteHighlight } from '@/lib/actions/highlights';
-import { createNote } from '@/lib/actions/notes';
+import { createNote, getNotes, deleteNote } from '@/lib/actions/notes';
 import { HighlightingToolbar } from './HighlightingToolbar';
 import { toast } from 'sonner';
 import { Trash2, X, Loader2 } from 'lucide-react';
@@ -17,7 +17,8 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 interface DeleteTooltipInfo {
-  highlightId: string;
+  kind: 'highlight' | 'note';
+  itemId: string;
   spanElement: HTMLSpanElement;
   x: number;
   y: number;
@@ -44,7 +45,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
   const toolbarActiveRef = useRef(false);
 
   /** Attach a click handler to a highlight span that shows the inline delete tooltip */
-  const attachDeleteHandler = useCallback((span: HTMLSpanElement, highlightId: string) => {
+  const attachDeleteHandler = useCallback((span: HTMLSpanElement, kind: 'highlight' | 'note', itemId: string) => {
     span.onclick = (event: Event) => {
       event.stopPropagation();
       event.preventDefault();
@@ -54,7 +55,8 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       if (!containerRect) return;
 
       setDeleteTooltip({
-        highlightId,
+        kind,
+        itemId,
         spanElement: span,
         x: rect.left - containerRect.left + rect.width / 2,
         y: rect.top - containerRect.top - 8,
@@ -72,7 +74,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
     span.style.borderRadius = '2px';
     span.setAttribute('data-highlight-id', highlightId);
     span.appendChild(document.createTextNode(text));
-    attachDeleteHandler(span, highlightId);
+    attachDeleteHandler(span, 'highlight', highlightId);
     return span;
   }, [attachDeleteHandler]);
 
@@ -101,12 +103,13 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
   useEffect(() => {
     async function loadHighlights() {
       const res = await getHighlights(slug);
+      const container = containerRef.current;
+      if (!container) return;
+
       if (res.data) {
         setHighlights(slug, res.data);
 
-        const container = containerRef.current;
-        if (!container) return;
-
+        // Render highlights
         res.data.forEach((highlight) => {
           try {
             const walker = document.createTreeWalker(container as Node, NodeFilter.SHOW_TEXT, null);
@@ -121,28 +124,82 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
             nodesToProcess.forEach((textNode) => {
               const content = textNode.textContent || '';
+
               if (content.includes(textToFind)) {
                 const parts = content.split(textToFind);
                 const fragment = document.createDocumentFragment();
 
                 parts.forEach((part, index) => {
-                  if (part) {
-                    fragment.appendChild(document.createTextNode(part));
-                  }
-
+                  if (part) fragment.appendChild(document.createTextNode(part));
                   if (index < parts.length - 1) {
-                    const span = createHighlightSpan(highlight.color, highlight.id, textToFind);
+                    const span = createHighlightSpan(String(highlight.color), String(highlight.id), textToFind);
                     fragment.appendChild(span);
                   }
                 });
 
                 textNode.parentNode?.replaceChild(fragment, textNode);
+                return;
+              }
+
+              // Fallback: try case-insensitive search for slightly mismatched whitespace/casing
+              const lower = content.toLowerCase();
+              const targetLower = (textToFind || '').toLowerCase();
+              const idx = lower.indexOf(targetLower);
+              if (idx !== -1) {
+                const fragment = document.createDocumentFragment();
+                if (idx > 0) fragment.appendChild(document.createTextNode(content.slice(0, idx)));
+                const matched = content.slice(idx, idx + textToFind.length);
+                const span = createHighlightSpan(String(highlight.color), String(highlight.id), matched);
+                fragment.appendChild(span);
+                if (idx + textToFind.length < content.length) fragment.appendChild(document.createTextNode(content.slice(idx + textToFind.length)));
+                textNode.parentNode?.replaceChild(fragment, textNode);
+                return;
               }
             });
           } catch (err) {
             console.error('Error rendering highlight:', err);
           }
         });
+      }
+
+      // Also render inline annotations (notes with note_type === 'annotation')
+      try {
+        const notesRes = await getNotes(slug);
+        const annotations = (notesRes.data || []).filter((n: any) => n.note_type === 'annotation');
+        annotations.forEach((note: any) => {
+          const textToFind = note.referenced_text;
+          if (!textToFind) return;
+          const walker = document.createTreeWalker(container as Node, NodeFilter.SHOW_TEXT, null);
+          const nodesToProcess: Node[] = [];
+          let node: Node | null;
+          while ((node = walker.nextNode())) nodesToProcess.push(node);
+
+          // Build a flexible regex that tolerates whitespace differences and is case-insensitive
+          const escaped = textToFind.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regexStr = escaped.replace(/\s+/g, '\\s+');
+          const re = new RegExp(regexStr, 'i');
+
+          nodesToProcess.forEach((textNode) => {
+            const content = textNode.textContent || '';
+            const m = re.exec(content);
+            if (m && m.index !== undefined) {
+              const idx = m.index;
+              const matchText = m[0];
+              const fragment = document.createDocumentFragment();
+              if (idx > 0) fragment.appendChild(document.createTextNode(content.slice(0, idx)));
+              const span = createHighlightSpan('blue', String(note.id), content.slice(idx, idx + matchText.length));
+              span.style.backgroundColor = 'rgba(99,102,241,0.12)';
+              span.style.borderBottom = '2px dashed rgba(99,102,241,0.8)';
+              span.setAttribute('data-note-id', String(note.id));
+              attachDeleteHandler(span, 'note', String(note.id));
+              fragment.appendChild(span);
+              if (idx + matchText.length < content.length) fragment.appendChild(document.createTextNode(content.slice(idx + matchText.length)));
+              textNode.parentNode?.replaceChild(fragment, textNode);
+            }
+          });
+        });
+      } catch (err) {
+        console.error('Error rendering annotations:', err);
       }
     }
     loadHighlights();
@@ -154,17 +211,43 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
     setDeleting(true);
     try {
-      const res = await deleteHighlight(deleteTooltip.highlightId);
-      if (res.success) {
-        // Remove the visual span
-        const span = deleteTooltip.spanElement;
-        span.replaceWith(...Array.from(span.childNodes));
-        removeHighlight(slug, deleteTooltip.highlightId);
-        toast.success('Highlight deleted');
+      if (deleteTooltip.kind === 'highlight') {
+        const res = await deleteHighlight(deleteTooltip.itemId);
+        if (res.success) {
+          const currentSpan = containerRef.current?.querySelector(
+            `[data-highlight-id="${deleteTooltip.itemId}"]`
+          ) as HTMLSpanElement | null;
+          if (currentSpan) currentSpan.replaceWith(...Array.from(currentSpan.childNodes));
+          else {
+            const span = deleteTooltip.spanElement;
+            if (span && span.parentNode) span.replaceWith(...Array.from(span.childNodes));
+          }
+          removeHighlight(slug, deleteTooltip.itemId);
+          toast.success('Highlight deleted');
+        } else {
+          toast.error('Failed to delete highlight');
+        }
       } else {
-        toast.error('Failed to delete highlight');
+        // note deletion
+        const res = await deleteNote(deleteTooltip.itemId);
+        if (res.success) {
+          const currentSpan = containerRef.current?.querySelector(
+            `[data-note-id="${deleteTooltip.itemId}"]`
+          ) as HTMLSpanElement | null;
+          if (currentSpan) currentSpan.replaceWith(...Array.from(currentSpan.childNodes));
+          else {
+            const span = deleteTooltip.spanElement;
+            if (span && span.parentNode) span.replaceWith(...Array.from(span.childNodes));
+          }
+          // remove from notes store
+          useAppStore.getState().removeNote(slug, deleteTooltip.itemId);
+          toast.success('Annotation deleted');
+        } else {
+          toast.error('Failed to delete annotation');
+        }
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error('Network error');
     }
     setDeleting(false);
@@ -257,7 +340,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
 
         // Visually wrap the text in a colored span
         try {
-          const span = createHighlightSpan(color, result.data.id, text);
+          const span = createHighlightSpan(color, String(result.data.id), text);
           // Remove text node contents of the range and insert the span
           range.surroundContents(span);
         } catch {
@@ -294,7 +377,8 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       });
 
       if (result.data) {
-        addNote(slug, result.data);
+        // result.data is server-normalized; cast to any to satisfy client Note type
+        addNote(slug, result.data as any);
         toast.success('Annotation saved!', { id: 'annotation-save' });
       } else {
         toast.error(result.error || 'Failed to save annotation', { id: 'annotation-save' });

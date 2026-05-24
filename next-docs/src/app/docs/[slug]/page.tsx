@@ -86,9 +86,10 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
                 ul: ({ ...props }) => <ul className="list-disc pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
                 ol: ({ ...props }) => <ol className="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
                 li: ({ ...props }) => <li className="text-gray-600 dark:text-gray-300" {...props} />,
-                code: ({ inline, className, children, ...props }) => {
+                code: (props: any) => {
+                  const { inline, className, children, ...rest } = props;
                   if (inline) {
-                    return <code className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>;
+                    return <code className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono" {...rest}>{children}</code>;
                   }
                   return <CodeBlock language={className}>{children}</CodeBlock>;
                 }

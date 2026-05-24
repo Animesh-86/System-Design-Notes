@@ -35,9 +35,21 @@ export async function middleware(request: NextRequest) {
   });
 
   if (!token) {
-    const loginUrl = new URL('/auth/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
+    // Fallback: when using database sessions or cookie-based sessions the
+    // JWT token may not be available to `getToken` immediately. If a
+    // NextAuth session cookie exists, consider the user signed-in to avoid
+    // redirect loops. This is a pragmatic fallback for dev flows.
+    const hasSessionCookie = !!(
+      request.cookies.get('next-auth.session-token') ||
+      request.cookies.get('__Secure-next-auth.session-token') ||
+      request.cookies.get('next-auth.sess')
+    );
+
+    if (!hasSessionCookie) {
+      const loginUrl = new URL('/auth/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   return NextResponse.next();

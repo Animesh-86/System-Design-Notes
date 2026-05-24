@@ -1,4 +1,4 @@
-'use server';
+ 'use server';
 
 import { connectToMongo } from '@/lib/mongodb';
 import NoteModel from '@/lib/models/Note';
@@ -7,23 +7,33 @@ import { getUserIdFromSession } from '@/lib/authServer';
 
 const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID || 'local-user';
 
-type NoteRecord = Record<string, unknown> & {
-  _id?: unknown;
-  id?: unknown;
-  __v?: unknown;
-  toObject?: () => Record<string, unknown>;
+export type NoteDTO = {
+  id: string;
+  slug: string;
+  content: string;
+  note_type: 'annotation' | 'sticky' | 'bookmark_note';
+  position_offset: number | null;
+  anchor_node_path: string | null;
+  referenced_text: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
-/** Normalize Mongoose document: map _id → id and stringify */
-function normalize(doc: NoteRecord) {
+/** Normalize Mongoose document into stable DTO for client */
+function normalize(doc: any): NoteDTO {
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
-  const normalized = obj as NoteRecord;
-  normalized.id = String(normalized._id ?? normalized.id ?? '');
-  delete normalized._id;
-  delete normalized.__v;
-  return normalized;
+  return {
+    id: String(obj._id ?? obj.id ?? ''),
+    slug: String(obj.slug ?? ''),
+    content: String(obj.content ?? ''),
+    note_type: (obj.note_type as any) ?? 'sticky',
+    position_offset: obj.position_offset == null ? null : Number(obj.position_offset),
+    anchor_node_path: obj.anchor_node_path == null ? null : String(obj.anchor_node_path),
+    referenced_text: obj.referenced_text == null ? null : String(obj.referenced_text),
+    created_at: obj.created_at ? new Date(obj.created_at).toISOString() : new Date().toISOString(),
+    updated_at: obj.updated_at ? new Date(obj.updated_at).toISOString() : new Date().toISOString(),
+  };
 }
-
 async function ensureProfile(userId: string, email?: string, displayName?: string) {
   await connectToMongo();
   const existing = await ProfileModel.findOne({ id: userId }).lean();
@@ -58,14 +68,14 @@ export async function createNote(data: {
   }
 }
 
-export async function getNotes(slug?: string) {
+export async function getNotes(slug?: string): Promise<{ data: NoteDTO[] } | { data: [] }> {
   await connectToMongo();
   const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
   const query: Record<string, unknown> = { user_id: userId };
   if (slug) query.slug = slug;
 
-  const items = await NoteModel.find(query).sort({ created_at: -1 }).lean();
+  const items = await NoteModel.find(query).sort({ created_at: -1 });
   return { data: items.map(normalize) };
 }
 

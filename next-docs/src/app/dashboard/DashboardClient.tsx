@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { BookOpen, Clock, CheckCircle2, StickyNote, ArrowRight, BarChart3, Trophy } from 'lucide-react';
 import type { ContentItem } from '@/lib/content';
+import { useEffect } from 'react';
+import { useAppStore } from '@/lib/store';
 
 interface ProgressEntry {
   slug: string;
@@ -50,16 +52,57 @@ export function DashboardClient({ progress, checklist, recentNotes, contentItems
     return contentItems.find(c => c.slug === slug)?.title || slug;
   };
 
+  const { reset } = useAppStore();
+
+  useEffect(() => {
+    // no-op: keep hook for reset usage in handler
+  }, []);
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 pb-20 max-w-5xl mx-auto space-y-8 pt-4">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">{userName}</span>
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
-          Here&apos;s your learning progress overview.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">{userName}</span>
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
+            Here&apos;s your learning progress overview.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={async () => {
+              if (!confirm('Reset all your progress and notes for your account? This cannot be undone.')) return;
+              try {
+                const r = await fetch('/api/admin/reset', { method: 'POST' });
+                if (r.status === 401) {
+                  window.location.href = `/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`;
+                  return;
+                }
+                const j = await r.json();
+                if (r.ok && j.success) {
+                  try {
+                    // clear persisted client store to remove stale progress cache
+                    localStorage.removeItem('sdh-store');
+                  } catch (e) {
+                    // ignore
+                  }
+                  // clear in-memory store
+                  try { reset(); } catch (e) {}
+                  // reload to reflect cleared data
+                  window.location.reload();
+                } else {
+                  alert(j.error || 'Reset failed');
+                }
+              } catch (err) {
+                alert('Reset request failed');
+              }
+            }}
+            className="text-xs px-3 py-1 rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/15"
+          >Reset Progress</button>
+        </div>
       </div>
 
       {/* Stats Cards */}

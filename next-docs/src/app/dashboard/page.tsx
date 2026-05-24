@@ -25,9 +25,15 @@ export default async function DashboardPage() {
 
   return (
     <DashboardClient
-      progress={progress || []}
+      progress={(progress || []).map(p => ({
+        slug: p.slug,
+        scroll_percentage: p.scroll_percentage,
+        is_completed: p.is_completed,
+        read_time_seconds: p.read_time_seconds,
+        last_read_at: p.last_read_at ? new Date(p.last_read_at).toISOString() : new Date().toISOString(),
+      }))}
       checklist={checklist || []}
-      recentNotes={notes || []}
+      recentNotes={(notes || []).map(n => ({ id: (n._id as any)?.toString?.() || '', slug: n.slug, content: n.content, created_at: n.created_at ? new Date(n.created_at).toISOString() : new Date().toISOString() }))}
       contentItems={contentItems}
       userName={userName}
     />

@@ -9,6 +9,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function NotesPanel({ slug }: { slug: string }) {
   const { notesPanel, setNotesPanel, notes, setNotes, addNote, removeNote } = useAppStore();
+  const [moduleTitle, setModuleTitle] = useState('');
+
+  // Read the current page H1 title when the panel opens or slug changes
+  useEffect(() => {
+    try {
+      const el = document.querySelector('h1');
+      setModuleTitle(el?.textContent?.trim() || '');
+    } catch {
+      setModuleTitle('');
+    }
+  }, [slug, notesPanel]);
   const [newNote, setNewNote] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [saving, setSaving] = useState(false);
@@ -85,10 +96,13 @@ export function NotesPanel({ slug }: { slug: string }) {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/5">
-              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
                 <StickyNote className="w-4 h-4 text-amber-500" />
-                <h2 className="text-sm font-bold text-gray-800 dark:text-gray-200">Notes</h2>
-                <span className="text-[10px] bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded-full text-gray-500 font-mono">
+                <div>
+                  <h2 className="text-sm font-bold text-gray-800 dark:text-gray-200">Notes</h2>
+                  <div className="text-[11px] text-gray-500">{moduleTitle || 'Current Module'}</div>
+                </div>
+                <span className="ml-auto text-[10px] bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded-full text-gray-500 font-mono">
                   {currentNotes.length}
                 </span>
               </div>
