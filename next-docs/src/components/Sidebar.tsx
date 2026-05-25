@@ -284,23 +284,6 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
             <UserMenu />
             <div className="flex items-center gap-2">
               <Link href="/dashboard" className="text-xs px-3 py-1 rounded-md bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10">Dashboard</Link>
-              <button
-                onClick={async () => {
-                  try {
-                    const r = await fetch('/api/admin/reset', { method: 'POST' });
-                    const data = await r.json();
-                    if (data.success) {
-                      toast.success('All progress reset');
-                      window.location.reload();
-                    } else {
-                      toast.error(data.error || 'Reset failed');
-                    }
-                  } catch (err) {
-                    toast.error('Reset request failed');
-                  }
-                }}
-                className="text-xs px-3 py-1 rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/15"
-              >Reset</button>
             </div>
           </div>
         </div>
