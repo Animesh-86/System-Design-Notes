@@ -5,11 +5,12 @@ import ReadingProgress from '@/lib/models/ReadingProgress';
 import ChecklistItem from '@/lib/models/ChecklistItem';
 import Note from '@/lib/models/Note';
 import Profile from '@/lib/models/Profile';
+import { getUserIdFromSession } from '@/lib/authServer';
 
 export default async function DashboardPage() {
   await connectToMongo();
 
-  const userId = process.env.DEFAULT_USER_ID || process.env.NEXT_PUBLIC_DEFAULT_USER_ID;
+  const userId = await getUserIdFromSession();
   if (!userId) return null;
 
   const [progress, checklist, notes, profile] = await Promise.all([
