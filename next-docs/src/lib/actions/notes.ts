@@ -22,8 +22,10 @@ export type NoteDTO = {
 import type { Document } from 'mongoose';
 
 /** Normalize Mongoose document into stable DTO for client */
-function normalize(doc: Document | Record<string, unknown>): NoteDTO {
-  const obj = typeof (doc as Document).toObject === 'function' ? (doc as Document).toObject() : { ...doc } as Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalize(doc: any): NoteDTO {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
   return {
     id: String(obj._id ?? obj.id ?? ''),
     slug: String(obj.slug ?? ''),
