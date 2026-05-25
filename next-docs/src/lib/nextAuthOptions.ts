@@ -20,9 +20,11 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async session({ session, user }) {
-      const authUser = user as { id?: string } | undefined;
-      return { ...session, user: { ...session.user, id: authUser?.id ?? '' } };
+    async session({ session, token }) {
+      if (session.user && token?.sub) {
+        (session.user as any).id = token.sub;
+      }
+      return session;
     },
   },
 };
