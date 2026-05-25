@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { ContentItem } from '@/lib/content';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { useAppStore } from '@/lib/store';
-import { toast } from 'sonner';
+// import { toast } from 'sonner'; (removed unused)
 
 export function Sidebar({ items }: { items: ContentItem[] }) {
   const pathname = usePathname();
@@ -28,6 +28,7 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
     const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
   }, []);

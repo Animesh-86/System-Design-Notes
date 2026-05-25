@@ -14,8 +14,8 @@ const getRawText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
   if (typeof node === 'number') return String(node);
   if (Array.isArray(node)) return node.map(getRawText).join('');
-  if (React.isValidElement(node) && (node as any).props && (node as any).props.children !== undefined) {
-    return getRawText((node as any).props.children);
+  if (React.isValidElement(node) && (node as React.ReactElement).props && ((node as React.ReactElement).props as { children?: React.ReactNode }).children !== undefined) {
+    return getRawText(((node as React.ReactElement).props as { children?: React.ReactNode }).children);
   }
   return '';
 };

@@ -15,6 +15,7 @@ export function NotesPanel({ slug }: { slug: string }) {
   useEffect(() => {
     try {
       const el = document.querySelector('h1');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setModuleTitle(el?.textContent?.trim() || '');
     } catch {
       setModuleTitle('');

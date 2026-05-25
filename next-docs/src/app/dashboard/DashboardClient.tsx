@@ -86,17 +86,17 @@ export function DashboardClient({ progress, checklist, recentNotes, contentItems
                   try {
                     // clear persisted client store to remove stale progress cache
                     localStorage.removeItem('sdh-store');
-                  } catch (e) {
+                  } catch {
                     // ignore
                   }
                   // clear in-memory store
-                  try { reset(); } catch (e) {}
+                  try { reset(); } catch {}
                   // reload to reflect cleared data
                   window.location.reload();
                 } else {
                   alert(j.error || 'Reset failed');
                 }
-              } catch (err) {
+              } catch {
                 alert('Reset request failed');
               }
             }}

@@ -46,7 +46,7 @@ export default async function DashboardPage() {
         last_read_at: p.last_read_at ? new Date(p.last_read_at).toISOString() : new Date().toISOString(),
       }))}
       checklist={checklist || []}
-      recentNotes={(notes || []).map(n => ({ id: (n._id as any)?.toString?.() || '', slug: n.slug, content: n.content, created_at: n.created_at ? new Date(n.created_at).toISOString() : new Date().toISOString() }))}
+      recentNotes={(notes || []).map(n => ({ id: String(n._id || n.id || ''), slug: n.slug, content: n.content, created_at: n.created_at ? new Date(n.created_at).toISOString() : new Date().toISOString() }))}
       contentItems={contentItems}
       userName={userName}
     />

@@ -19,14 +19,16 @@ export type NoteDTO = {
   updated_at: string;
 };
 
+import type { Document } from 'mongoose';
+
 /** Normalize Mongoose document into stable DTO for client */
-function normalize(doc: any): NoteDTO {
-  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
+function normalize(doc: Document | Record<string, unknown>): NoteDTO {
+  const obj = typeof (doc as Document).toObject === 'function' ? (doc as Document).toObject() : { ...doc } as Record<string, unknown>;
   return {
     id: String(obj._id ?? obj.id ?? ''),
     slug: String(obj.slug ?? ''),
     content: String(obj.content ?? ''),
-    note_type: (obj.note_type as any) ?? 'sticky',
+    note_type: (obj.note_type as 'annotation' | 'sticky' | 'bookmark_note') ?? 'sticky',
     position_offset: obj.position_offset == null ? null : Number(obj.position_offset),
     anchor_node_path: obj.anchor_node_path == null ? null : String(obj.anchor_node_path),
     referenced_text: obj.referenced_text == null ? null : String(obj.referenced_text),

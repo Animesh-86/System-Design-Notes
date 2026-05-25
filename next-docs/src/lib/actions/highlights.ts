@@ -20,7 +20,7 @@ import type { Document } from 'mongoose';
 
 /** Normalize Mongoose document into a stable DTO for the client */
 function normalize(doc: Document | Record<string, unknown>): HighlightDTO {
-  const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
+  const obj = typeof (doc as Document).toObject === 'function' ? (doc as Document).toObject() : { ...doc } as Record<string, unknown>;
   return {
     id: String(obj._id ?? obj.id ?? ''),
     slug: String(obj.slug ?? ''),
