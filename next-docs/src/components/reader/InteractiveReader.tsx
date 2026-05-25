@@ -165,9 +165,9 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       // Also render inline annotations (notes with note_type === 'annotation')
       try {
         const notesRes = await getNotes(slug);
-        const annotations = (notesRes.data || []).filter((n: any) => n.note_type === 'annotation');
-        annotations.forEach((note: any) => {
-          const textToFind = note.referenced_text;
+        const annotations = (notesRes.data || []).filter((n: Record<string, unknown>) => n.note_type === 'annotation');
+        annotations.forEach((note: Record<string, unknown>) => {
+          const textToFind = note.referenced_text as string | undefined;
           if (!textToFind) return;
           const walker = document.createTreeWalker(container as Node, NodeFilter.SHOW_TEXT, null);
           const nodesToProcess: Node[] = [];
@@ -203,7 +203,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       }
     }
     loadHighlights();
-  }, [slug, setHighlights, createHighlightSpan]);
+  }, [slug, setHighlights, createHighlightSpan, attachDeleteHandler]);
 
   /** Handle deleting a highlight via the inline tooltip */
   const handleDeleteHighlight = async () => {
@@ -377,7 +377,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
       });
 
       if (result.data) {
-        // result.data is server-normalized; cast to any to satisfy client Note type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         addNote(slug, result.data as any);
         toast.success('Annotation saved!', { id: 'annotation-save' });
       } else {

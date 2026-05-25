@@ -5,6 +5,7 @@ import ReadingProgress from '@/lib/models/ReadingProgress';
 import ChecklistItem from '@/lib/models/ChecklistItem';
 import Note from '@/lib/models/Note';
 import Profile from '@/lib/models/Profile';
+import Highlight from '@/lib/models/Highlight';
 import { getUserIdFromSession } from '@/lib/authServer';
 
 export default async function DashboardPage() {
@@ -13,8 +14,19 @@ export default async function DashboardPage() {
   const userId = await getUserIdFromSession();
   if (!userId) return null;
 
+  // --- MIGRATION: Fix stuck "local-user" data ---
+  // Any data saved before the session bug was fixed got assigned to "local-user".
+  // This reassigns those orphans to the current authenticated user.
+  await Promise.all([
+    Highlight.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+    Note.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+    ReadingProgress.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+    ChecklistItem.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+  ]);
+  // ----------------------------------------------
+
   const [progress, checklist, notes, profile] = await Promise.all([
-    ReadingProgress.find({ user_id: userId }).sort({ last_read_at: -1 }).lean(),
+    ReadingProgress.find({ user_id: userId }).sort({ last_read_at: -1 }).limit(100).lean(),
     ChecklistItem.find({ user_id: userId }).lean(),
     Note.find({ user_id: userId }).sort({ created_at: -1 }).limit(10).lean(),
     Profile.findOne({ id: userId }).lean(),

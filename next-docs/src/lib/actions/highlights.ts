@@ -16,8 +16,10 @@ export type HighlightDTO = {
   anchor_node_path: string;
 };
 
+import type { Document } from 'mongoose';
+
 /** Normalize Mongoose document into a stable DTO for the client */
-function normalize(doc: any): HighlightDTO {
+function normalize(doc: Document | Record<string, unknown>): HighlightDTO {
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
   return {
     id: String(obj._id ?? obj.id ?? ''),
