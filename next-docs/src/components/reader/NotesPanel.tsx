@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, StickyNote, Search, Loader2 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { createNote, getNotes, deleteNote } from '@/lib/actions/notes';
@@ -8,8 +8,9 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function NotesPanel({ slug }: { slug: string }) {
-  const { notesPanel, setNotesPanel, notes, setNotes, addNote, removeNote } = useAppStore();
+  const { notesPanel, notes, setNotes, addNote, removeNote, activeNoteId } = useAppStore();
   const [moduleTitle, setModuleTitle] = useState('');
+  const noteRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Read the current page H1 title when the panel opens or slug changes
   useEffect(() => {
@@ -39,6 +40,19 @@ export function NotesPanel({ slug }: { slug: string }) {
       loadNotes();
     }
   }, [notesPanel, slug]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!activeNoteId) return;
+    const el = noteRefs.current[activeNoteId];
+    if (el) {
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.classList.add('ring-2', 'ring-amber-400/60');
+      const timer = window.setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-amber-400/60');
+      }, 1800);
+      return () => window.clearTimeout(timer);
+    }
+  }, [activeNoteId, currentNotes.length]);
 
   const handleAddNote = async () => {
     if (!newNote.trim()) return;
@@ -84,7 +98,10 @@ export function NotesPanel({ slug }: { slug: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setNotesPanel(false)}
+            onClick={() => {
+              useAppStore.getState().setActiveNoteId(null);
+              useAppStore.getState().setNotesPanel(false);
+            }}
             className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
           />
 
@@ -108,7 +125,10 @@ export function NotesPanel({ slug }: { slug: string }) {
                 </span>
               </div>
               <button
-                onClick={() => setNotesPanel(false)}
+                onClick={() => {
+                  useAppStore.getState().setActiveNoteId(null);
+                  useAppStore.getState().setNotesPanel(false);
+                }}
                 className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-gray-400 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -144,6 +164,9 @@ export function NotesPanel({ slug }: { slug: string }) {
                 filteredNotes.map((note) => (
                   <div
                     key={note.id}
+                    ref={(el) => {
+                      noteRefs.current[note.id] = el;
+                    }}
                     className="group bg-amber-500/5 dark:bg-amber-500/5 border border-amber-500/10 dark:border-amber-500/10 rounded-xl p-3 relative"
                   >
                     <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAppStore } from '@/lib/store';
 import { createHighlight, getHighlights, deleteHighlight } from '@/lib/actions/highlights';
-import { createNote, getNotes, deleteNote } from '@/lib/actions/notes';
+import { createNote, getNotes } from '@/lib/actions/notes';
 import { HighlightingToolbar } from './HighlightingToolbar';
 import { toast } from 'sonner';
 import { Trash2, X, Loader2 } from 'lucide-react';
@@ -17,7 +17,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 interface DeleteTooltipInfo {
-  kind: 'highlight' | 'note';
+  kind: 'highlight';
   itemId: string;
   spanElement: HTMLSpanElement;
   x: number;
@@ -45,7 +45,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
   const toolbarActiveRef = useRef(false);
 
   /** Attach a click handler to a highlight span that shows the inline delete tooltip */
-  const attachDeleteHandler = useCallback((span: HTMLSpanElement, kind: 'highlight' | 'note', itemId: string) => {
+  const attachDeleteHandler = useCallback((span: HTMLSpanElement, kind: 'highlight', itemId: string) => {
     span.onclick = (event: Event) => {
       event.stopPropagation();
       event.preventDefault();
@@ -64,7 +64,34 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
     };
   }, []);
 
+  const removeRenderedItem = useCallback((kind: 'highlight', itemId: string, span?: HTMLSpanElement | null) => {
+    const selector = `[data-highlight-id="${itemId}"]`;
+    const currentSpan = containerRef.current?.querySelector(selector) as HTMLSpanElement | null;
+    const target = currentSpan || span || null;
+    if (!target) return;
+    target.replaceWith(...Array.from(target.childNodes));
+  }, []);
+
   /** Create a styled highlight span element */
+  const handleDeleteTooltipDirect = useCallback(async (_kind: 'highlight', itemId: string, span?: HTMLSpanElement | null) => {
+    setDeleting(true);
+    try {
+      const res = await deleteHighlight(itemId);
+      if (res.success) {
+        removeRenderedItem('highlight', itemId, span);
+        removeHighlight(slug, itemId);
+        toast.success('Highlight deleted');
+      } else {
+        toast.error('Failed to delete highlight');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Network error');
+    }
+    setDeleting(false);
+    setDeleteTooltip(null);
+  }, [removeRenderedItem, removeHighlight, slug]);
+
   const createHighlightSpan = useCallback((color: string, highlightId: string, text: string) => {
     const span = document.createElement('span');
     span.style.backgroundColor = COLOR_MAP[color] || COLOR_MAP.yellow;
@@ -72,11 +99,49 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
     span.style.cursor = 'pointer';
     span.style.transition = 'all 0.2s';
     span.style.borderRadius = '2px';
+    span.style.position = 'relative';
+    span.style.paddingRight = '1rem';
     span.setAttribute('data-highlight-id', highlightId);
     span.appendChild(document.createTextNode(text));
     attachDeleteHandler(span, 'highlight', highlightId);
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.textContent = '×';
+    removeButton.setAttribute('aria-label', 'Remove highlight');
+    removeButton.title = 'Remove highlight';
+    removeButton.style.position = 'absolute';
+    removeButton.style.top = '-0.35rem';
+    removeButton.style.right = '-0.15rem';
+    removeButton.style.width = '1rem';
+    removeButton.style.height = '1rem';
+    removeButton.style.borderRadius = '9999px';
+    removeButton.style.border = '1px solid rgba(255,255,255,0.25)';
+    removeButton.style.background = 'rgba(17, 24, 39, 0.95)';
+    removeButton.style.color = '#fca5a5';
+    removeButton.style.fontSize = '0.7rem';
+    removeButton.style.lineHeight = '1';
+    removeButton.style.display = 'none';
+    removeButton.style.alignItems = 'center';
+    removeButton.style.justifyContent = 'center';
+    removeButton.style.cursor = 'pointer';
+    removeButton.style.zIndex = '1';
+    removeButton.onmousedown = (event) => event.stopPropagation();
+    removeButton.onclick = async (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      await handleDeleteTooltipDirect('highlight', highlightId, span);
+    };
+
+    span.onmouseenter = () => {
+      removeButton.style.display = 'inline-flex';
+    };
+    span.onmouseleave = () => {
+      removeButton.style.display = 'none';
+    };
+    span.appendChild(removeButton);
     return span;
-  }, [attachDeleteHandler]);
+  }, [attachDeleteHandler, handleDeleteTooltipDirect]);
 
   // Close delete tooltip when clicking outside
   useEffect(() => {
@@ -191,7 +256,27 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
               span.style.backgroundColor = 'rgba(99,102,241,0.12)';
               span.style.borderBottom = '2px dashed rgba(99,102,241,0.8)';
               span.setAttribute('data-note-id', String(note.id));
-              attachDeleteHandler(span, 'note', String(note.id));
+              const noteMarker = document.createElement('button');
+              noteMarker.type = 'button';
+              noteMarker.textContent = '📝';
+              noteMarker.title = 'Open annotation in notes';
+              noteMarker.setAttribute('aria-label', 'Open annotation in notes');
+              noteMarker.style.marginLeft = '0.25rem';
+              noteMarker.style.fontSize = '0.8rem';
+              noteMarker.style.cursor = 'pointer';
+              noteMarker.style.verticalAlign = 'baseline';
+              noteMarker.style.border = '0';
+              noteMarker.style.background = 'transparent';
+              noteMarker.style.padding = '0';
+              noteMarker.onmousedown = (event) => event.stopPropagation();
+              noteMarker.onclick = (event) => {
+                event.stopPropagation();
+                event.preventDefault();
+                useAppStore.getState().setActiveNoteId(String(note.id));
+                useAppStore.getState().setNotesPanel(true);
+              };
+              span.appendChild(noteMarker);
+
               fragment.appendChild(span);
               if (idx + matchText.length < content.length) fragment.appendChild(document.createTextNode(content.slice(idx + matchText.length)));
               textNode.parentNode?.replaceChild(fragment, textNode);
@@ -208,50 +293,7 @@ export function InteractiveReader({ slug, children }: InteractiveReaderProps) {
   /** Handle deleting a highlight via the inline tooltip */
   const handleDeleteHighlight = async () => {
     if (!deleteTooltip || deleting) return;
-
-    setDeleting(true);
-    try {
-      if (deleteTooltip.kind === 'highlight') {
-        const res = await deleteHighlight(deleteTooltip.itemId);
-        if (res.success) {
-          const currentSpan = containerRef.current?.querySelector(
-            `[data-highlight-id="${deleteTooltip.itemId}"]`
-          ) as HTMLSpanElement | null;
-          if (currentSpan) currentSpan.replaceWith(...Array.from(currentSpan.childNodes));
-          else {
-            const span = deleteTooltip.spanElement;
-            if (span && span.parentNode) span.replaceWith(...Array.from(span.childNodes));
-          }
-          removeHighlight(slug, deleteTooltip.itemId);
-          toast.success('Highlight deleted');
-        } else {
-          toast.error('Failed to delete highlight');
-        }
-      } else {
-        // note deletion
-        const res = await deleteNote(deleteTooltip.itemId);
-        if (res.success) {
-          const currentSpan = containerRef.current?.querySelector(
-            `[data-note-id="${deleteTooltip.itemId}"]`
-          ) as HTMLSpanElement | null;
-          if (currentSpan) currentSpan.replaceWith(...Array.from(currentSpan.childNodes));
-          else {
-            const span = deleteTooltip.spanElement;
-            if (span && span.parentNode) span.replaceWith(...Array.from(span.childNodes));
-          }
-          // remove from notes store
-          useAppStore.getState().removeNote(slug, deleteTooltip.itemId);
-          toast.success('Annotation deleted');
-        } else {
-          toast.error('Failed to delete annotation');
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Network error');
-    }
-    setDeleting(false);
-    setDeleteTooltip(null);
+    await handleDeleteTooltipDirect(deleteTooltip.kind, deleteTooltip.itemId, deleteTooltip.spanElement);
   };
 
   // Use mouseup on the container to detect text selection instead of

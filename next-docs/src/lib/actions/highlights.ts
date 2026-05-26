@@ -69,7 +69,8 @@ export async function deleteHighlight(id: string) {
   try {
     await connectToMongo();
     const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
-    const res = await HighlightModel.deleteOne({ _id: id, user_id: userId });
+    const userIds = userId === DEFAULT_USER_ID ? [userId] : [userId, DEFAULT_USER_ID];
+    const res = await HighlightModel.deleteOne({ _id: id, user_id: { $in: userIds } });
     if (res.deletedCount === 1) return { success: true };
     return { error: 'Not found or not allowed' };
   } catch (error: unknown) {

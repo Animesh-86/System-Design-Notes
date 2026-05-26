@@ -93,7 +93,8 @@ export async function deleteNote(id: string) {
   await connectToMongo();
   const userId = (await getUserIdFromSession()) || DEFAULT_USER_ID;
 
-  const res = await NoteModel.deleteOne({ _id: id, user_id: userId });
+  const userIds = userId === DEFAULT_USER_ID ? [userId] : [userId, DEFAULT_USER_ID];
+  const res = await NoteModel.deleteOne({ _id: id, user_id: { $in: userIds } });
   if (res.deletedCount === 1) return { success: true };
   return { error: 'Not found or not allowed' };
 }

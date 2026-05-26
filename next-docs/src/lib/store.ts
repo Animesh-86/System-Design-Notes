@@ -62,6 +62,8 @@ interface AppState {
   toggleSidebar: () => void;
   notesPanel: boolean;
   setNotesPanel: (open: boolean) => void;
+  activeNoteId: string | null;
+  setActiveNoteId: (noteId: string | null) => void;
 
   // Progress (optimistic cache)
   progress: Record<string, ProgressEntry>;
@@ -98,6 +100,7 @@ const initialState = {
   user: null,
   sidebarOpen: true,
   notesPanel: true,
+  activeNoteId: null,
   progress: {},
   checklist: {},
   highlights: {},
@@ -115,6 +118,7 @@ export const useAppStore = create<AppState>()(
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
       setNotesPanel: (open) => set({ notesPanel: open }),
+      setActiveNoteId: (noteId) => set({ activeNoteId: noteId }),
 
       setProgress: (slug, entry) =>
         set((s) => ({
