@@ -35,6 +35,7 @@ The Future interface, introduced in Java 5, represents the result of an asynchro
 Example : 
 
 ```java
+
 import java.util.concurrent.*;
 public class FutureResultExample {
 public static void main(String[] args) throws Exception {
@@ -64,6 +65,7 @@ executor.shutdown();
 Example : 
 
 ```java
+
 Future<Integer> future = executor.submit(() -> 42);
 // ...some time later
 if (future.isDone()) {
@@ -86,6 +88,7 @@ Explanation : isDone() tells if the task is finished.
 Example : 
 
 ```java
+
 Future<?> future = executor.submit(() -> {
 while (true) {
 // long-running task
@@ -125,6 +128,7 @@ Explanation : 
 ‍
 
 ```java
+
 Future<?> future = executor.submit(() -> {
 while (true) {
 if (Thread.interrupted()) {
@@ -154,6 +158,7 @@ Task was interrupted. Stopping...
 Example : 
 
 ```java
+
 Future<String> future = executor.submit(() -> {
 Thread.sleep(3000);
 return "Finished after delay";
@@ -195,6 +200,7 @@ In Java, a Future is a placeholder for the result of an asynchronous computation
 ‍‍
 
 ```java
+
 import java.util.concurrent.*;
 
 public class FutureExample {
@@ -287,6 +293,7 @@ In this example, we submit a task to an executor and use future.get() to block u
 ‍‍
 
 ```java
+
 import java.util.concurrent.*;
 public class FutureExample {
 public static void main(String[] args) {
@@ -344,6 +351,7 @@ Here, we use CompletableFuture to perform the same task. Instead of blocking wit
 ‍
 
 ```java
+
 import java.util.concurrent.CompletableFuture;
 public class CompletableFutureExample {
 public static void main(String[] args) {
@@ -436,6 +444,7 @@ through the most important ones.
 ‍
 
 ```java
+
 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "Hello");
 try {
 String result = future.get(); // Blocks until result is available
@@ -452,6 +461,7 @@ e.printStackTrace();
 ‍
 
 ```java
+
 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "World");
 String result = future.join(); // Blocks until result is available
 System.out.println(result);    // Prints "World"
@@ -463,6 +473,7 @@ System.out.println(result);    // Prints "World"
     
 
 ```java
+
 CompletableFuture<String> future = new CompletableFuture<>();
 future.complete("Manual Result");
 System.out.println(future.join()); // Prints "Manual Result"
@@ -483,6 +494,7 @@ Use When: 
 ‍
 
 ```java
+
 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "Done");
 while (!future.isDone()) {
 System.out.println("Waiting...");
@@ -509,6 +521,7 @@ A CompletableFuture can be created in various ways. A pre-completed future is us
 ‍
 
 ```java
+
 import java.util.concurrent.*;
 public class CompletableFutureCreation {
 public static void main(String[] args) {
@@ -560,6 +573,7 @@ With CompletableFuture, you can easily transform results using methods like then
 ‍
 
 ```java
+
 import java.util.concurrent.CompletableFuture;
 public class CompletableFutureThreadUsageExample {
 public static void main(String[] args) {
@@ -603,6 +617,7 @@ In situations where multiple asynchronous tasks are running in parallel, Complet
 ‍
 
 ```java
+
 import java.util.concurrent.*;
 public class CompletableFutureCombination {
 public static void main(String[] args) {
@@ -658,6 +673,7 @@ CompletableFuture provides robust mechanisms for handling exceptions during asyn
 ‍
 
 ```java
+
 import java.util.concurrent.*;
 public class CompletableFutureExceptionHandling {
 public static void main(String[] args) {
@@ -719,6 +735,7 @@ Timeouts are essential in cases where an asynchronous task may take longer than 
 ‍
 
 ```java
+
 import java.util.concurrent.*; 
 
 public class CompletableFutureTimeout { 

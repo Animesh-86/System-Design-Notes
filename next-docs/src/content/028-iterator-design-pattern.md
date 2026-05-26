@@ -53,6 +53,7 @@ Let’s say you have a simple playlist class, and you want to iterate over the s
 ‍
 
 ```java
+
 import java.util.ArrayList;
 public class Playlist {
 private ArrayList<String> songs;
@@ -105,6 +106,7 @@ Now, let’s see how things get ugly when we start adding new features. Here’s
 ‍
 
 ```java
+
 public class Playlist {
 private ArrayList<String> songs;
 public Playlist() {
@@ -150,6 +152,7 @@ Let's create multiple iterators to show how the Iterator Design Pattern can hand
 This interface defines the basic methods that any iterator will need to implement. hasNext() checks if there are more songs, and next() returns the next song in the playlist.
 
 ```java
+
 public interface PlaylistIterator {
 boolean hasNext();
 String next();
@@ -167,6 +170,7 @@ We'll create three different iterators for different playlist types: Simple Play
 ### 2.1. Simple Playlist Iterator 🔄
 
 ```java
+
 public class SimplePlaylistIterator implements PlaylistIterator {
 private Playlist playlist;
 private int index;
@@ -194,6 +198,7 @@ This iterator goes through the playlist in the order the songs were added.
 ### 2.2. Shuffled Playlist Iterator 🔀
 
 ```java
+
 import java.util.Collections;
 public class ShuffledPlaylistIterator implements PlaylistIterator {
 private Playlist playlist;
@@ -225,6 +230,7 @@ This iterator shuffles the playlist and then iterates over the songs in a random
 ### 2.3. Favorites Playlist Iterator ❤️
 
 ```java
+
 public class FavoritesPlaylistIterator implements PlaylistIterator {
 private Playlist playlist;
 private int index;
@@ -262,6 +268,7 @@ This iterator only iterates over songs that have been marked as favorites (we ma
 Now, let’s update the Playlist class to accommodate all the different iterators.
 
 ```java
+
 public class Playlist {
 private ArrayList<String> songs;
 public Playlist() {
@@ -299,6 +306,7 @@ The Playlist class has been updated to support different types of iterators base
 Now, let's see how these iterators work with different types of playlists.
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create a playlist
@@ -414,6 +422,7 @@ Let’s look at a quick example of how the Iterator Design Pattern is used in Ja
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.Iterator;
 public class IteratorExample {

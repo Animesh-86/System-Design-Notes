@@ -29,6 +29,7 @@ While raw threads and thread pools offer control over concurrent operations, Thr
 ### • Separation of task submission from execution details 📋
 
 ```java
+
 ExecutorService executor = Executors.newFixedThreadPool(3);
 executor.submit(() -> {
 System.out.println("Task executed by: " + Thread.currentThread().getName());
@@ -46,6 +47,7 @@ System.out.println("Task executed by: " + Thread.currentThread().getName());
 ### Built-in thread pooling and resource management 🏊‍♂️
 
 ```java
+
 ExecutorService pool = Executors.newFixedThreadPool(5);
 for (int i = 0; i < 10; i++) {
 pool.execute(() -> {
@@ -65,6 +67,7 @@ System.out.println("Running: " + Thread.currentThread().getName());
 ### Task queuing, scheduling, and execution policies ⏱️
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.schedule(() -> {
 System.out.println("Executed after 3 seconds!");
@@ -82,6 +85,7 @@ System.out.println("Executed after 3 seconds!");
 ### Lifecycle control and graceful shutdown capabilities 🛑
 
 ```java
+
 ExecutorService executor = Executors.newCachedThreadPool();
 executor.submit(() -> System.out.println("Working..."));
 executor.shutdown(); // Initiates an orderly shutdown
@@ -98,6 +102,7 @@ executor.shutdown(); // Initiates an orderly shutdown
 ### Monitoring and management facilities 📊
 
 ```java
+
 ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
 
 executor.submit(() -> {
@@ -128,6 +133,7 @@ The Java concurrency framework provides several key interfaces and classes for w
 1.  Executor: The base interface defining task execution
 
 ```java
+
 Executor executor = command -> new Thread(command).start();
 executor.execute(() -> System.out.println("Simple task executed"));
 ```
@@ -146,6 +152,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ExecutorService executorService = Executors.newFixedThreadPool(int nThreads);
 ```
 
@@ -154,6 +161,7 @@ ExecutorService executorService = Executors.newFixedThreadPool(int nThreads);
 Example
 
 ```java
+
 ExecutorService executorService = Executors.newFixedThreadPool(2);
 Future<String> future = executorService.submit(() -> "Hello ExecutorService");
 System.out.println(future.get()); // Output: Hello ExecutorService
@@ -175,6 +183,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(int corePoolSize);
 ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit);
 ```
@@ -184,6 +193,7 @@ ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long
 Example
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.scheduleAtFixedRate(() -> {
 System.out.println("Running every 2 seconds");
@@ -205,6 +215,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ThreadPoolExecutor customPool = new ThreadPoolExecutor(
 int corePoolSize,
 int maximumPoolSize,
@@ -219,6 +230,7 @@ BlockingQueue<Runnable> workQueue
 Example
 
 ```java
+
 ThreadPoolExecutor customPool = new ThreadPoolExecutor(
 2, 4, 60, TimeUnit.SECONDS,
 new LinkedBlockingQueue<>()
@@ -241,6 +253,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ScheduledThreadPoolExecutor scheduledPool = new ScheduledThreadPoolExecutor(int corePoolSize);
 ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit);
 ScheduledThreadPoolExecutor scheduledPool = new ScheduledThreadPoolExecutor(1);
@@ -262,6 +275,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ExecutorService newFixedThreadPool(int nThreads);
 ScheduledExecutorService newScheduledThreadPool(int corePoolSize);
 ```
@@ -271,6 +285,7 @@ ScheduledExecutorService newScheduledThreadPool(int corePoolSize);
 Example
 
 ```java
+
 ExecutorService fixedPool = Executors.newFixedThreadPool(3);
 ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
 ```
@@ -294,6 +309,7 @@ Explanation:
 Syntax : 
 
 ```java
+
 ExecutorService newFixedThreadPool(int nThreads);
 ```
 
@@ -302,6 +318,7 @@ ExecutorService newFixedThreadPool(int nThreads);
 Example
 
 ```java
+
 // Submit a Runnable task with no result
 ExecutorService executor = Executors.newFixedThreadPool(1);
 executor.execute(() -> System.out.println("Task executed"));
@@ -328,6 +345,7 @@ Task runs asynchronously. No result is expected or tracked.
 Future<?> submit : 
 
 ```java
+
 // Submit a Runnable or a callable task with a Future result
 Future<?> submit(Runnable task)
 Future<?> submit(Callable task)
@@ -357,6 +375,7 @@ Future<String> future = executor.submit(() -> "Hello from Callable");
 invokeAll(Collection<? extends Callable<T>> tasks): 
 
 ```java
+
 List<Future<String>> results = executor.invokeAll(tasks);
 ```
 
@@ -385,6 +404,7 @@ List<Future<String>> results = executor.invokeAll(tasks);
 Syntax : 
 
 ```java
+
 ExecutorService newFixedThreadPool(int nThreads);
 public static void main(String[] args) {
 ExecutorService executor = Executors.newFixedThreadPool(2); // takes the number of threads as arguments
@@ -407,6 +427,7 @@ Thread.currentThread().interrupt();
 ### • Lifecycle Management Methods ⚙️
 
 ```java
+
 // Initiate an orderly shutdown
 void shutdown()
 // Attempt to stop all actively executing tasks
@@ -426,6 +447,7 @@ schedule(Runnable command, long delay, TimeUnit unit): 
 ‍
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.schedule(() -> System.out.println("Run once later"), 2, TimeUnit.SECONDS);
 ```
@@ -451,6 +473,7 @@ scheduler.schedule(() -> System.out.println("Run once later"), 2, TimeUnit.SECON
 scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 // Schedule a task to run periodically at a fixed rate
 scheduler.scheduleAtFixedRate(() -> System.out.println("Repeats"), 1, 3, TimeUnit.SECONDS);
@@ -477,6 +500,7 @@ scheduler.scheduleAtFixedRate(() -> System.out.println("Repeats"), 1, 3, TimeUni
 ### Creating Executors with the Executors Factory 🏭
 
 ```java
+
 // Fixed thread pool with a specified number of threads
 ExecutorService fixedPool = Executors.newFixedThreadPool(nThreads);
 
@@ -499,6 +523,7 @@ When more control is needed, the Thread Pool Executor class can be directly inst
 ‍
 
 ```java
+
 ThreadPoolExecutor executor = new ThreadPoolExecutor(
 corePoolSize,      // Minimum number of threads to keep alive
 maximumPoolSize,   // Maximum number of threads allowed
@@ -521,6 +546,7 @@ Answer: execute() accepts only Runnable tasks and doesn't return any result. sub
 ‍
 
 ```java
+
 ExecutorService executor = Executors.newFixedThreadPool(2);
 executor.execute(() -> System.out.println("Runnable executed"));
 Future<Integer> future = executor.submit(() -> 42);
@@ -556,6 +582,7 @@ Answer: It follows this sequence:
 Syntax : 
 
 ```java
+
 ThreadPoolExecutor customPool = new ThreadPoolExecutor(
 int corePoolSize,
 int maximumPoolSize,
@@ -570,6 +597,7 @@ BlockingQueue<Runnable> workQueue
 Example:
 
 ```java
+
 ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 4, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(2));
 ```
 
@@ -594,6 +622,7 @@ Answer: 
 Syntax : 
 
 ```java
+
 ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit);
 ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long period, TimeUnit unit);
 ```
@@ -603,6 +632,7 @@ ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, l
 Example:
 
 ```java
+
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.scheduleAtFixedRate(() -> System.out.println("Fixed Rate Task"), 0, 2, TimeUnit.SECONDS);
 scheduler.scheduleWithFixedDelay(() -> System.out.println("Fixed Delay Task"), 0, 2, TimeUnit.SECONDS);
@@ -617,6 +647,7 @@ Answer: For submit() methods, exceptions are stored in the returned Future and t
 ‍
 
 ```java
+
 ExecutorService executor = Executors.newSingleThreadExecutor();
 Future<Integer> future = executor.submit(() -> {
 throw new RuntimeException("Boom!");
@@ -637,6 +668,7 @@ Thread.currentThread().interrupt();
 submit() captures exceptions in the returned Future. Calling get() will throw an ExecutionException. use try-catch inside the task
 
 ```java
+
 ExecutorService executor = Executors.newSingleThreadExecutor();
 executor.submit(() -> {
 try {

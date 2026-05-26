@@ -16,12 +16,9 @@ export type HighlightDTO = {
   anchor_node_path: string;
 };
 
-import type { Document } from 'mongoose';
-
 /** Normalize Mongoose document into a stable DTO for the client */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalize(doc: any): HighlightDTO {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   const obj = typeof doc.toObject === 'function' ? doc.toObject() : { ...doc };
   return {
     id: String(obj._id ?? obj.id ?? ''),

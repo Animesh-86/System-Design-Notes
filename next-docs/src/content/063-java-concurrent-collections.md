@@ -115,6 +115,7 @@ Example: If ConcurrentHashMap is divided into 16 segments, up to 16 different th
 Example:
 
 ```java
+
 public class MapExample {
 public static void main(String[] args) throws InterruptedException {
 // Create a non-thread-safe HashMap wrapped as a synchronized map.
@@ -330,6 +331,7 @@ Example 🧪:
 ‍
 
 ```java
+
 public class ListExample {
 public static void main(String[] args) throws InterruptedException {
 // --- Example 1: Using a plain ArrayList (Not Thread-Safe) ---
@@ -526,6 +528,7 @@ In Java, the method compareAndSet from classes like AtomicReference encapsulates
 ‍
 
 ```java
+
 AtomicReference<Node> ref = new AtomicReference<>(currentNode); 
 boolean isUpdated = ref.compareAndSet(currentNode, newNode);
 ```
@@ -607,6 +610,7 @@ If another thread has made a change in the meantime, the CAS fails, and the thre
 ‍
 
 ```java
+
 // Pseudocode for enqueue operation in a concurrent queue 
 Node last = tail; 
 Node newNode = new Node(element); 
@@ -651,6 +655,7 @@ Example: 🧪
 ‍
 
 ```java
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -892,6 +897,7 @@ For instance, calling poll() on a ConcurrentLinkedQueue returns null instantly i
 ‍
 
 ```java
+
 public class NonBlockingExample { 
 public static void main(String[] args) { 
 ConcurrentLinkedQueue<Integer> queue = new ConcurrentLinkedQueue<>(); 
@@ -917,6 +923,7 @@ Both the poll() and add() methods execute without causing the thread to wait, il
 ‍
 
 ```java
+
 public class BlockingQueueDemo { 
 public static void main(String[] args) throws InterruptedException { 
 BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(); 

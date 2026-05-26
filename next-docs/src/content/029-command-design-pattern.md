@@ -39,6 +39,7 @@ Imagine you’re building a remote control system for a device like a TV. Your T
 Here’s how you might approach it:
 
 ```java
+
 public
 class TV {
 public
@@ -100,6 +101,7 @@ Let’s take it a step further and see how things get ugly when we add more func
 ‍
 
 ```java
+
 public class RemoteControl {
 private TV tv;
 public RemoteControl(TV tv) {
@@ -157,6 +159,7 @@ We’ll start by defining a Command interface that every command will implement.
 ### Step 1: Define the Command Interface 📝
 
 ```java
+
 public interface Command {
 void execute(); // Executes the command
 }
@@ -167,6 +170,7 @@ void execute(); // Executes the command
 ### Step 2: Implement the Concrete Command Classes 🖋️
 
 ```java
+
 public class TurnOnCommand implements Command {
 private TV tv;
 public TurnOnCommand(TV tv) {
@@ -218,6 +222,7 @@ tv.adjustVolume(volume);
 ### Step 3: The Invoker Class (RemoteControl) 🎮
 
 ```java
+
 public class RemoteControl {
 private Command onCommand;
 private Command offCommand;
@@ -241,6 +246,7 @@ offCommand.execute();
 ### Step 4: The TV class 📺
 
 ```java
+
 // The TV class with methods for the different operations
 public class TV {
 public void turnOn() {
@@ -263,6 +269,7 @@ System.out.println("Volume set to " + volume);
 ### Step 5: Putting Everything Together 🏗️
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 TV tv = new TV();

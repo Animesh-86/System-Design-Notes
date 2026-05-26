@@ -57,6 +57,7 @@ Let’s look at how you might solve this problem in a straightforward but inflex
 ‍
 
 ```java
+
 public class SmartHomeController {
 public static void main(String[] args) {
 // Manually managing devices and groups
@@ -194,6 +195,7 @@ Here’s how we can solve the problem using the Composite Design Pattern:
 The first step is to define a common interface for all components in the hierarchy.
 
 ```java
+
 // SmartComponent.java - Common interface for all components
 public interface SmartComponent {
 void turnOn();  // Turn on the component
@@ -210,6 +212,7 @@ Each device implements the SmartComponent interface.
 ‍
 
 ```java
+
 // AirConditioner.java
 public class AirConditioner implements SmartComponent {
 @Override
@@ -244,6 +247,7 @@ The composite classes represent groups of components (e.g., Room, Floor, House).
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 // Composite class for groups of components
@@ -279,6 +283,7 @@ Here’s how you can build the smart home hierarchy and control it:
 ‍
 
 ```java
+
 public class SmartHomeController {
 public static void main(String[] args) {
 // Create individual devices

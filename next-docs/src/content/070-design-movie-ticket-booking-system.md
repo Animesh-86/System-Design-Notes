@@ -151,6 +151,7 @@ State Management with Enums: To effectively manage seat statuses, we'll use enum
 ‍
 
 ```java
+
 // Enum to represent the status of a booking session
 
 public enum BookingStatus {
@@ -276,6 +277,7 @@ Movie ticket Booking Design with Design Patterns : (Below code is good for Machi
 ‍
 
 ```java
+
 public class Movie {
 private final int movieId;
 private final String movieName;
@@ -298,6 +300,7 @@ public int getMovieDuration() { return movieDurationInMinutes;}
 **Seat.class**
 
 ```java
+
 public class Seat {
 private final int seatId; // Unique identifier for the seat
 private final int row; // Row number where the seat is located
@@ -326,6 +329,7 @@ return seatCategory;
 **Screen Class**
 
 ```java
+
 public class Screen {
 private final int id; // Unique identifier for the screen
 private final String name;  // Name of the screen
@@ -360,6 +364,7 @@ return theatre;
 **Show class**
 
 ```java
+
 public class Show {
 // Unique identifier for the show
 private final int id;
@@ -403,6 +408,7 @@ return durationInMinutes;
 **Theatre Class**
 
 ```java
+
 public class Theatre {
 
 private final int id;  // Unique identifier for the theatre
@@ -432,6 +438,7 @@ return screens;
 **User class**
 
 ```java
+
 public class User {
 private final String name; // Name of the user 
 private final String emailAddress;  // Email of the User
@@ -456,6 +463,7 @@ return emailAddress;
 **Booking class**
 
 ```java
+
 public class Booking {
 private final String id; // Unique identifier for this booking.
 private final Show show; // The specific show for which the booking is made.
@@ -522,6 +530,7 @@ This class is designed to represent a temporary lock on a specific seat. These l
 ‍
 
 ```java
+
 public class SeatLock {
 private Seat seat; // The specific seat that is locked.
 private Show show; // The show for which the seat is locked.
@@ -593,6 +602,7 @@ This interface defines the contract for any class that provides seat locking fun
 ‍
 
 ```java
+
 public interface ISeatLockProvider {
 void lockSeats(Show show, List<Seat> seat, User user) throws Exception;
 void unlockSeats(Show show, List<Seat> seat, User user);
@@ -612,6 +622,7 @@ This is a concrete implementation of the SeatLockProvider interface that manages
 ‍
 
 ```java
+
 public class SeatLockProvider implements ISeatLockProvider {
 // Timeout in seconds after which a lock expires
 private final Integer lockTimeout;
@@ -713,6 +724,7 @@ return seatLocks.entrySet()
 _Movie Service :_ 
 
 ```java
+
 public class MovieService {
 private final Map<Integer, Movie> movies;
 private final AtomicInteger movieCounter; // Private counter for generating movie IDs
@@ -742,6 +754,7 @@ return movie;
 _Theatre Service_
 
 ```java
+
 public class TheatreService {
 
 // Maps to hold all created theatres, screens, and seats
@@ -820,6 +833,7 @@ return screen;
 _Show Service_
 
 ```java
+
 public class ShowService {
 private final Map<Integer, Show> shows;  // Map to hold all created shows (key = show ID)
 private final AtomicInteger showCounter;  // Counter to generate unique IDs for each show
@@ -860,6 +874,7 @@ return response;
 _Seat Availibilty service_
 
 ```java
+
 public class SeatAvailabilityService {
 // Dependency for checking booked seats
 private final BookingService bookingService;
@@ -901,6 +916,7 @@ return unavailableSeats;
 _Booking Service_
 
 ```java
+
 public class BookingService {
 // Stores all bookings made across shows (key = booking ID)
 // Changed to a thread-safe concurrent map.
@@ -984,6 +1000,7 @@ return false;
 Payment Strategy Interface : 
 
 ```java
+
 public interface PaymentStrategy {
 boolean processPayment();
 }
@@ -996,6 +1013,7 @@ boolean processPayment();
 _Debit Card Strategy :_ 
 
 ```java
+
 public class DebitCardStrategy implements PaymentStrategy {
 @Override
 public boolean processPayment() {
@@ -1011,6 +1029,7 @@ return true;
 _UPI stratergy:_
 
 ```java
+
 public class UpiStrategy implements PaymentStrategy {
 @Override
 public boolean processPayment() {
@@ -1077,6 +1096,7 @@ _Movie Controller :_ 
 ‍
 
 ```java
+
 public class MovieController {
 // Reference to the MovieService which contains the business logic related to movies
 private final MovieService movieService;
@@ -1096,6 +1116,7 @@ return movieService.createMovie(movieName, durationInMinutes).getMovieId();
 _Theatre Controller :_ 
 
 ```java
+
 public class TheatreController {
 private final TheatreService theatreService;
 // Constructor to inject TheatreService
@@ -1122,6 +1143,7 @@ return theatreService.createSeatInScreen(rowNo, seatCategory, screen).getSeatId(
 _• Show Controller :_ 
 
 ```java
+
 public class ShowController {
 // Dependencies injected for handling show operations, theatre data, movie data, and seat availability.
 private final SeatAvailabilityService seatAvailabilityService;
@@ -1155,6 +1177,7 @@ return availableSeats.stream().map(Seat::getSeatId).collect(Collectors.toList())
 _Booking Controller_
 
 ```java
+
 public class BookingController {
 // Services required to handle booking-related operations
 private final ShowService showService;
@@ -1184,6 +1207,7 @@ return bookingService.createBooking(user, show, seats).getId(); // Create and re
 _Payment Controller_
 
 ```java
+
 public class PaymentController {
 // Service to handle payment-related logic
 private final PaymentService paymentService;
@@ -1201,6 +1225,7 @@ paymentService.processPayment(bookingId, user);
 _Client code to run on system_
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 try {

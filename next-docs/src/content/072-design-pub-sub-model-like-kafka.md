@@ -299,6 +299,7 @@ _• IPublisher Interface (for Publisher):_
 Interface representing a message publisher in the pub-sub system. Publishers will implement this interface to publish messages to topics.
 
 ```java
+
 public interface IPublisher {
 String getId();
 void publish(String topicId, Message message) throws IllegalArgumentException;
@@ -314,6 +315,7 @@ Interface representing a message subscriber in the pub-sub system.
 Subscribers implement this interface to receive and process messages from topics.
 
 ```java
+
 public interface ISubscriber {
 String getId();
 void onMessage(Message message) throws InterruptedException;
@@ -329,6 +331,7 @@ Concrete Subscribers : 
 Simple Subscriber :
 
 ```java
+
 public class SimpleSubscriber implements ISubscriber {
 private final String id;
 public SimpleSubscriber(String id) {
@@ -356,6 +359,7 @@ Concrete Publishers : 
 Simple Publisher : 
 
 ```java
+
 public class SimplePublisher implements IPublisher {
 private final String id;
 private final KafkaController kafkaController;
@@ -386,6 +390,7 @@ These are the core entities of our system.
 Message : 
 
 ```java
+
 public class Message {
 private final String message;
 public Message(String message) {
@@ -402,6 +407,7 @@ return message;
 _• TopicSubscriber :_ 
 
 ```java
+
 public class TopicSubscriber {
 private final Topic topic;
 private final ISubscriber subscriber;
@@ -432,6 +438,7 @@ return offset;
 _• Topic Publisher :_ 
 
 ```java
+
 public class TopicPublisher {
 private final Topic topic;
 private final IPublisher publisher;
@@ -457,6 +464,7 @@ return publisher;
 A topic maintains a list of messages.
 
 ```java
+
 public class Topic {
 private final String topicName; // Name of the topic, used for identification/display purposes.
 private final String topicId; // Unique identifier for the topic.
@@ -493,6 +501,7 @@ return Collections.unmodifiableList(messages);
 _Topic Publisher Controller :_ 
 
 ```java
+
 public class TopicPublisherController {
 private final Topic topic; //We could have used TopicPublisher also directly 
 private final IPublisher publisher;
@@ -513,6 +522,7 @@ System.out.println("Publisher " + publisher.getId() + " published to topic " + t
 • _Topic Subscriber Controller :_ 
 
 ```java
+
 public class TopicSubscriberController implements Runnable {
 private final TopicSubscriber topicSubscriber;
 public TopicSubscriberController(TopicSubscriber topicSubscriber) {
@@ -557,6 +567,7 @@ return;
 • Kafka Controller : 
 
 ```java
+
 public class KafkaController {
 // Map of topic IDs to Topic objects.
 private final Map<String, Topic> topics;
@@ -654,6 +665,7 @@ subscriberExecutor.shutdownNow();
 4.) Client Code to Run the System : 
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 KafkaController kafkaController = new KafkaController();

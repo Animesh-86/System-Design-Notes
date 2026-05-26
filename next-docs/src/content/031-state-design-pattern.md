@@ -57,6 +57,7 @@ Before introducing the State Design Pattern, let's see how we'd handle this usin
 Here's a simple Java implementation of a traffic light system without using the State Design Pattern:
 
 ```java
+
 public class TrafficLight {
 private String color;
 public TrafficLight() {
@@ -128,6 +129,7 @@ These questions highlight potential issues with the traditional approach, especi
 Let's say we decide to add two more states: BLINKING (for night mode) and MAINTENANCE (when the light is under repair). Our TrafficLight class starts to get messy with more if-else conditions.
 
 ```java
+
 public class TrafficLight {
 private String color;
 public TrafficLight() {
@@ -205,6 +207,7 @@ Step-by-Step Code Implementation:
 First, define a State interface that outlines the behavior for each state.
 
 ```java
+
 // State Interface
 interface TrafficLightState {
 void next(TrafficLightContext context);
@@ -219,6 +222,7 @@ String getColor();
 Next, implement concrete state classes for each traffic light color: RedState, GreenState, and YellowState.
 
 ```java
+
 // Concrete State: Red
 class RedState implements TrafficLightState {
 @Override
@@ -266,6 +270,7 @@ return "YELLOW";
 Create a Context class that maintains a reference to the current state and delegates state-specific behavior to the current state.
 
 ```java
+
 // Context Class
 class TrafficLightContext {
 private TrafficLightState currentState;
@@ -291,6 +296,7 @@ return currentState.getColor();
 Finally, set up the traffic light system and simulate state transitions.
 
 ```java
+
 // Driver Class
 public class TrafficLightTest {
 public static void main(String[] args) {
@@ -380,6 +386,7 @@ State Pattern Solution: Simply create a new class (e.g., BlinkingState) that imp
 ‍
 
 ```java
+
 // Concrete State: Blinking
 class BlinkingState implements TrafficLightState {
 @Override
@@ -416,6 +423,7 @@ State Pattern Solution: Each state class can incorporate its own logic to handle
 ‍
 
 ```java
+
 // Example: Adding time-based behavior in GreenState
 class GreenState implements TrafficLightState {
 @Override

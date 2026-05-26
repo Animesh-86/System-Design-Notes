@@ -223,6 +223,7 @@ State Diagram : 
 Enum : 
 
 ```java
+
 // Enum representing different types of items in the vending machine
 public enum ItemType {
 COKE,
@@ -237,6 +238,7 @@ SODA
 Class:
 
 ```java
+
 // Class representing an item in the vending machine
 public class Item {
 // Type of the item (e.g., COKE, PEPSI)
@@ -271,6 +273,7 @@ Class : 
 ‍
 
 ```java
+
 // Class representing a slot in the vending machine that holds multiple items
 public class ItemShelf {
 // Code to identify the slot
@@ -341,6 +344,7 @@ return false;  
 ‍
 
 ```java
+
 // Enum representing different types of Indian coins in the vending machine
 public enum Coin {
 ONE_RUPEE(1),
@@ -365,6 +369,7 @@ Class : 
 ‍
 
 ```java
+
 // Class representing the inventory of the vending machine
 public class Inventory {
 // Array to hold item shelves in the inventory
@@ -457,6 +462,7 @@ throw new Exception("Invalid Code");
 ‍
 
 ```java
+
 // Interface defining the common methods for all states
 public interface VendingMachineState {
 // Get the name of the current state
@@ -474,6 +480,7 @@ VendingMachineState next(VendingMachineContext context);
 ‍
 
 ```java
+
 // Context class that maintains state and handles transitions in the vending machine
 public class VendingMachineContext {
 private VendingMachineState currentState; // Current state of the vending machine
@@ -641,6 +648,7 @@ coinList.clear();
 ‍
 
 ```java
+
 // Implementation of the Idle state
 public class IdleState implements VendingMachineState {
 public IdleState() {
@@ -683,6 +691,7 @@ d. Get Refund. 
 ‍
 
 ```java
+
 package VendingMachineStates.ConcreteStates;
 
 import VendingMachineStates.VendingMachineContext;
@@ -730,6 +739,7 @@ Get Change after purchasing the product
 ‍
 
 ```java
+
 // Implementation of the Selection state
 public class SelectionState implements VendingMachineState {
 public SelectionState() {
@@ -768,6 +778,7 @@ return this;
 ‍
 
 ```java
+
 // Implementation of the Dispense state
 public class DispenseState implements VendingMachineState {
 public DispenseState() {
@@ -796,6 +807,7 @@ If the current selected item is out of stock.
 ‍
 
 ```java
+
 // Implementation of the Out of Stock state
 public class OutOfStockState implements VendingMachineState {
 public OutOfStockState() {
@@ -827,6 +839,7 @@ return this;
 ‍
 
 ```java
+
 public class Main {
 // Main method to execute the vending machine operations
 public static void main(String args[]) {
@@ -959,6 +972,7 @@ PaymentStrategy.java :
 ‍
 
 ```java
+
 // Payment strategy interface
 public interface PaymentStrategy {
 boolean processPayment(double amount);
@@ -974,6 +988,7 @@ CoinPaymentStrategy.java : 
 ‍
 
 ```java
+
 // Coin payment strategy implementation
 public class CoinPaymentStrategy implements PaymentStrategy {
 private List<Coin> coins;
@@ -999,6 +1014,7 @@ return total >= amount;
 ‍
 
 ```java
+
 // Card payment strategy implementation
 public class CardPaymentStrategy implements PaymentStrategy {
 private String cardNumber;
@@ -1030,6 +1046,7 @@ VendingMachineContext.java : 
 ‍
 
 ```java
+
 public class VendingMachineContext {
 // ... other fields ...
 private PaymentStrategy paymentStrategy; // Added payment strategy
@@ -1110,6 +1127,7 @@ Modify the Dispense State Class to use the Payment Strategy.
 ‍
 
 ```java
+
 // modified dispense state next method including the paymentStrategy
 public VendingMachineState next(VendingMachineContext context) {
 // ...
@@ -1135,6 +1153,7 @@ return new IdleState();
 ‍
 
 ```java
+
 import java.util.Scanner;
 
 public class Main {

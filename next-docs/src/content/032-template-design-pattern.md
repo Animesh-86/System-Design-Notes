@@ -33,6 +33,7 @@ Imagine you’re coding this without any fancy design patterns. You might end up
 ‍
 
 ```java
+
 // Making Coffee the old-fashioned way
 class Coffee {
 public void prepare() {
@@ -119,6 +120,7 @@ Here’s a condensed version of our messy approach:
 ‍
 
 ```java
+
 class Coffee {
 public void prepare() {
 System.out.println("Boiling water...");
@@ -151,6 +153,7 @@ Time to bring in our hero—the Template Design Pattern! We can create an abstra
 ‍
 
 ```java
+
 // Our abstract template that defines the skeleton of beverage preparation
 abstract class Beverage {
 // The template method - makes sure the algorithm steps are followed
@@ -230,6 +233,7 @@ Suppose the interviewer then asks: “What if the customer sometimes doesn’t w
 ‍
 
 ```java
+
 abstract class BeverageWithHook {
 // The template method with a hook
 final void prepareRecipe() {

@@ -31,6 +31,7 @@ Thread pools and understanding the thread lifecycle are crucial concepts for eff
 ‍
 
 ```java
+
 Thread thread = new Thread(() -> System.out.println("Hello from thread")); 
 // Thread is in NEW state here
 ```
@@ -49,6 +50,7 @@ Thread thread = new Thread(() -> System.out.println("Hello from thread"));
 ‍
 
 ```java
+
 Thread thread = new Thread(() -> System.out.println("Hello from thread")); 
 thread.start(); // Thread moves to RUNNABLE state
 ```
@@ -63,6 +65,7 @@ thread.start(); // Thread moves to RUNNABLE state
 ‍
 
 ```java
+
 // When the CPU scheduler picks a RUNNABLE thread, it enters the RUNNING state 
 // The code within the thread's run() method is being executed here. 
 public class RunningExample extends Thread { 
@@ -90,6 +93,7 @@ thread.start(); // Moves to RUNNABLE, then eventually RUNNING 
 ‍
 
 ```java
+
 synchronized(lockObject) { 
 // If another thread holds lockObject's monitor,  
 // this thread will be BLOCKED until lock is available 
@@ -107,6 +111,7 @@ synchronized(lockObject) { 
 ‍
 
 ```java
+
 synchronized(lockObject) { 
 try { 
 lockObject.wait(); // Thread enters WAITING state 
@@ -134,6 +139,7 @@ Thread.currentThread().interrupt(); 
 ‍
 
 ```java
+
 class WaiterThread extends Thread { 
 private final Object lock; 
 
@@ -163,6 +169,7 @@ Thread.currentThread().interrupt(); 
 ‍
 
 ```java
+
 class ChefThread extends Thread { 
 private final Object lock; 
 
@@ -191,6 +198,7 @@ Thread.currentThread().interrupt(); 
     
 
 ```java
+
 public class RestaurantSimulation { 
 public static void main(String[] args) { 
 Object lock = new Object(); 
@@ -238,6 +246,7 @@ A thread enters the **WAITING** state when it is **indefinitely waiting** fo
 ‍
 
 ```java
+
 try { 
 Thread.sleep(1000); // Thread enters TIMED_WAITING state for 1 second 
 } catch (InterruptedException e) { 
@@ -273,6 +282,7 @@ Thread pools are a managed collection of reusable threads designed to execute ta
 **Example :**  
 
 ```java
+
 import java.util.concurrent.ExecutorService; 
 import java.util.concurrent.Executors; 
 
@@ -385,6 +395,7 @@ Understanding how thread lifecycle relates to thread pools helps create more eff
 **Example :**  
 
 ```java
+
 import java.util.concurrent.*; 
 
 class Task implements Runnable { 
@@ -485,6 +496,7 @@ All Threads Terminated ✅
  ‍
 
 ```java
+
 class WorkerThread implements Runnable { 
 @Override 
 public void run() { 
@@ -518,6 +530,7 @@ thread.interrupt(); // Interrupt the thread 
 ‍
 
 ```java
+
 class SafeLock { 
 private final Object lock = new Object(); 
 
@@ -557,6 +570,7 @@ new Thread(safeLock::waitForSignal, "WorkerThread").start(); 
 '‍
 
 ```java
+
 import java.util.concurrent.ExecutorService; 
 import java.util.concurrent.Executors; 
 
@@ -594,6 +608,7 @@ return sum; 
 ‍
 
 ```java
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -670,6 +685,7 @@ In Summary, newCachedThreadPool() adapts better to the fluctuating nature of I
 ‍
 
 ```java
+
 ExecutorService executor = new ThreadPoolExecutor( 
 4, 8, 30L, TimeUnit.SECONDS, 
 new LinkedBlockingQueue<>(10)); // Balanced queue size
@@ -682,6 +698,7 @@ new LinkedBlockingQueue<>(10)); // Balanced queue size
 **Example :**  
 
 ```java
+
 ExecutorService executor = Executors.newFixedThreadPool(2, runnable -> { 
 Thread thread = new Thread(runnable); 
 thread.setName("CustomThread-" + thread.getId()); 
@@ -706,6 +723,7 @@ return thread; 
 ‍
 
 ```java
+
 import java.util.concurrent.*; 
 
 public class ThreadPoolQueueExample { 
@@ -766,6 +784,7 @@ executor.shutdown(); 
 ‍
 
 ```java
+
 import java.util.List; 
 import java.util.concurrent.ExecutorService; 
 import java.util.concurrent.Executors; 
@@ -896,6 +915,7 @@ Is terminated now: true
 ‍
 
 ```java
+
 class MyThread extends Thread { 
 public void run() { 
 try { 
@@ -924,6 +944,7 @@ t.interrupt(); // Interrupting the sleeping thread 
 ‍
 
 ```java
+
 import java.util.concurrent.*; 
 import java.util.concurrent.atomic.AtomicInteger; 
 

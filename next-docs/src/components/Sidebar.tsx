@@ -4,16 +4,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { Book, FileText, File, Layers, ChevronRight, Search, Sun, Moon, Menu, X, CheckCircle2, Circle, Clock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Fuse from 'fuse.js';
 import type { ContentItem } from '@/lib/content';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { useAppStore } from '@/lib/store';
+import { getNotes } from '@/lib/actions/notes';
+import { getBookmarks } from '@/lib/actions/bookmarks';
 // import { toast } from 'sonner'; (removed unused)
 
 export function Sidebar({ items }: { items: ContentItem[] }) {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
+  const [notesCountBySlug, setNotesCountBySlug] = useState<Record<string, number>>({});
+  const [bookmarkedSlugs, setBookmarkedSlugs] = useState<Set<string>>(new Set());
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const { sidebarOpen, setSidebarOpen, checklist } = useAppStore();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -44,6 +49,30 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
     }
   }, [pathname, setSidebarOpen]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEngagementData() {
+      const [notesResult, bookmarksResult] = await Promise.all([getNotes(), getBookmarks()]);
+      if (cancelled) return;
+
+      const noteCountMap = (notesResult.data || []).reduce<Record<string, number>>((acc, note) => {
+        acc[note.slug] = (acc[note.slug] || 0) + 1;
+        return acc;
+      }, {});
+
+      const bookmarked = new Set((bookmarksResult.data || []).map((bookmark) => bookmark.slug));
+      setNotesCountBySlug(noteCountMap);
+      setBookmarkedSlugs(bookmarked);
+    }
+
+    loadEngagementData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -58,21 +87,34 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
     }));
   };
 
-  const grouped = items.reduce((acc, item) => {
+  const grouped = useMemo(() => items.reduce((acc, item) => {
     acc[item.type] = acc[item.type] || [];
     acc[item.type].push(item);
     return acc;
-  }, {} as Record<string, ContentItem[]>);
+  }, {} as Record<string, ContentItem[]>), [items]);
 
-  const filteredGrouped = Object.entries(grouped).reduce((acc, [type, typeItems]) => {
-    const filtered = typeItems.filter(item =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    if (filtered.length > 0) {
-      acc[type] = filtered;
-    }
-    return acc;
-  }, {} as Record<string, ContentItem[]>);
+  const filteredGrouped = useMemo(() => {
+    const query = searchQuery.trim();
+    if (!query) return grouped;
+
+    const fuse = new Fuse(items, {
+      includeScore: true,
+      threshold: 0.4,
+      ignoreLocation: true,
+      keys: [
+        { name: 'title', weight: 0.55 },
+        { name: 'content', weight: 0.35 },
+        { name: 'slug', weight: 0.1 },
+      ],
+    });
+
+    const matched = fuse.search(query).map((entry) => entry.item);
+    return matched.reduce((acc, item) => {
+      acc[item.type] = acc[item.type] || [];
+      acc[item.type].push(item);
+      return acc;
+    }, {} as Record<string, ContentItem[]>);
+  }, [grouped, items, searchQuery]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -110,6 +152,12 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
   const getCompletionCount = (typeItems: ContentItem[]) => {
     const completed = typeItems.filter(item => checklist[item.slug]?.status === 'completed').length;
     return { completed, total: typeItems.length };
+  };
+
+  const getEngagementCount = (typeItems: ContentItem[]) => {
+    const notes = typeItems.reduce((sum, item) => sum + (notesCountBySlug[item.slug] || 0), 0);
+    const bookmarks = typeItems.reduce((sum, item) => sum + (bookmarkedSlugs.has(item.slug) ? 1 : 0), 0);
+    return { notes, bookmarks };
   };
 
   const isSearching = searchQuery.trim() !== '';
@@ -202,6 +250,7 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
           {Object.entries(filteredGrouped).map(([type, typeItems]) => {
             const isExpanded = isSearching || expandedSections[type];
             const { completed, total } = getCompletionCount(typeItems);
+            const { notes, bookmarks } = getEngagementCount(typeItems);
             
             return (
               <div key={type} className="border border-black/5 dark:border-white/5 rounded-xl bg-black/[0.005] dark:bg-white/[0.01] overflow-hidden">
@@ -225,6 +274,11 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
                         {completed > 0 && (
                           <span className="text-[10px] text-emerald-500 font-medium">
                             {completed}/{total} done
+                          </span>
+                        )}
+                        {(notes > 0 || bookmarks > 0) && (
+                          <span className="text-[10px] text-amber-500 font-medium">
+                            {notes} notes • {bookmarks} bookmarks
                           </span>
                         )}
                       </div>

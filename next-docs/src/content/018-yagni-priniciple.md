@@ -47,6 +47,7 @@ You're wasting time on features that aren't part of the problem statement.
 ‍
 
 ```java
+
 // Bad Code: Adds unnecessary payment methods not required by the interviewer
 class PaymentProcessor {
 private String paymentMethod;
@@ -116,6 +117,7 @@ The following code focuses strictly on debit and credit card payments, as per th
 ‍
 
 ```java
+
 // Bad Code: Adds unnecessary payment methods not required by the interviewer
 class PaymentProcessor {
 private String paymentMethod;

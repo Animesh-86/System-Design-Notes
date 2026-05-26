@@ -33,6 +33,7 @@ Let’s start with the traditional approach. Here, each patient class has its ow
 ‍
 
 ```java
+
 // ChildPatient.java
 class ChildPatient {
 public void diagnosis() {
@@ -104,6 +105,7 @@ As our hospital grows, adding new operations makes the code even more complicate
 ‍
 
 ```java
+
 public class HospitalUgly {
 public static void main(String[] args) {
 Object patient = new SeniorPatient(); // Could be any patient type
@@ -157,6 +159,7 @@ Here, our patients implement the accept method by calling the visitor’s approp
 ‍
 
 ```java
+
 // ChildPatient.java
 class ChildPatient implements Patient {
 @Override
@@ -199,6 +202,7 @@ The visitor interface declares methods to handle each patient type.
 ‍
 
 ```java
+
 interface Visitor {
 void visit(ChildPatient childPatient);
 void visit(AdultPatient adultPatient);
@@ -223,6 +227,7 @@ Let’s create a visitor for diagnosis first.
 ‍
 
 ```java
+
 class DiagnosisVisitor implements Visitor {
 @Override
 public void visit(ChildPatient childPatient) {
@@ -255,6 +260,7 @@ Explanation:
 Now, suppose we also need to handle billing. We create another visitor:
 
 ```java
+
 class BillingVisitor implements Visitor {
 @Override
 public void visit(ChildPatient childPatient) {
@@ -288,6 +294,7 @@ Let’s see our visitor pattern in action.
 ‍
 
 ```java
+
 public class HospitalVisitorDemo {
 public static void main(String[] args) {
 // Create an array of patients
@@ -346,6 +353,7 @@ Imagine the interviewer asks, “How would you add a new operation, like generat
 ‍
 
 ```java
+
 class HealthReportVisitor implements Visitor {
 @Override
 public void visit(ChildPatient childPatient) {

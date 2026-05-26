@@ -49,6 +49,7 @@ Let’s look at a naive approach to solving this problem:
 Shape.java
 
 ```java
+
 public abstract class Shape {
 public abstract void draw();
 }
@@ -59,6 +60,7 @@ public abstract void draw();
 Circle.java
 
 ```java
+
 public class Circle extends Shape {
 @Override
 public void rasterDraw() {
@@ -72,6 +74,7 @@ System.out.println("Drawing Circle using Raster Rendering");
 Rectangle.java
 
 ```java
+
 public class Rectangle extends Shape {
 @Override
 public void rasterDraw() {
@@ -124,6 +127,7 @@ Let’s say the logic for rendering becomes more complex:
 ‍
 
 ```java
+
 import java.util.Scanner;
 public class DrawingApp {
 public static void main(String[] args) {
@@ -283,6 +287,7 @@ This interface provides methods to render shapes:
 Renderer.java
 
 ```java
+
 // Renderer.java - Interface for rendering methods
 public interface Renderer {
 void renderCircle(double radius);
@@ -301,6 +306,7 @@ In this step,we will Create concrete classes that implement the Renderer interfa
 RasterRenderer.java
 
 ```java
+
 // RasterRenderer.java - Concrete implementation for Raster Rendering
 public class RasterRenderer implements Renderer {
 @Override
@@ -319,6 +325,7 @@ System.out.println("Raster Rendering: Drawing Rectangle with width " + width + "
 VectorRenderer.java
 
 ```java
+
 // VectorRenderer.java - Concrete implementation for Vector Rendering
 public class VectorRenderer implements Renderer {
 @Override
@@ -343,6 +350,7 @@ In this step, we will create an abstract class that represents a generic shape. 
 Shape.java
 
 ```java
+
 // Shape.java - Abstract class for shapes
 public abstract class Shape {
 protected Renderer renderer;
@@ -365,6 +373,7 @@ In this step, we will create concrete classes that extend the abstract Shape cla
 Circle.java : 
 
 ```java
+
 // Circle.java - Refined abstraction for Circle
 public class Circle extends Shape {
 private double radius;
@@ -384,6 +393,7 @@ renderer.renderCircle(radius);
 Rectangle.java
 
 ```java
+
 // Rectangle.java - Refined abstraction for Rectangle
 public class Rectangle extends Shape {
 private double width;
@@ -412,6 +422,7 @@ In this step, we will integrate the Bridge Pattern into our application to decou
 DrawingApp.java : 
 
 ```java
+
 // DrawingApp.java
 public class DrawingApp {
 public static void main(String[] args) {

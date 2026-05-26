@@ -47,6 +47,7 @@ Now, your app needs to seamlessly control all these devices, regardless of the c
 Let’s look at how you might solve this problem in a straightforward but inflexible way:
 
 ```java
+
 import java.util.Scanner;
 public class SmartHomeController {
 // Method to control devices based on their type
@@ -124,6 +125,7 @@ If this complexity isn’t addressed early, the Main class quickly becomes a mes
 It might look something like this:
 
 ```java
+
 public class SmartHomeController {
 public static void main(String[] args) {
 String deviceType = "SmartLight"; // Imagine this value is dynamic
@@ -181,6 +183,7 @@ The first step is to define a common interface for all devices. This ensures tha
 ‍
 
 ```java
+
 // SmartDevice.java - Common interface for all smart devices
 public interface SmartDevice {
 void turnOn(); // method to turn on a specific Device
@@ -197,6 +200,7 @@ void turnOff(); // method to turn off a specific Device
 ‍
 
 ```java
+
 // AirConditioner.java - Device using Bluetooth for communication
 public class AirConditioner {
 // Method to connect to the Air Conditioner via Bluetooth
@@ -226,6 +230,7 @@ System.out.println("Air Conditioner disconnected from Bluetooth.");
 **SmartLight.java**
 
 ```java
+
 // SmartLight.java - Device using Wi-Fi for communication
 public class SmartLight {
 // Method to connect the Smart Light to Wi-Fi
@@ -257,6 +262,7 @@ System.out.println("Smart Light disconnected from Wi-Fi.");
 ‍
 
 ```java
+
 // CoffeeMachine.java - Device using Zigbee for communication
 public class CoffeeMachine {
 // Method to initialize the Zigbee connection
@@ -290,6 +296,7 @@ Each adapter implements the SmartDevice interface and translates the controller�
 ‍
 
 ```java
+
 // Adapter for Air Conditioner
 public class AirConditionerAdapter implements SmartDevice {
 private AirConditioner airConditioner;
@@ -361,6 +368,7 @@ The SmartHomeController no longer needs to handle device-specific logic. It inte
 ‍
 
 ```java
+
 public class SmartHomeController {
 public static void main(String[] args) {
 // Create adapters for each device

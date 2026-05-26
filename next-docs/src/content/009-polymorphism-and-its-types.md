@@ -50,6 +50,7 @@ Example : 
 ‍
 
 ```java
+
 class Vehicle {
 // Method to start a vehicle with basic information
 void start(String vehicleType) {
@@ -86,6 +87,7 @@ vehicle.start("Bike", 60);
 ‍
 
 ```java
+
 class Vehicle {
 // Method to start a vehicle with a string parameter
 void start(String vehicleType) {
@@ -141,6 +143,7 @@ Runtime polymorphism occurs when the method to be executed is determined during 
 ‍
 
 ```java
+
 // Parent class
 class Vehicle {
 void start() {
@@ -211,6 +214,7 @@ myVehicle.start(); // Output: Starting a truck
 Example : 
 
 ```java
+
 // Interface
 interface Vehicle {
 void start(); // Abstract method
@@ -261,6 +265,7 @@ The Vehicle interface allows you to reuse a single loop (for (Vehicle vehicle : 
 Example : 
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 Vehicle vehicle;
@@ -288,6 +293,7 @@ Allows easy extension of code by adding new classes / methods or overriding exis
 Example : 
 
 ```java
+
 // Adding a new type of Vehicle
 class Bus implements Vehicle {
 @Override
@@ -324,6 +330,7 @@ Runtime polymorphism can make debugging difficult due to dynamic method resoluti
 Example:
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -389,6 +396,7 @@ Dynamic method dispatch introduces slight overhead as the JVM resolves the metho
 Example : 
 
 ```java
+
 class Vehicle {
 void start() {
 System.out.println("Starting a generic vehicle");

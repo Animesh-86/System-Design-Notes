@@ -145,6 +145,7 @@ Below is the example implementation of a Show class:
 ‍
 
 ```java
+
 public class Show {
 private final String id;
 private final Movie movie;
@@ -165,6 +166,7 @@ private final Integer durationInMinutes;
 ‍
 
 ```java
+
 public class Theater {
 private final String id;
 private final String name;
@@ -189,6 +191,7 @@ private final List<Seat> seats;
 ‍
 
 ```java
+
 public class Booking {
 private final String id;
 private final User user;
@@ -279,6 +282,7 @@ Once the relationships are identified, the next step is to focus on the critical
 ‍
 
 ```java
+
 public boolean lockSeats(List<Integer> seatIds, int showId, int userId) {  
 synchronized (this) {  
 for (int seatId : seatIds) {  
@@ -312,6 +316,7 @@ return true;  
 ‍
 
 ```java
+
 public Booking createBooking(final String userId, final Show show, final List<Seat> seats) {
 // Check if any seat is already booked
 if (isAnySeatAlreadyBooked(show, seats)) {
@@ -347,6 +352,7 @@ Incorporate error handling to manage edge cases gracefully. Proper error handlin
 ‍
 
 ```java
+
 private boolean isAnySeatAlreadyBooked(final Show show, final List<Seat> seats) {
 final List<Seat> bookedSeats = getBookedSeats(show);
 for (Seat seat : seats) {
@@ -370,6 +376,7 @@ throw new SeatPermanentlyUnavailableException();  
 ‍
 
 ```java
+
 public void processPaymentFailed(final Booking booking, final String user) {
 if (!booking.getUser().equals(user)) {
 throw new BadRequestException();

@@ -43,6 +43,14 @@ interface Note {
   updated_at: string;
 }
 
+interface Bookmark {
+  id: string;
+  slug: string;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 interface AppState {
   // Auth
   user: UserProfile | null;
@@ -76,6 +84,12 @@ interface AppState {
   updateNote: (slug: string, noteId: string, content: string) => void;
   removeNote: (slug: string, noteId: string) => void;
 
+  // Bookmarks (optimistic cache)
+  bookmarks: Record<string, Bookmark>;
+  setBookmarks: (bookmarks: Bookmark[]) => void;
+  setBookmark: (bookmark: Bookmark) => void;
+  removeBookmark: (slug: string) => void;
+
   // Reset on logout
   reset: () => void;
 }
@@ -83,11 +97,12 @@ interface AppState {
 const initialState = {
   user: null,
   sidebarOpen: true,
-  notesPanel: false,
+  notesPanel: true,
   progress: {},
   checklist: {},
   highlights: {},
   notes: {},
+  bookmarks: {},
 };
 
 export const useAppStore = create<AppState>()(
@@ -169,12 +184,36 @@ export const useAppStore = create<AppState>()(
           },
         })),
 
+      setBookmarks: (bookmarks) =>
+        set(() => ({
+          bookmarks: bookmarks.reduce<Record<string, Bookmark>>((acc, bookmark) => {
+            acc[bookmark.slug] = bookmark;
+            return acc;
+          }, {}),
+        })),
+
+      setBookmark: (bookmark) =>
+        set((s) => ({
+          bookmarks: {
+            ...s.bookmarks,
+            [bookmark.slug]: bookmark,
+          },
+        })),
+
+      removeBookmark: (slug) =>
+        set((s) => {
+          const next = { ...s.bookmarks };
+          delete next[slug];
+          return { bookmarks: next };
+        }),
+
       reset: () => set(initialState),
     }),
     {
       name: 'sdh-store',
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
+        notesPanel: state.notesPanel,
         progress: state.progress,
         checklist: state.checklist,
       }),

@@ -29,6 +29,7 @@ Generic Java method takes a parameter and returns some value after performing a 
 **Example :** 
 
 ```java
+
 class Test {
 // A Generic method example
 static <T> void genericDisplay(T element) {
@@ -80,6 +81,7 @@ A generic class is implemented exactly like a non-generic class. The only differ
 **Example :** 
 
 ```java
+
 // We use < > to specify Parameter type
 class Test<T> {
 // An object of type T is declared
@@ -131,6 +133,7 @@ In the Main class, instances of Test are created with Integer and String types, 
 Example : 
 
 ```java
+
 // We use < > to specify Parameter type
 class Test<T, U> {
 T obj1; // An object of type T
@@ -210,6 +213,7 @@ ArrayList<int[]> a = new ArrayList<>();
  Example :
 
 ```java
+
 // We use < > to specify Parameter type
 class Test<T> {
 // An object of type T is declared
@@ -252,6 +256,7 @@ Even though iObj and sObj are of type Test, they are the references to different
 Example : 
 
 ```java
+
 public class GenericReusability {
 // A generic method to print elements of any type
 public static <T> void printArray(T[] array) {
@@ -281,6 +286,7 @@ printArray(stringArray); // Works with String
 Example : 
 
 ```java
+
 // Custom Generic ArrayList
 class MyArrayList<T> {
 private Object[] elements;
@@ -340,6 +346,7 @@ Suppose you want to create an ArrayList that store name of students, and if by m
 ❓Problem : 
 
 ```java
+
 import java.util.*;
 
 class Test {
@@ -373,6 +380,7 @@ When defining ArrayList, we can specify that this list can take only String obje
 ‍
 
 ```java
+
 import java.util.*;
 
 class Test {
@@ -411,6 +419,7 @@ String s3 = list.get(2);
 Example : 
 
 ```java
+
 import java.util.List;
 
 public class WildcardExample {
@@ -442,6 +451,7 @@ printList(intList);
 Example:
 
 ```java
+
 import java.util.List;
 
 public class UnboundedWildcardExample {
@@ -473,6 +483,7 @@ printList(intList);
 Example:
 
 ```java
+
 import java.util.List;
 
 public class UpperBoundedWildcardExample {
@@ -508,6 +519,7 @@ printNumbers(stringList);
 Example:
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -546,6 +558,7 @@ If a method must ensure that all arguments or returned values are of the same sp
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -610,6 +623,7 @@ For each list, we are adding an element of the same data type, which is made pos
 ‍
 
 ```java
+
 public static void main(String[] args) {
 // Example with a list of Strings
 List<String> stringList = new ArrayList<>();
@@ -639,6 +653,7 @@ System.out.println("Updated Person List: " + personList);
 **Example with Wildcards (Doesn't Work for Adding):**
 
 ```java
+
 public void addToWildcardList(List<?> list, Object element) {
 list.add(element);  // Compile-time error: Cannot add to a List<?>
 }
@@ -657,6 +672,7 @@ If a method needs to return an object of a specific type, use generics. Wildcard
 ‍
 
 ```java
+
 public <T> T getFirstElement(List<T> list) {
 return list.size() == 0 ? null : list.get(0); // Compiler knows the type of T
 }
@@ -687,6 +703,7 @@ This approach requires returning an Object every time from the function using wi
 ‍
 
 ```java
+
 // Wildcard method that gets the first element
 public Object getFirstElementWithWildcard(List<?> list) {
 return list.get(0); // Returns as Object because the type is unknown
@@ -719,6 +736,7 @@ If a method only needs to read from a collection and doesn’t care about the ex
 ‍
 
 ```java
+
 public class Main {
 // Generic method that requires a specific type
 public <T> void printList1(List<T> list) {

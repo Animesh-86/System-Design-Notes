@@ -35,6 +35,7 @@ Here’s how you might approach the problem in a straightforward but inflexible
 ‍
 
 ```java
+
 import java.util.Scanner;
 public class CoffeeShop {
 public static void main(String[] args) {
@@ -82,6 +83,7 @@ While this code works for a few orders, it quickly becomes unmanageable as the n
 ‍
 
 ```java
+
 import java.util.Scanner;
 public class CoffeeShop {
 public static void main(String[] args) {
@@ -141,6 +143,7 @@ The first step is to define a common interface for all coffee types and customiz
 Coffee.java
 
 ```java
+
 // Coffee.java - Common interface for all coffee types
 public interface Coffee {
 String getDescription();
@@ -159,6 +162,7 @@ These classes implement the Coffee interface and represent the core objects.
 Espresso.java
 
 ```java
+
 public class Espresso implements Coffee {
 @Override
 public String getDescription() {
@@ -176,6 +180,7 @@ return 2.00;
 Cappuccino.java
 
 ```java
+
 public class Cappuccino implements Coffee {
 @Override
 public String getDescription() {
@@ -199,6 +204,7 @@ The abstract decorator implements the Coffee interface and wraps a Coffee object
 CoffeeDecorator.java
 
 ```java
+
 public abstract class CoffeeDecorator implements Coffee {
 protected Coffee coffee;
 public CoffeeDecorator(Coffee coffee) {
@@ -226,6 +232,7 @@ Each decorator adds a specific functionality (customization) to the base coffee 
 MilkDecorator.java
 
 ```java
+
 public class MilkDecorator extends CoffeeDecorator {
 public MilkDecorator(Coffee coffee) {
 super(coffee);
@@ -246,6 +253,7 @@ return coffee.getCost() + 0.50;
 SugarDecorator.java
 
 ```java
+
 public class SugarDecorator extends CoffeeDecorator {
 public SugarDecorator(Coffee coffee) {
 super(coffee);
@@ -266,6 +274,7 @@ return coffee.getCost() + 0.25;
 VanillaDecorator.java
 
 ```java
+
 public class VanillaDecorator extends CoffeeDecorator {
 public VanillaDecorator(Coffee coffee) {
 super(coffee);
@@ -292,6 +301,7 @@ The client dynamically wraps the base coffee objects with the desired customizat
 CoffeeShop.java
 
 ```java
+
 public class CoffeeShop {
 public static void main(String[] args) {
 Coffee coffee = new Espresso();

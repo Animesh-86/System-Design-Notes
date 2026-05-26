@@ -219,6 +219,7 @@ Let's examine how a specific path is represented as a trie structure in our syst
 ```
 /document/cwa_lld/design_file_system.```java
 
+
 ![Article image](https://cwa-prod.s3.ap-south-1.amazonaws.com/1743916987651-Frame-246-\(1\).png)
 
 ‍
@@ -228,6 +229,7 @@ Let's examine how a specific path is represented as a trie structure in our syst
 ```
 /document/cwa_hld/horizontal_scaling.txt
 /document/cwa_hld/consistent_hashing.```java
+
 
 ‍
 
@@ -256,6 +258,7 @@ Abstract methods: display(int depth), calculateSize(), and isDirectory().
 ‍
 
 ```java
+
 // Base class for File System Node (Composite Pattern)
 public abstract class FileSystemNode {
 // Name of the node
@@ -344,6 +347,7 @@ Methods: writeContent(String content), readContent(), display(int depth), calcul
 ‍
 
 ```java
+
 // File class representing individual files (Leaf)
 public class File extends FileSystemNode {
 // Content of the file
@@ -407,6 +411,7 @@ System.out.println(indent + "📄 " + getName());
 ‍
 
 ```java
+
 // Directory class representing directories (Composite)
 public class Directory extends FileSystemNode {
 // Constructor for directory with name
@@ -456,6 +461,7 @@ child.display(depth + 1);
 ‍
 
 ```java
+
 // Main File System class implementing the trie structure
 public class FileSystem {
 // Root directory
@@ -659,6 +665,7 @@ return file.getContent();
 ‍
 
 ```java
+
 // Client code to test the file system
 public class FileSystemClient {
 public static void main(String[] args) {

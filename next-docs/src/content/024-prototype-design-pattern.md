@@ -37,6 +37,7 @@ Without the Prototype pattern, we might approach this problem like this:
 In the traditional approach, we create a new character object every time, manually setting all the attributes even if most of them stay the same. ⚙️
 
 ```java
+
 public class Character {
 private String name;
 private int health;
@@ -120,6 +121,7 @@ We realize that this method is getting ugly as we scale. We need a better soluti
 Here’s what the code starts looking like as we try to add more variations:
 
 ```java
+
 public class CharacterFactory {
 // Too many methods for every small change
 public Character createCharacterWithNewName(String name) {
@@ -170,6 +172,7 @@ Cloning the Character Object
 Here’s the correct code implementation:
 
 ```java
+
 public class Character implements Cloneable {
 private String name;
 private int health;
@@ -212,6 +215,7 @@ The clone() method is overridden to allow cloning of the Character object. The s
 ‍
 
 ```java
+
 @Override
 public Character clone() throws CloneNotSupportedException {
 return (Character) super.clone();  // Shallow copy of the character object
@@ -237,6 +241,7 @@ This method displays the character’s attributes. After cloning a character, we
 Now, let’s see how we can use this clone() method to solve the problem of creating new characters that are similar to an existing prototype but with some modifications:
 
 ```java
+
 public class CharacterFactory {
 private Character prototypeCharacter;
 // Constructor to create a prototype character (default character)
@@ -282,6 +287,7 @@ return clonedCharacter;
 In the CharacterFactory constructor, we create a prototype character that serves as the template. This character is used as the base for creating new characters.
 
 ```java
+
 prototypeCharacter = new Character("DefaultName", 100, 50, 1);  // Default prototype character
 ```
 
@@ -296,6 +302,7 @@ The createCharacterWithNewName, createCharacterWithNewLevel, and createCharacter
 For example, to create a new character with a new name:
 
 ```java
+
 public Character createCharacterWithNewName(String name)
 throws CloneNotSupportedException {
 Character clonedCharacter = prototypeCharacter.clone();
@@ -350,6 +357,7 @@ But with the Prototype Pattern, we solve this problem easily by cloning the prot
 For example, we can easily create a large number of characters with different names, levels, or attack powers: 💥👾
 
 ```java
+
 CharacterFactory factory = new CharacterFactory();
 Character warrior = factory.createCharacterWithNewName("Warrior");
 Character mage = factory.createCharacterWithNewName("Mage");
@@ -393,6 +401,7 @@ For example:
 Here’s how scalable it is:
 
 ```java
+
 CharacterFactory factory = new CharacterFactory();
 Character newCharacter = factory.createCharacterWithNewAttackPower(100);  // No new method needed, just cloning and changing power
 ```

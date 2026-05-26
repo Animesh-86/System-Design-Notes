@@ -46,6 +46,7 @@ A class is a blueprint for creating objects. It defines the properties (attribut
 ‍
 
 ```java
+
 public class Car {
 // Attributes : 
 String manufacturer;
@@ -96,6 +97,7 @@ In the car analogy, each manufactured car is an object, and it holds specific va
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 

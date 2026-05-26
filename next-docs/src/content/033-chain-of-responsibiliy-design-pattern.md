@@ -31,6 +31,7 @@ Picture this: an employee submits a leave request. Depending on how many days of
 Using a traditional approach, you might write one giant function with nested if-else statements to check the number of leave days. Check out this simplified code:
 
 ```java
+
 public class LeaveRequestTraditional {
 public static void main(String[] args) {
 int leaveDays = 10; // Employee requests 10 days off
@@ -70,6 +71,7 @@ As more conditions pile up, the code can become a tangled mess. Take a look:
 ‍
 
 ```java
+
 public class LeaveRequestUgly {
 public static void main(String[] args) {
 int leaveDays = 12;
@@ -115,6 +117,7 @@ First, we define an abstract class that sets up the chain.
 ‍
 
 ```java
+
 abstract class Approver {
 protected Approver nextApprover;
 // Set the next handler in the chain
@@ -143,6 +146,7 @@ Now, let’s create concrete classes for each approver.
 ‍
 
 ```java
+
 class Supervisor extends Approver {
 @Override
 public void processLeaveRequest(int leaveDays) {
@@ -198,6 +202,7 @@ Set up the chain and process a leave request.
 ‍
 
 ```java
+
 public class LeaveRequestChainDemo {
 public static void main(String[] args) {
 // Create handler instances
@@ -248,6 +253,7 @@ Suppose the interviewer asks, “What if none of the handlers can process the re
 ### Adding an HR Handler
 
 ```java
+
 class HR extends Approver {
 @Override
 public void processLeaveRequest(int leaveDays) {
@@ -267,6 +273,7 @@ System.out.println("HR: Leave request requires further discussion.");
 ### 🔗Setting Up the Extended Chain
 
 ```java
+
 public class LeaveRequestChainFollowUpDemo {
 public static void main(String[] args) {
 // Create handler instances

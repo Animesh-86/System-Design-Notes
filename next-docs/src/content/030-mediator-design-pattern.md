@@ -27,6 +27,7 @@ Imagine our auction system without any mediator. Every bidder has to know about 
 ‍
 
 ```java
+
 class Bidder {
 String name;
 int bid;
@@ -86,6 +87,7 @@ Let’s take a peek at an even more cluttered version, where every bidder not on
 ‍
 
 ```java
+
 // Messy version: Each bidder handles bidding, logging, and notifications
 // directly
 class Bidder {
@@ -157,6 +159,7 @@ Now, let's bring in our savior—the Mediator Design Pattern. In our auction sys
 Our mediator will have methods to register bidders and handle bid placements.
 
 ```java
+
 interface AuctionMediator {
 void registerBidder(Bidder bidder);
 void placeBid(Bidder bidder, int amount);
@@ -178,6 +181,7 @@ The Auction House will manage all bidder interactions.
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 class AuctionHouse implements AuctionMediator {
@@ -216,6 +220,7 @@ Bidders now communicate only with the mediator.
 ‍
 
 ```java
+
 class Bidder {
 private
 String name;
@@ -255,6 +260,7 @@ Now, let’s see our auction system using the mediator in action.
 ‍
 
 ```java
+
 public
 class AuctionMediatorDemo {
 public
@@ -314,6 +320,7 @@ Here, we'll extend our existing AuctionHouse to create an ExtendedAuctionHouse t
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 class ExtendedAuctionHouse extends AuctionHouse {
@@ -358,6 +365,7 @@ b.receiveBid(bidder, amount);
 And here's how you might use this extended mediator in your main program:
 
 ```java
+
 public
 class ExtendedAuctionMediatorDemo {
 public

@@ -125,6 +125,7 @@ Product: Represents individual products in inventory.
 ‍
 
 ```java
+
 public class Product {
 private String sku;
 private String name;
@@ -146,6 +147,7 @@ Description: This class represents physical storage locations.
 ‍
 
 ```java
+
 public class Warehouse {
 private int id;
 private String name;
@@ -168,6 +170,7 @@ Description: This class handles inventory operations and uses the Singleton patt
 ‍
 
 ```java
+
 public class InventoryManager {
 private static InventoryManager instance;
 private List<Warehouse> warehouses;
@@ -246,6 +249,7 @@ Candidate: I propose using design patterns effectively. Here are my strategies:
 ‍
 
 ```java
+
 public enum ProductCategory { 
 ELECTRONICS, CLOTHING, GROCERY, FURNITURE, OTHER 
 }
@@ -288,6 +292,7 @@ This is an abstract base class representing a general product with common attrib
 ‍
 
 ```java
+
 // Abstract Product class
 public abstract class Product {
 private String sku;
@@ -349,6 +354,7 @@ An enumeration defining the various categories of products, such as electronics,
 ‍
 
 ```java
+
 // Enum for product categories
 public enum ProductCategory {
 ELECTRONICS, CLOTHING, GROCERY, FURNITURE, OTHER
@@ -368,6 +374,7 @@ Concrete Products are the specific product implementations that extend the abstr
 ‍
 
 ```java
+
 package ProductsFactory.ConcreteProducts;
 
 import CommonEnum.ProductCategory;
@@ -405,6 +412,7 @@ this.brand = brand;
 ‍
 
 ```java
+
 package ProductsFactory.ConcreteProducts;
 import CommonEnum.ProductCategory;
 import ProductsFactory.Product;
@@ -449,6 +457,7 @@ this.color = color;
 ‍
 
 ```java
+
 package ProductsFactory.ConcreteProducts;
 
 import CommonEnum.ProductCategory;
@@ -497,6 +506,7 @@ A factory class implementing the Factory Pattern. It has a method to create prod
 ‍
 
 ```java
+
 package ProductsFactory;
 
 import CommonEnum.ProductCategory;
@@ -535,6 +545,7 @@ This is an interface for different replenishment strategies. It declares a metho
 ‍
 
 ```java
+
 // Interface for different replenishment strategies
 public interface ReplenishmentStrategy {
 // Method to replenish stock for a given product
@@ -553,6 +564,7 @@ Concrete strategies implement the ReplenishmentStrategy interface. These are spe
 JustInTimeStrategy.java : 
 
 ```java
+
 // Just-In-Time replenishment strategy
 public class JustInTimeStrategy implements ReplenishmentStrategy {
 @Override
@@ -571,6 +583,7 @@ System.out.println("Applying Just-In-Time replenishment for " + product.getName(
 ‍
 
 ```java
+
 // Bulk Order replenishment strategy
 public class BulkOrderStrategy implements ReplenishmentStrategy {
 @Override
@@ -593,6 +606,7 @@ The InventoryManager class implements the Singleton pattern, which ensures that 
 InventoryManager.java : 
 
 ```java
+
 public class InventoryManager {
 // Singleton instance
 private static InventoryManager instance;
@@ -628,6 +642,7 @@ Warehouse.java : 
 ‍
 
 ```java
+
 public class Warehouse {
 private int id;
 private String name;
@@ -719,6 +734,7 @@ return products.values();
 ‍
 
 ```java
+
 public class InventoryManager {
 // Singleton instance
 private static InventoryManager instance;
@@ -806,6 +822,7 @@ replenishmentStrategy.replenish(product);
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Get the singleton instance of InventoryManager
@@ -887,6 +904,7 @@ This interface represents the observer in the Observer Pattern. It declares a me
 ‍
 
 ```java
+
 public interface InventoryObserver {
 void update(Product product);
 }
@@ -905,6 +923,7 @@ SupplierNotifier.java : (Used to notify the suppliers regarding inventory change
 ‍
 
 ```java
+
 public class SupplierNotifier implements InventoryObserver {
 private String supplierName;
 private String contactEmail;
@@ -932,6 +951,7 @@ System.out.println("Notification sent to " + supplierName
 ‍
 
 ```java
+
 // Second concrete observer - Dashboard alert system
 public class DashboardAlertSystem implements InventoryObserver {
 private String alertLevel;
@@ -983,6 +1003,7 @@ the InventoryManager class is modified to include observer-related functionaliti
 ‍
 
 ```java
+
 public class InventoryManager {
 // Singleton instance
 private static InventoryManager instance;
@@ -1047,6 +1068,7 @@ Create a Concrete Implementation for Furniture:
 ‍
 
 ```java
+
 public class FurnituresProduct extends Product {
 private String brand;
 private int warrantyPeriod;
@@ -1072,6 +1094,7 @@ setCategory(ProductCategory.ELECTRONICS);
 ‍
 
 ```java
+
 public class ProductFactory { 
 public Product createProduct(ProductCategory category, String sku, String name, double price, int quantity) { 
 switch (category) { 
@@ -1115,6 +1138,7 @@ The Product class can been modified to work with the Builder pattern. This inclu
 ‍
 
 ```java
+
 // Product class modified to work with Builder pattern
 public abstract class Product {
 // Core attributes
@@ -1214,6 +1238,7 @@ The ElectronicsProduct class has been updated to incorporate the Builder pattern
 ‍
 
 ```java
+
 // Electronics Product with Builder
 public class ElectronicsProduct extends Product {
 // Electronics-specific attributes

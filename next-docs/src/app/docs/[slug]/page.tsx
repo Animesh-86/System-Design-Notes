@@ -38,7 +38,7 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 pb-20 max-w-4xl mx-auto space-y-6 pt-2">
+    <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 pb-20 w-full max-w-6xl mx-auto lg:mx-0 space-y-6 pt-2">
       {/* Reader Toolbar (Progress + Checklist + Notes) */}
       <ReaderToolbar slug={params.slug} />
 

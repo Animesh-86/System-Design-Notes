@@ -67,6 +67,7 @@ The notifyAll() method wakes up all threads that are waiting on the object’s m
 Example:
 
 ```java
+
 public class WaitNotifyDemo { 
 // Lock object used for synchronization 
 private final Object lock = new Object(); 
@@ -234,6 +235,7 @@ Inter-thread communication methods—wait(), notify(), and notifyAll()—are use
 ‍
 
 ```java
+
 import java.util.LinkedList;
 import java.util.Queue;
 public class ProducerConsumer {
@@ -412,6 +414,7 @@ Answer: When a thread is waiting (using wait(), join(), or blocking queue method
 ‍‍
 
 ```java
+
 class ThreadInterruption {
 public static void main(String[] args) {
 Thread thread = new Thread(() -> {

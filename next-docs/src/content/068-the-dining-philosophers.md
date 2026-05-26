@@ -146,6 +146,7 @@ Release the counting semaphore
 ## 📝 Implementation : 
 
 ```java
+
 class DiningPhilosophers {
 // Semaphore to limit the number of philosophers trying to eat simultaneously
 private Semaphore semaphore;

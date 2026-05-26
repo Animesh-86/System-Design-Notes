@@ -331,6 +331,7 @@ shutdown()/close(): Cleans up resources used by the rate limiter.
 ‍
 
 ```java
+
 /**
 - Interface for all rate limiting strategies.
 - New strategies (e.g., fixed window, sliding window, leaky bucket, etc.)
@@ -380,6 +381,7 @@ Implements automatic token refilling using a scheduled executor
 ‍
 
 ```java
+
 /**
 - Token Bucket algorithm implementation.
 - Supports both global and per‑user rate limiting.
@@ -524,6 +526,7 @@ a. Create common Enum : 
 RateLimiterType : 
 
 ```java
+
 //Enumeration of supported rate limiter types.
 public enum RateLimiterType {
 TOKEN_BUCKET,
@@ -546,6 +549,7 @@ Allows registration of new limiter types through registerLimiterFactory method
 ‍
 
 ```java
+
 /**
 - Factory class that creates rate limiter instances based on the provided type
 - and configuration. New rate limiting strategies can be added by registering
@@ -635,6 +639,7 @@ Provides shutdown method to clean up resources.
 ‍
 
 ```java
+
 /**
 - Controller that delegates incoming requests to a rate limiter.
 - Processes requests concurrently using an ExecutorService.
@@ -707,6 +712,7 @@ Main,java : 
 ‍
 
 ```java
+
 /**
 - Main class to demonstrate the rate limiting system.
 */

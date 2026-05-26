@@ -59,6 +59,7 @@ In Java, encapsulation is typically achieved by:
 ### Example :
 
 ```java
+
 class BankAccount {
 // Private variables (data hiding)
 private String accountNumber;
@@ -149,6 +150,7 @@ System.out.println("Final Balance: " + account.getBalance());
 Example : 
 
 ```java
+
 class BankAccount {
 private String accountNumber; // Data is hidden
 private double balance; // Data is hidden
@@ -212,6 +214,7 @@ In this example, direct access to balance and accountNumber is not allowed, ensu
 Example : 
 
 ```java
+
 class BankAccount {
 private double balance;
 
@@ -261,6 +264,7 @@ In the above example, the updateBalance method is the single point of truth for 
 Example : 
 
 ```java
+
 class BankAccount {
 private double balance;
 public BankAccount(double initialBalance) {
@@ -307,6 +311,7 @@ The internal implementation of the withdraw method was updated to include a tran
 Example : 
 
 ```java
+
 class BankAccount {
 private String accountNumber;
 private double balance;
@@ -371,6 +376,7 @@ The clear interface (getAccountNumber, deposit, and withdraw) makes it easy for 
 Example :
 
 ```java
+
 class BankAccount {
 private String accountNumber;
 private double balance;
@@ -416,6 +422,7 @@ Although encapsulation provides benefits, it can lead to more verbose code, espe
 Example : 
 
 ```java
+
 class BankAccount {
 private double balance;
 public BankAccount(double initialBalance) {

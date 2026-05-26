@@ -139,6 +139,7 @@ Vehicle : This class represents individual vehicles with their attributes.
 ‍
 
 ```java
+
 public class Vehicle {
 private String registrationNumber;
 private String make;
@@ -163,6 +164,7 @@ RentalStore Description: This class represents physical rental locations.
 ‍
 
 ```java
+
 public class RentalStore {
 private int id;
 private String name;
@@ -187,6 +189,7 @@ Class: RentalSystem Description: This class handles rental operations and uses t
 ‍
 
 ```java
+
 public class RentalSystem {
 private List<RentalStore> stores; // list of stores
 private VehicleFactory vehicleFactory; // Vehicle Factory for creation of different Vehicles
@@ -269,6 +272,7 @@ To effectively manage vehicle types and statuses, we'll use enums.
 ‍
 
 ```java
+
 public enum VehicleType { ECONOMY, COMPACT, SEDAN, SUV, LUXURY, VAN, TRUCK }
 
 public enum VehicleStatus {
@@ -325,6 +329,7 @@ This section implements the Factory pattern for creating different types of vehi
 Base Vehicle Abstract Class : 
 
 ```java
+
 // Base Vehicle abstract class
 public abstract class Vehicle {
 private String registrationNumber;
@@ -382,6 +387,7 @@ EconomyVehicle : 
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 import CommonEnums.VehicleEnums.VehicleType;
 import VehicleFactoryPattern.Vehicle;
@@ -406,6 +412,7 @@ return getBaseRentalPrice() * days * RATE_MULTIPLIER;
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 import CommonEnums.VehicleEnums.VehicleType;
 import VehicleFactoryPattern.Vehicle;
@@ -431,6 +438,7 @@ return (getBaseRentalPrice() * days * RATE_MULTIPLIER) + PREMIUM_FEE;
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 
 import CommonEnums.VehicleEnums.VehicleType;
@@ -455,6 +463,7 @@ return getBaseRentalPrice() * days * RATE_MULTIPLIER;
 ‍
 
 ```java
+
 public class VehicleFactory {
 public static Vehicle createVehicle(VehicleType vehicleType, String registrationNumber, String model, double baseRentalPrice) {
 switch (vehicleType) {
@@ -490,6 +499,7 @@ The VehicleType enum will now include the new types BIKE and AUTO alongside the 
 ‍
 
 ```java
+
 public enum VehicleType {
 ECONOMY,
 LUXURY,
@@ -512,6 +522,7 @@ BikeVehicle.java : 
 ‍
 
 ```java
+
 // Bike Vehicle class
 public class BikeVehicle extends Vehicle {
 private static final double RATE_MULTIPLIER = 0.5;
@@ -535,6 +546,7 @@ return getBaseRentalPrice() * days * RATE_MULTIPLIER;
 ‍
 
 ```java
+
 // Auto Vehicle class
 public class AutoVehicle extends Vehicle {
 private static final double RATE_MULTIPLIER = 1.2;
@@ -560,6 +572,7 @@ The VehicleFactory class is updated to accommodate the new vehicle types. Now, w
 ‍
 
 ```java
+
 public class VehicleFactory {
 public static Vehicle createVehicle(VehicleType type,
 String registrationNumber, String model, double baseRentalPrice) {
@@ -611,6 +624,7 @@ This class represents the geographical location of a rental store, containing at
 ‍
 
 ```java
+
 // Location class
 public class Location {
 private String address;
@@ -637,6 +651,7 @@ The RentalStore class represents a physical rental location. It maintains a list
 ‍
 
 ```java
+
 // Rental Store class
 public class RentalStore {
 private int id;
@@ -692,6 +707,7 @@ This class represents a user who can make reservations and interact with the ren
 ‍
 
 ```java
+
 public class User {
 private int id;
 private String name;
@@ -732,6 +748,7 @@ The Reservation class manages vehicle bookings, containing details about the use
 ‍
 
 ```java
+
 // Reservation class
 public class Reservation {
 private int id;
@@ -811,6 +828,7 @@ This class manages all reservations, providing methods to create, confirm, start
 ‍
 
 ```java
+
 // Reservation Manager class
 public class ReservationManager {
 private Map<Integer, Reservation> reservations;
@@ -874,6 +892,7 @@ This is the main class managing the entire rental service. It is implemented as 
 ‍
 
 ```java
+
 // Singleton Rental System class
 public class RentalSystem {
 private static RentalSystem instance;
@@ -984,6 +1003,7 @@ PaymentStrategy.java (Common Interface for Different Payment Strategies) : 
 ‍
 
 ```java
+
 // Payment Strategy interface
 public interface PaymentStrategy {
 void processPayment(double amount);
@@ -999,6 +1019,7 @@ CreditCardPayment.java :
 ‍
 
 ```java
+
 // Credit Card Payment class
 public class CreditCardPayment implements PaymentStrategy {
 @Override
@@ -1018,6 +1039,7 @@ System.out.println("Card details: " + maskCardNumber(cardNumber) + ", "
 ‍
 
 ```java
+
 // Cash Payment class
 public class CashPayment implements PaymentStrategy {
 @Override
@@ -1035,6 +1057,7 @@ System.out.println("Processing cash payment of $" + amount);
 ‍
 
 ```java
+
 // PayPal Payment class
 public class PayPalPayment implements PaymentStrategy {
 @Override
@@ -1053,6 +1076,7 @@ System.out.println("PayPal Account: " + email);
 ‍
 
 ```java
+
 // Payment Processor
 public class PaymentProcessor {
 public boolean processPayment(double amount, PaymentStrategy paymentStrategy) {
@@ -1075,6 +1099,7 @@ To extend our payment strategy system to support Debit Card payments as well, we
 ‍
 
 ```java
+
 public class DebitCardPayment implements PaymentStrategy { 
 @Override 
 public void processPayment(double amount) { 
@@ -1093,6 +1118,7 @@ System.out.println("Processing debit card payment of $" + amount); 
 ‍
 
 ```java
+
 public class CarRentalMain {
 public static void main(String[] args) throws ParseException {
 // Get the Rental System instance (Singleton)
@@ -1220,6 +1246,7 @@ The PricingStrategy interface defines a method to calculate rental prices, allow
 ‍
 
 ```java
+
 // Pricing Strategy Interface
 public interface PricingStrategy {
 double calculateRentalPrice(Vehicle vehicle, int rentalPeriod);
@@ -1243,6 +1270,7 @@ WeeklyPricingStrategy: Applies a discount for weekly rentals and handles partial
 ‍
 
 ```java
+
 // Concrete Hourly Pricing Strategy
 public class HourlyPricingStrategy implements PricingStrategy {
 private static final double HOURLY_RATE_MULTIPLIER = 0.2; // 20% of daily rate per hour
@@ -1285,6 +1313,7 @@ return weeklyPrice + remainingDaysPrice;
 ‍
 
 ```java
+
 // Modified Reservation Class to Support Pricing Strategy
 public class Reservation {
 private PricingStrategy pricingStrategy;
@@ -1318,6 +1347,7 @@ user, vehicle, pickupStore, returnStore, startDate, endDate, pricingStrategy);
 ‍
 
 ```java
+
 public class CarRentalMain {
 public static void main(String[] args) throws ParseException {
 // ...existing code

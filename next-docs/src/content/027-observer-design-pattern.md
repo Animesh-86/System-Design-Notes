@@ -39,6 +39,7 @@ Let’s write some code for this traditional approach. Here, the YouTubeChannel 
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 class YouTubeChannel {
@@ -124,6 +125,7 @@ As you can see, this approach doesn’t scale well. With each new feature, we wo
 ‍
 
 ```java
+
 public void notifySubscribers() {
 for (String subscriber : subscribers) {
 System.out.println(
@@ -165,6 +167,7 @@ In the Observer Design Pattern, the Observer is the one that reacts to the chang
 ‍
 
 ```java
+
 public interface Subscriber {
 void update(String video); // This is the method the observer will use to get updated with the new video
 }
@@ -185,6 +188,7 @@ Now, let's create a class for the YouTubeSubscriber, which implements the Subscr
 ‍
 
 ```java
+
 public class YouTubeSubscriber implements Subscriber {
 private String name; // Name of the subscriber
 
@@ -218,6 +222,7 @@ Instead of having all logic inside the notifySubscribers() method, we define sep
 ‍
 
 ```java
+
 public class EmailSubscriber implements Subscriber {
 private String email;
 public EmailSubscriber(String email) {
@@ -260,6 +265,7 @@ The Subject is the one that changes. In our case, it’s the YouTubeChannel (the
 We create a YouTubeChannel interface to define the methods required for any channel:
 
 ```java
+
 public interface YouTubeChannel {
 void addSubscriber(Subscriber subscriber); // Method to add a new subscriber
 void removeSubscriber(Subscriber subscriber); // Method to remove a subscriber
@@ -284,6 +290,7 @@ Now, we create the concrete class for the subject, which is the actual YouTubeCh
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -334,6 +341,7 @@ Now, let’s use all the classes we've created and run the program. We will have
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create a YouTube channel

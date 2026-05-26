@@ -147,6 +147,7 @@ Is this the kind of game flow you had in mind?
 ‍
 
 ```java
+
 public class Player {
 private String name;
 private boolean isWhiteSide;
@@ -230,6 +231,7 @@ Use an Enum to track the game state (e.g., ACTIVE, SAVED, BLACK\_WIN, WHITE\_WIN
 ‍
 
 ```java
+
 public enum Status {
 ACTIVE, SAVED, BLACK_WIN, WHITE_WIN, STALEMATE;
 }
@@ -268,6 +270,7 @@ ACTIVE, SAVED, BLACK_WIN, WHITE_WIN, STALEMATE;
 ‍
 
 ```java
+
 public abstract class Piece { 
 private boolean isWhitePiece;  // is the piece white piece or black piece  
 private boolean killed = false; // is the piece killed or not 
@@ -299,6 +302,7 @@ King.java : 
 ‍
 
 ```java
+
 public class King extends Piece {
 public King(boolean isWhitePiece) {
 super(isWhitePiece);
@@ -311,6 +315,7 @@ super(isWhitePiece);
 Queen.java
 
 ```java
+
 public class Queen extends Piece {
 public Queen(boolean isWhitePiece) {
 super(isWhitePiece);
@@ -323,6 +328,7 @@ super(isWhitePiece);
 Bishop.java
 
 ```java
+
 public class Bishop extends Piece {
 public Bishop(boolean isWhitePiece){
 super(isWhitePiece);
@@ -339,6 +345,7 @@ super(isWhitePiece);
 PieceFactory.java : 
 
 ```java
+
 public class PieceFactory {
 public static Piece createPiece(String pieceType, boolean isWhitePiece) {
 switch (pieceType.toLowerCase()) {
@@ -372,6 +379,7 @@ Before diving into the Board class, we will first focus on the Cell class, as th
 Cell.java : 
 
 ```java
+
 public class Cell {
 private int row, col;
 private String label;
@@ -402,6 +410,7 @@ Let's now also create a Move class that encapsulates all the necessary details f
 Move.java : 
 
 ```java
+
 public class Move {
 private Cell startCell;
 private Cell endCell;
@@ -430,6 +439,7 @@ return endCell;
 3.Board.java
 
 ```java
+
 public class Board {
 private static Board instance;
 private Cell[][] board;
@@ -504,6 +514,7 @@ Modify the constructor to accept a MovementStrategy parameter.
 ‍
 
 ```java
+
 // Common Interface for the Move Strategies
 public interface MovementStrategy {
 boolean canMove(Board board, Cell startCell, Cell endCell);
@@ -539,6 +550,7 @@ return movementStrategy.canMove(board, startBlock, endBlock);
 ‍
 
 ```java
+
 // King class with movement strategy
 public class King extends Piece {
 public King(boolean white) {
@@ -583,6 +595,7 @@ Running the Game : 
 ‍
 
 ```java
+
 import java.util.ArrayList;
 interface BoardGames {
 // This interface illustrates how a large game company can manage multiple
@@ -666,6 +679,7 @@ isWhiteTurn = !isWhiteTurn;
 • Main Method to Run the Game
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create players
@@ -740,6 +754,7 @@ To allow different board sizes, modify the Board class to accept a variable grid
 ‍
 
 ```java
+
 public class Board {
 private static Board instance;
 private Cell[][] board;
@@ -791,6 +806,7 @@ Implement the Observer Pattern to notify users about each move, the current stat
 ‍
 
 ```java
+
 public interface GameEventListener { 
 void onMoveMade(Move move); 
 void onGameStateChanged(Status state); 
@@ -804,6 +820,7 @@ void onGameStateChanged(Status state); 
 ‍
 
 ```java
+
 public class ConsoleGameEventListener implements GameEventListener { 
 @Override 
 public void onMoveMade(Move move) { 
@@ -827,6 +844,7 @@ Initialization and Constrcutor : 
 ‍
 
 ```java
+
 public class Game {
 private Board board;
 // Assuming player1 is always WHITE
@@ -857,6 +875,7 @@ this.gameLog = new ArrayList<>();
 ‍
 
 ```java
+
 public void makeMove(Move move, Player player) {
 if (move.isValid()) {
 Piece sourcePiece = move.getStartCell().getPiece();
@@ -895,6 +914,7 @@ isWhiteTurn = !isWhiteTurn;
 ‍
 
 ```java
+
 // Observer methods
 public void setObserver(GameEventListener listener) {
 this.listener = listener;
@@ -920,6 +940,7 @@ listener.onGameStateChanged(state);
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create players
@@ -950,6 +971,7 @@ chessGame.start();
 ‍
 
 ```java
+
 public interface PlayerStrategy {
 Move determineMove(Board board, boolean isWhiteSide);
 }
@@ -964,6 +986,7 @@ Human Player Strategy : 
 ‍
 
 ```java
+
 public class HumanPlayerStrategy implements PlayerStrategy {
 private Scanner scanner = new Scanner(System.in);    
 @Override
@@ -987,6 +1010,7 @@ return new Move(startCell, endCell);
 AI Player Strategy : 
 
 ```java
+
 public class AIPlayerStrategy implements PlayerStrategy {
 @Override
 public Move determineMove(Board board, boolean isWhiteSide) {
@@ -1032,6 +1056,7 @@ return validMoves;
 3\. **Modify the Player Class to Use Player Strategy :** 
 
 ```java
+
 public class Player {
 private String name;
 private boolean isWhiteSide;
@@ -1064,6 +1089,7 @@ this.strategy = strategy;
 ‍
 
 ```java
+
 public class Board {
 private static Board instance;
 private Cell[][] board;
@@ -1108,6 +1134,7 @@ return board[row][col];
 ‍
 
 ```java
+
 public class ChessGame {
 private Board board;
 // Assuming player1 is always WHITE
@@ -1207,6 +1234,7 @@ System.out.println(isWhiteTurn);
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create players with different strategies

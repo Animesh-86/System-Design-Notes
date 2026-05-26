@@ -31,6 +31,7 @@ The following code is a poorly written example of calculating the factorial of a
 ‍
 
 ```java
+
 // Bad Code: Overcomplicated, lacks clarity, and violates KISS
 public class FactorialCalculator {
 public static int factorial(int n) {
@@ -63,6 +64,7 @@ This version simplifies the logic and improves readability by directly calculati
 ‍
 
 ```java
+
 // KISS-Compliant Code: Simple, clear, and efficient
 public class FactorialCalculator {
 public static int factorial(int n) {
@@ -165,6 +167,7 @@ int total_price = base_price * 10
 ### 🚨 Bad Code (Violates KISS):
 
 ```java
+
 // Bad Code: Process order logic is combined into a single function
 public class OrderProcessor {
 public static double processOrder(Item[] order, double taxRate) {
@@ -183,6 +186,7 @@ return total; // Return final total
 ### 🌿 Improved Code (Follows KISS):
 
 ```java
+
 // KISS-Compliant Code: Breaking down the logic into reusable methods
 class Item {
 double price;

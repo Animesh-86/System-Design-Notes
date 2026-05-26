@@ -123,6 +123,7 @@ Game Board:
 • Description: Represents the game area with specified width and height where the snake moves and food appears.
 
 ```java
+
 public class GameBoard {
 private int width;
 private int height;
@@ -148,6 +149,7 @@ Description: Represents the snake, which consists of a list of body segments and
 ‍
 
 ```java
+
 public class Snake {
 private Deque<Pair> body; // Snake body as a deque of positions
 private Map<Pair, Boolean> positionMap; // For O(1) collision check	    
@@ -175,6 +177,7 @@ Description: Represents the food items that the snake consumes.
 ‍
 
 ```java
+
 public class Food {
 private int[][] foodPositions;
 private int currentFoodIndex;	    
@@ -197,6 +200,7 @@ Description: Controls the game flow, processes moves, and tracks the score.
 ‍
 
 ```java
+
 public class SnakeGame {
 private GameBoard board;
 private Snake snake;
@@ -215,6 +219,7 @@ Pair:
 Description: Represents a coordinate on the game board with row and column values. It is used for positions of the snake and food, enabling clearer and reusable code for 2D coordinates.
 
 ```java
+
 public class Pair {
 int row;
 int col;
@@ -308,6 +313,7 @@ This interface defines a strategy for determining the next position of a snake's
 ‍
 
 ```java
+
 // Movement strategy interface
 interface MovementStrategy {
 Pair getNextPosition(Pair currentHead, String direction);
@@ -323,6 +329,7 @@ This class implements the MovementStrategy interface and provides movement logic
 ‍
 
 ```java
+
 // Human player movement strategy
 class HumanMovementStrategy implements MovementStrategy {
 @Override
@@ -349,6 +356,7 @@ This class implements the MovementStrategy interface and is responsible for cont
 ‍
 
 ```java
+
 // AI movement strategy (for autonomous snake movement)
 class AIMovementStrategy implements MovementStrategy {
 @Override
@@ -372,6 +380,7 @@ This abstract class represents a food item placed on the game board. It defines 
 ‍
 
 ```java
+
 // Abstract class representing a food item in the game
 abstract class FoodItem {
 protected int row, column; // Position of the food item
@@ -403,6 +412,7 @@ Represents a standard food item that awards 1 point when consumed
 ‍
 
 ```java
+
 // Concrete class representing normal food with 1 point
 class NormalFood extends FoodItem {
 public NormalFood(int row, int column) {
@@ -421,6 +431,7 @@ Represents a special bonus food item that awards 3 points when consumed.
 ‍
 
 ```java
+
 // Concrete class representing bonus food with 3 points
 class BonusFood extends FoodItem {
 public BonusFood(int row, int column) {
@@ -439,6 +450,7 @@ The Factory Pattern is implemented here to create FoodItem objects dynamically b
 ‍
 
 ```java
+
 // Factory class for creating food items based on type
 class FoodFactory {
 // Static method to create a food item at a given position and type
@@ -464,6 +476,7 @@ Ensures that only one instance of the game board exists, preventing the creation
 ‍
 
 ```java
+
 // Singleton class representing the game board
 public class GameBoard {
 private static GameBoard instance; // Single instance of the game board
@@ -494,6 +507,7 @@ public int getHeight() { return height; }
 ‍
 
 ```java
+
 class SnakeGame {
 private GameBoard board;
 private Deque<Pair> snake;
@@ -578,6 +592,7 @@ return score;
 ‍
 
 ```java
+
 public class SnakeGameMain {
 public static void main(String[] args) {
 // Define game configuration
@@ -703,6 +718,7 @@ Example :
 1.) GameBoard.java :  
 
 ```java
+
 public class GameBoard {
 private static GameBoard instance;
 private int width;
@@ -729,6 +745,7 @@ Usage in Main Class : 
 ‍
 
 ```java
+
 public class SnakeGameMain {
 // Create a small 8x8 board for mobile
 SnakeGame smallGame = new SnakeGame(8, 8, foodPositions);
@@ -755,6 +772,7 @@ The Observer Pattern can be used to notify users about each move, the current st
 ‍
 
 ```java
+
 public interface GameObserver {
 void onMoveMade(Pair newHeadPosition);
 void onFoodEaten(int foodIndex, int newScore);
@@ -769,6 +787,7 @@ void onGameOver(int finalScore);
 ‍
 
 ```java
+
 // Console-based observer for debugging and logging
 public class ConsoleGameObserver implements GameObserver {
 @Override
@@ -797,6 +816,7 @@ System.out.println("Game Over! Final score: " + finalScore);
 ‍
 
 ```java
+
 class SnakeGame {
 private GameBoard board;
 private Deque<Pair>> snake;
@@ -904,6 +924,7 @@ Modify SnakeGame Class To incorporate the logic of walls and no walls: 
 ‍
 
 ```java
+
 // Modified SnakeGame class with no walls - wrapping around edges
 class SnakeGame {
 private GameBoard board;
@@ -1047,6 +1068,7 @@ Modify Main Class to handle No Walls Logic : 
 ‍
 
 ```java
+
 public class SnakeGameMain {
 public static void main(String[] args) {
 // Define game configuration

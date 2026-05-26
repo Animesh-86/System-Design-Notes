@@ -39,6 +39,7 @@ In the traditional method, you might try something like this:
 ‍
 
 ```java
+
 class TextEditorTraditional {
 private String text;
 public TextEditorTraditional(String text) {
@@ -95,6 +96,7 @@ As features are added, the traditional method turns into something like this:
 ‍
 
 ```java
+
 public class TextEditorUgly {
 private String text;
 // Imagine if we have multiple backups for multi-level undo!
@@ -145,6 +147,7 @@ This class will have the current state (the text) and methods to save and restor
 ‍
 
 ```java
+
 class TextEditor {
 private String text;
 public void setText(String text) {
@@ -186,6 +189,7 @@ This class stores the state of the text editor.
 ‍
 
 ```java
+
 class Memento {
 private final String text;
 public Memento(String text) {
@@ -215,6 +219,7 @@ This class manages the history of mementos to support multiple undo operations.
 ‍
 
 ```java
+
 import java.util.Stack;
 class EditorHistory {
 private Stack<Memento> history = new Stack<>();
@@ -246,6 +251,7 @@ return null;
 Let’s see our text editor with undo functionality in action!
 
 ```java
+
 public class MementoPatternDemo {
 public static void main(String[] args) {
 TextEditor editor = new TextEditor();
@@ -326,6 +332,7 @@ For example, you could add a redo stack in the EditorHistory class to support re
 Below is a short snippet that extends our Memento Pattern to include redo functionality. We modify the caretaker (EditorHistory) to manage two stacks—one for undo and one for redo.
 
 ```java
+
 import java.util.Stack;
 // Extended caretaker with redo support
 class EditorHistory {
@@ -365,6 +372,7 @@ return null;
 And here’s how you might use this in your main program:
 
 ```java
+
 public class MementoRedoDemo {
 public static void main(String[] args) {
 TextEditor editor = new TextEditor();

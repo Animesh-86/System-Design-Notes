@@ -37,6 +37,7 @@ Now, let's revisit the traditional approach where constructors are used to creat
 Constructors were introduced to ensure that objects are created in a valid state right when they are instantiated. The constructor allows you to initialize an object with necessary values and guarantees that all required properties are set up right away.
 
 ```java
+
 public class Car {
 private String engine;
 private int wheels;
@@ -77,6 +78,7 @@ If a car has many optional attributes, you end up with multiple constructors, ea
 ‍
 
 ```java
+
 public class Car {
 public Car(String engine, int wheels, int seats, String color,
 boolean sunroof, boolean navigationSystem) {
@@ -104,6 +106,7 @@ The client code becomes hard to read because of unlabeled parameters in construc
 ‍
 
 ```java
+
 Car car = new Car("V8", 4, 5, "Red", true, false);
 ```
 
@@ -140,6 +143,7 @@ Let’s see how we can implement the Builder Pattern to create a Car with flexib
 ‍
 
 ```java
+
 public class Car {
 private String engine;
 private int wheels;
@@ -236,6 +240,7 @@ this); // Return a new Car created using the builder's values
 Here’s how the client would use the CarBuilder to create Car objects:
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Creating a car using the Builder pattern

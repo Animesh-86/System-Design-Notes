@@ -151,6 +151,7 @@ The Thread class provides the foundation for creating and managing threads in Ja
 ‍
 
 ```java
+
 class MyThread extends Thread { 
 
 // Override the run method to define thread behavior 
@@ -204,6 +205,7 @@ The Runnable interface provides a more flexible approach to creating threads. It
 ‍
 
 ```java
+
 class MyRunnable implements Runnable { 
 
 // Implement the run method from Runnable interface 
@@ -347,6 +349,7 @@ The Callable interface works with the ExecutorService framework rather than di
 ## Implementing Callable Interface 💻
 
 ```java
+
 class MyCallable implements Callable<String> { 
 
 private final String name; 
@@ -452,6 +455,7 @@ Callable Task 2 is running: 4
 ‍
 
 ```java
+
 class MyThread extends Thread { 
 public void run() { 
 System.out.println("Thread running: " + Thread.currentThread().getName()); 
@@ -480,6 +484,7 @@ t2.run();   // Runs in the main thread 
 ‍
 
 ```java
+
 public class TestThread extends Thread { 
 public void run() { 
 System.out.println("Thread is running..."); 
@@ -508,6 +513,7 @@ t.start(); // Throws IllegalThreadStateException 
 ‍
 
 ```java
+
 class MyThread extends Thread { 
 public void run() { 
 try { 
@@ -569,6 +575,7 @@ to wait until another thread invokes notify() or notifyAll() on the same obj
 ‍
 
 ```java
+
 class SleepExample { 
 public static void main(String[] args) { 
 System.out.println("Thread is going to sleep..."); 
@@ -619,6 +626,7 @@ Thread woke up after sleeping.
 ‍
 
 ```java
+
 class SharedResource { 
 synchronized void waitExample() { 
 System.out.println(Thread.currentThread().getName() + " is waiting..."); 
@@ -728,6 +736,7 @@ If we replace notify(); with notifyAll();, all **waiting threads** will be 
 ‍
 
 ```java
+
 class MyRunnable implements Runnable { 
 private Callable<Integer> callable; 
 public MyRunnable(Callable<Integer> callable) { 

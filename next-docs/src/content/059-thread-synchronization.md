@@ -41,6 +41,7 @@ When you declare an entire method as synchronized, the lock 🔐 is acquired on 
 Example:
 
 ```java
+
 public class CounterSyncMethod { 
 private int count = 0; 
 // The entire method is synchronized. 
@@ -132,6 +133,7 @@ A synchronized block allows you to specify a particular block of code to be sync
 Example:
 
 ```java
+
 public class CounterSyncBlock { 
 private int count = 0; 
 // Explicit lock object for finer control. 
@@ -267,6 +269,7 @@ volatile establishes a happens-before relationship 🔗.
 Example:
 
 ```java
+
 public class VolatileExample { 
 // Declaring the flag as volatile ensures that changes to 'running'  
 // in one thread are immediately visible to other threads. 
@@ -338,6 +341,7 @@ You should use atomic variables when you need to perform simple operations ➕�
 Example : 
 
 ```java
+
 import java.util.concurrent.atomic.AtomicInteger; 
 public class AtomicCounterExample { 
 // The AtomicInteger counter provides atomic methods for thread-safe operations. 

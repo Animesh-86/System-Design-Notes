@@ -215,6 +215,7 @@ User Class : 
 ‍
 
 ```java
+
 /**
 - Represents a user in the system.
 */
@@ -259,6 +260,7 @@ return Objects.hash(id);
 ‍
 
 ```java
+
 /**
 - Represents an expense shared between users.
 */
@@ -297,6 +299,7 @@ public Map<User, Double> getShares() { return shares; }
 ‍‍
 
 ```java
+
 /**
 - Represents a financial transaction between two users.
 */
@@ -324,6 +327,7 @@ public double getAmount() { return amount; }
 • User Pair Class : 
 
 ```java
+
 public class UserPair {
 private User user1;
 private User user2;
@@ -349,6 +353,7 @@ Split Interface : 
 ‍
 
 ```java
+
 // Interface defining the behavior for all types of splits
 interface Split {
 /**
@@ -372,6 +377,7 @@ Equal Split : 
 ‍
 
 ```java
+
 // Implementation of the Split interface for equal split
 public class EqualSplit implements Split {
 @Override
@@ -393,6 +399,7 @@ return splits;
 ‍
 
 ```java
+
 // Implementation of the Split interface for percentage-based split
 public class PercentageSplit implements Split {
 @Override
@@ -418,6 +425,7 @@ return splits;
 ‍
 
 ```java
+
 // Factory class for creating instances of different Split types
 public class SplitFactory {
 /**
@@ -449,6 +457,7 @@ Observer Interface : 
 ‍
 
 ```java
+
 // Interface for observers that need to be notified of expense updates.
 interface ExpenseObserver {
 // Called when a new expense is added to the system.
@@ -466,6 +475,7 @@ void onExpenseUpdated(Expense expense);
 ‍
 
 ```java
+
 // Interface for objects that can be observed for expense updates.
 interface ExpenseSubject {
 // Adds an observer to the notification list.
@@ -491,6 +501,7 @@ void notifyExpenseUpdated(Expense expense);
 ‍
 
 ```java
+
 // Concrete implementation of ExpenseSubject that manages expense notifications.
 public class ExpenseManager implements ExpenseSubject {
 private List<ExpenseObserver> observers = new ArrayList<>();
@@ -552,6 +563,7 @@ return new ArrayList<>(expenses);
 ‍
 
 ```java
+
 /**
 - Balance sheet that observes expenses and calculates balances.
 */
@@ -897,6 +909,7 @@ N−M
 ‍
 
 ```java
+
 public int getOptimalMinimumSettlements() {
 // Step 1: Calculate net balances for each user
 Map<User, Double> netBalances = new HashMap<>();
@@ -1008,6 +1021,7 @@ Let n be the length of transactions.
 ‍
 
 ```java
+
 // Main class to demonstrate the system
 public class SplitwiseSystem {
 public static void main(String[] args) {
@@ -1134,6 +1148,7 @@ Create a New group Class : 
 ‍
 
 ```java
+
 public class Group {
 private String id;                 // Unique identifier for the group
 private String name;               // Name of the group
@@ -1318,6 +1333,7 @@ return balanceSheet.getGroupSimplifiedSettlements(group.getId());
 ‍
 
 ```java
+
 public class BalanceSheet implements ExpenseObserver {
 // Stores the net balance between pairs of users
 private Map<UserPair, Double> balances = new HashMap<>();
@@ -1607,6 +1623,7 @@ return transactions;
 ‍
 
 ```java
+
 /**
 - Modified client code to demonstrate group functionality with proper balance handling
 */

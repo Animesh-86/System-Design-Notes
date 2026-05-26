@@ -149,6 +149,7 @@ To achieve this, we use semaphores to control access to the queue, preventing ra
 ## 📝 Implementation : 
 
 ```java
+
 class BoundedBlockingQueue { 
 // Semaphore to track the number of items in the queue (full spots)
 private Semaphore full; 

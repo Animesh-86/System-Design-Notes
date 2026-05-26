@@ -64,6 +64,7 @@ Object → null
 ‍
 
 ```java
+
 class Movie {
 private String title; // Default: null
 private int duration; // Default: 0
@@ -104,6 +105,7 @@ Title: null, Duration: 0 mins
 ‍
 
 ```java
+
 class Movie {
 private String title;
 private int duration;
@@ -151,6 +153,7 @@ By explicitly defining a default constructor, you gain control over how objects 
 ‍
 
 ```java
+
 class Movie {
 private String title;
 private int duration;
@@ -195,6 +198,7 @@ Title: Inception, Duration: 148 mins
 ‍
 
 ```java
+
 class Movie {
 private String title;
 private int duration;
@@ -245,6 +249,7 @@ Title: Inception, Duration: 148 mins
 ‍
 
 ```java
+
 class Singleton {
 private static Singleton instance;
 // Private constructor
@@ -318,6 +323,7 @@ System.out.println(s1
 ‍
 
 ```java
+
 class Example {
 public Example(int a, int b) {
 this.a = a;
@@ -364,6 +370,7 @@ Compilation Error
 ‍
 
 ```java
+
 class Example {
 private int value;
 // Constructor with a return statement

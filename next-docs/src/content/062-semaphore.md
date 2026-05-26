@@ -43,6 +43,7 @@ Conceptually, a semaphore has two primary operations:
 ‍‍
 
 ```java
+
 import java.util.concurrent.Semaphore;
 
 public class BinarySemaphoreExample {
@@ -93,6 +94,7 @@ Thread-2 released the lock.
 ‍
 
 ```java
+
 import java.util.concurrent.Semaphore;
 
 public class CountingSemaphoreExample {
@@ -157,6 +159,7 @@ Semaphores are ideal for controlling access to a limited number of resources, su
 Example : 
 
 ```java
+
 Semaphore resourcePool = new Semaphore(5); // 5 permits for 5 resources
 // Threads acquire permits to access the shared resource and release them after use
 ```
@@ -170,6 +173,7 @@ Semaphore resourcePool = new Semaphore(5); // 5 permits for 5 resources
 Example:
 
 ```java
+
 Semaphore emptySlots = new Semaphore(bufferSize); // Track empty slots
 Semaphore filledSlots = new Semaphore(0); // Track filled slots
 ```
@@ -183,6 +187,7 @@ Semaphore filledSlots = new Semaphore(0); // Track filled slots
 Example:
 
 ```java
+
 Semaphore maxThreads = new Semaphore(10); // Restrict to 10 threads at a time
 ```
 
@@ -195,6 +200,7 @@ Semaphore maxThreads = new Semaphore(10); // Restrict to 10 threads at a time
 Example:
 
 ```java
+
 Semaphore mutex = new Semaphore(1); // Single permit for mutual exclusion
 ```
 
@@ -209,6 +215,7 @@ Answer: A Lock allows only one thread to access a resource at a time (mutual exc
 ‍
 
 ```java
+
 public class SemaphoreVsLockExample { 
 private final Semaphore semaphore = new Semaphore(3); // Allows up to 3 threads concurrently 
 private final Lock lock = new ReentrantLock(); 
@@ -288,6 +295,7 @@ Answer: In Java's Semaphore implementation, calling release() without a prior ac
 ‍
 
 ```java
+
 import java.util.concurrent.Semaphore; 
 public class SemaphoreReleaseExample { 
 private final Semaphore semaphore = new Semaphore(2); // Initially allows 2 threads 
@@ -341,6 +349,7 @@ Answer: A barrier ensures that no thread can proceed past a certain point until 
 ‍
 
 ```java
+
 public class SemaphoreBarrierExecutorDemo {
 // A reusable barrier implemented with semaphores
 static class SemaphoreBarrier {
@@ -473,6 +482,7 @@ while ensuring writers get exclusive access. The key principles are:
 ‍
 
 ```java
+
 public class ReaderWriterLock {
 // Count of active readers.
 private int readerCount = 0;

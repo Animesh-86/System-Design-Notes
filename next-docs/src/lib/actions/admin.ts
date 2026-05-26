@@ -3,6 +3,7 @@
 import { connectToMongo } from '@/lib/mongodb';
 import HighlightModel from '@/lib/models/Highlight';
 import NoteModel from '@/lib/models/Note';
+import BookmarkModel from '@/lib/models/Bookmark';
 import ReadingProgressModel from '@/lib/models/ReadingProgress';
 import ChecklistItemModel from '@/lib/models/ChecklistItem';
 import { getUserIdFromSession } from '@/lib/authServer';
@@ -12,9 +13,10 @@ export async function resetUserData(userId?: string) {
     await connectToMongo();
     const uid = userId || (await getUserIdFromSession());
     if (!uid) return { error: 'No user' };
-    const [hRes, nRes, pRes, cRes] = await Promise.all([
+    const [hRes, nRes, bRes, pRes, cRes] = await Promise.all([
       HighlightModel.deleteMany({ user_id: uid }),
       NoteModel.deleteMany({ user_id: uid }),
+      BookmarkModel.deleteMany({ user_id: uid }),
       ReadingProgressModel.deleteMany({ user_id: uid }),
       ChecklistItemModel.deleteMany({ user_id: uid }),
     ]);
@@ -24,6 +26,7 @@ export async function resetUserData(userId?: string) {
       deleted: {
         highlights: hRes.deletedCount ?? 0,
         notes: nRes.deletedCount ?? 0,
+        bookmarks: bRes.deletedCount ?? 0,
         progress: pRes.deletedCount ?? 0,
         checklist: cRes.deletedCount ?? 0,
       },

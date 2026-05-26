@@ -35,6 +35,7 @@ Here’s how we might do this for car brands:
 ‍
 
 ```java
+
 // Vehicle.java - Common Interface
 public interface Vehicle {
 void start();
@@ -113,6 +114,7 @@ Let’s say we decide to add a few more brands like Ford and Chevrolet. If we ke
 ‍
 
 ```java
+
 public Vehicle createVehicle(String brand) {
 if (brand.equals("Honda")) {
 return new Honda();
@@ -195,6 +197,7 @@ Let’s refactor the code to use the Abstract Factory pattern. We’ll define an
 ‍
 
 ```java
+
 // Vehicle.java - Common Interface
 public interface Vehicle {
 void start();

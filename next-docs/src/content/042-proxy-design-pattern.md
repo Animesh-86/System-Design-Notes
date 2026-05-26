@@ -45,6 +45,7 @@ Here’s a naive implementation where the VideoService class handles all operati
 VideoService.java : 
 
 ```java
+
 // VideoService.java
 public class VideoService {
 public void playVideo(String userType, String videoName) {
@@ -64,6 +65,7 @@ System.out.println("Access denied: Invalid user type.");
 Main.java
 
 ```java
+
 // Main.java
 public class Main {
 public static void main(String[] args) {
@@ -113,6 +115,7 @@ Let’s say we need to add more features like caching or limiting user requests:
 VideoService.java : 
 
 ```java
+
 public class VideoService {
 private Map<String, String> cachedVideos = new HashMap<>();
 private Map<String, Integer> requestCounts = new HashMap<>();
@@ -140,6 +143,7 @@ cachedVideos.put(videoName, videoName);
 Main.java
 
 ```java
+
 // Main.java
 public class Main {
 public static void main(String[] args) {
@@ -191,6 +195,7 @@ VideoServiceInterface.java : 
 ‍
 
 ```java
+
 // VideoServiceInterface.java
 public interface VideoServiceInterface {
 void playVideo(String userType, String videoName);
@@ -206,6 +211,7 @@ In this step, we will create the RealVideoService class that implements the Vide
 RealVideoService.java : 
 
 ```java
+
 // RealVideoService.java
 public class RealVideoService implements VideoServiceInterface {
 @Override
@@ -222,6 +228,7 @@ System.out.println("Streaming video: " + videoName);
 In this step, we will create the ProxyVideoService class that implements the VideoService interface. The proxy class will control access to the RealVideoService and add additional functionality, such as caching or access control, without modifying the actual implementation of the RealVideoService
 
 ```java
+
 // ProxyVideoService.java
 import java.util.HashMap;
 import java.util.Map;
@@ -267,6 +274,7 @@ cachedVideos.put(videoName, videoName);
 In this step, we will integrate the ProxyVideoService into our application to control access to the RealVideoService. By using the proxy, we can add additional functionality, such as caching or access control, without modifying the actual implementation of the RealVideoService. This approach allows us to manage the complexity and enhance the functionality of the video service in a flexible and maintainable way.
 
 ```java
+
 // Main.java
 public class Main {
 public static void main(String[] args) {

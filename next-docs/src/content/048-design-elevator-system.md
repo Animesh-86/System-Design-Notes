@@ -135,6 +135,7 @@ Candidate: Now that we have the requirements, let's identify the key components 
 ‍‍
 
 ```java
+
 // Core Elevator class with a simple queue for managing requests
 class Elevator {
 private int id; // Unique identifier for the elevator
@@ -193,6 +194,7 @@ return new ArrayList<>(requests);
 ‍
 
 ```java
+
 class Building {
 private String name; // Name of the building
 private int numberOfFloors; // Total number of floors in the building
@@ -212,6 +214,7 @@ Description : This class represents a Single Floor
 ‍
 
 ```java
+
 // Represents a floor in a building
 public class Floor {
 private int floorNumber;
@@ -237,6 +240,7 @@ return floorNumber;
 ‍
 
 ```java
+
 // Manages the operations and coordination of all elevators in a building
 class ElevatorController {
 private List<Elevator> elevators; // List of all elevators controlled by this system
@@ -255,6 +259,7 @@ To effectively manage elevator states, we'll use enums to achieve the functional
 ‍
 
 ```java
+
 // Enum to represent the direction of the elevator
 enum Direction {
 UP,      // The elevator is moving upward
@@ -356,6 +361,7 @@ ElevatorObserver Interface : 
 ‍
 
 ```java
+
 // Observer interface for handling elevator events
 interface ElevatorObserver {
 // Called when an elevator's state changes
@@ -374,6 +380,7 @@ void onElevatorFloorChange(Elevator elevator, int floor);
 ‍
 
 ```java
+
 // Concrete implementation of the Observer interface
 class ElevatorDisplay implements ElevatorObserver {
 @Override
@@ -399,6 +406,7 @@ System.out.println("Elevator " + elevator.getId() + " moved to floor " + floor);
 Command Interface : 
 
 ```java
+
 // Command Pattern for Request Processing
 interface ElevatorCommand {
 // Method to execute the command
@@ -413,6 +421,7 @@ void execute();
 ‍
 
 ```java
+
 package CommandPatternIMP.ConcreteClasses;
 import CommandPatternIMP.ElevatorCommand;
 import CommonEnums.Direction;
@@ -469,6 +478,7 @@ This interface defines the common method selectElevator for different scheduling
 ‍‍
 
 ```java
+
 // Strategy Pattern for Scheduling
 interface SchedulingStrategy {
 // Determines the next stop for the given elevator
@@ -487,6 +497,7 @@ This class implements the FCFS algorithm, where the elevator completes the reque
 ‍‍
 
 ```java
+
 // First-Come-First-Served Algorithm
 class FCFSSchedulingStrategy implements SchedulingStrategy {
 @Override
@@ -532,6 +543,7 @@ return nextRequestedFloor;
 ‍
 
 ```java
+
 /* SIMULATION SCENARIO : Down Request While Elevator is Moving Down
 - 
 - Setup:
@@ -558,6 +570,7 @@ Current direction it is moving in.
 ‍
 
 ```java
+
 // Scan Scheduling Strategy for handling elevator requests
 class ScanSchedulingStrategy implements SchedulingStrategy {
 @Override
@@ -812,6 +825,7 @@ This design ensures that the elevator optimizes its journey by stopping at all i
 ‍
 
 ```java
+
 public class LookSchedulingStrategy implements SchedulingStrategy {
 @Override
 public int getNextStop(Elevator elevator) {
@@ -890,6 +904,7 @@ To begin, let's create the core classes for our elevator system design, which wi
 ‍
 
 ```java
+
 // Core Elevator class with simple queue for managing requests
 class Elevator {
 // Unique ID for the elevator
@@ -1054,6 +1069,7 @@ The Elevator Controller class manages the operation of multiple elevators within
 ‍
 
 ```java
+
 // Elevator Controller class to manage elevators and floor requests
 class ElevatorController {
 // List of all elevators in the system
@@ -1168,6 +1184,7 @@ this.currentElevatorId = elevatorId;
 ‍
 
 ```java
+
 // Represents a building with elevators and multiple floors
 class Building {
 private String name; // Name of the building
@@ -1206,6 +1223,7 @@ return elevatorController;
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Initialize a building with 10 floors and 3 elevators
@@ -1352,6 +1370,7 @@ Example : Adding a new Express Elevator
 ‍
 
 ```java
+
 // Extend the base Elevator class for specialized elevator types
 class ExpressElevator extends Elevator {
 private static final int SPEED_MULTIPLIER = 2;
@@ -1410,6 +1429,7 @@ Example : 
 ‍
 
 ```java
+
 // Factory for creating different elevator types
 class ElevatorFactory {
 public static Elevator createElevator(String type, int id) {
@@ -1432,6 +1452,7 @@ throw new IllegalArgumentException("Unknown elevator type: " + type);
 ‍
 
 ```java
+
 class ElevatorController {
 // Existing fields...
 
@@ -1519,6 +1540,7 @@ Round Robin Scheduling Strategy : 
 ‍
 
 ```java
+
 // Round Robin Scheduling Strategy
 class RoundRobinSchedulingStrategy implements SchedulingStrategy {
 private int lastAssignedIndex = -1;
@@ -1557,6 +1579,7 @@ return nextFloor;
 ‍
 
 ```java
+
 // Energy Efficient Scheduling Strategy
 class EnergyEfficientSchedulingStrategy implements SchedulingStrategy {
 @Override

@@ -79,6 +79,7 @@ Let's start by solving the problem in the traditional way, where each class crea
 ‍
 
 ```java
+
 // Vehicle.java - Common interface
 public interface Vehicle {
 void start();
@@ -162,6 +163,7 @@ It might look something like this:
 ‍
 
 ```java
+
 // Main.java becomes a mess as you add more vehicle creation logic
 public class Main {
 public static void main(String[] args) {
@@ -205,6 +207,7 @@ Here’s how we can solve this problem by introducing a Factory that creates the
 ‍
 
 ```java
+
 // Vehicle.java - Common interface
 public interface Vehicle {
 void start();

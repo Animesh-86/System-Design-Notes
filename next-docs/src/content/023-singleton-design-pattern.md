@@ -63,6 +63,7 @@ So, you start by creating a simple Logger class. The idea is that the Logger wil
 Here's the Logger class:
 
 ```java
+
 public class Logger {
 public void log(String message) {
 System.out.println("Log: " + message);
@@ -79,6 +80,7 @@ It looks simple enough. Now, you need to use this logger in your application to 
 For example, in the Application class, you create a new instance of the Logger and use it to log a message:
 
 ```java
+
 public class Application {
 public void run() {
 Logger logger = new Logger();  // New instance created every time
@@ -102,6 +104,7 @@ Each time the run() method is executed, a new Logger instance is created. This m
 Now, imagine that you have several classes in your application that need to log messages. For example, you might also have a UserService class that handles user actions like logging in:
 
 ```java
+
 public class UserService {
 public void login(String username) {
 Logger logger = new Logger();  // Another new instance created
@@ -161,6 +164,7 @@ If we wanted to make sure there was only one logger, we would have to check for 
 For example:
 
 ```java
+
 public class Logger {
 private static Logger logger = null;
 private Logger() {} // Private constructor to prevent external instantiation
@@ -223,6 +227,7 @@ We provide a public static method (getInstance()) to return the single instance 
 ‍
 
 ```java
+
 public class Logger {
 // 1. Private static variable to hold the single instance
 private static Logger instance;
@@ -362,6 +367,7 @@ We can use synchronization to ensure that only one thread can create the Logger 
 Here’s how we can apply synchronization:
 
 ```java
+
 public class Logger {
 private static volatile Logger
 instance; // volatile keyword ensures visibility across threads

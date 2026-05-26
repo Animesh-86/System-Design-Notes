@@ -229,6 +229,7 @@ This class represents a user's bank card.
 ‍
 
 ```java
+
 // Class representing a user's bank card
 public class Card {
 private String cardNumber;
@@ -264,6 +265,7 @@ This class represents a user's bank account.
 ‍
 
 ```java
+
 // Account class
 public class Account {
 private String accountNumber;
@@ -305,6 +307,7 @@ This enum represents different cash denominations available in the ATM. Each den
 ‍
 
 ```java
+
 // Enum representing different cash denominations
 // Cash Type Enum
 public enum CashType {
@@ -332,6 +335,7 @@ This class manages the ATM's cash inventory.
 ‍
 
 ```java
+
 // Class to manage the ATM's cash inventory
 public class ATMInventory {
 private Map<CashType, Integer> cashInventory;
@@ -414,6 +418,7 @@ Defines the contract for all ATM states, ensuring consistency across different s
 ‍
 
 ```java
+
 // Base ATM State interface with common methods
 public interface ATMState {
 // Get the name of the current state
@@ -433,6 +438,7 @@ A singleton factory class responsible for creating instances of different ATM st
 ‍
 
 ```java
+
 // ATM State Factory (Singleton)
 public class ATMStateFactory {
 private static ATMStateFactory instance = null;
@@ -473,6 +479,7 @@ Represents the types of transactions an ATM can process, such as cash withdrawal
 ‍
 
 ```java
+
 // Enum representing different transaction types
 public enum TransactionType {
 WITHDRAW_CASH,
@@ -491,6 +498,7 @@ Represents the initial state of the ATM, waiting for a user to insert a card.
 ‍
 
 ```java
+
 // Idle State Implementation
 public class IdleState implements ATMState {
 public IdleState() {
@@ -521,6 +529,7 @@ Indicates that a card has been inserted and requires PIN authentication before p
 ‍
 
 ```java
+
 // Has Card State Implementation
 public class HasCardState implements ATMState {
 public HasCardState() {
@@ -554,6 +563,7 @@ Represents the state where a user selects an operation after successful authenti
 ‍
 
 ```java
+
 // Select Operation State Implementation
 public class SelectOperationState implements ATMState {
 public SelectOperationState() {
@@ -588,6 +598,7 @@ Represents the state where a user performs a transaction after successful authen
 ‍
 
 ```java
+
 // Transaction State Implementation (combines both withdrawal and balance check)
 public class TransactionState implements ATMState {
 public TransactionState() {
@@ -618,6 +629,7 @@ return context.getStateFactory().createSelectOperationState();
 ‍
 
 ```java
+
 // The ATM Machine context class
 public class ATMMachineContext {
 private ATMState currentState;
@@ -817,6 +829,7 @@ return accounts.get(accountNumber);
 ‍
 
 ```java
+
 // Main class for demonstration
 public class ATMDemo {
 public static void main(String[] args) {

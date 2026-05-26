@@ -54,6 +54,7 @@ The "this" keyword is crucial when differentiating between instance variables an
 Example:
 
 ```java
+
 class Person {
 private String name;
 
@@ -86,6 +87,7 @@ Using the "this" keyword for constructor chaining allows one constructor to invo
 Example:
 
 ```java
+
 class Person {
 private String name;
 private int age;
@@ -124,6 +126,7 @@ The "this" keyword can be used to return the current instance of a class. This a
 Example:
 
 ```java
+
 class Person {
 private String name;
 Person setName(String name) {
@@ -154,6 +157,7 @@ p.setName("Bob").display();
 Example : 
 
 ```java
+
 class Person {
 void greet(Person person) {
 System.out.println("Hello, " + person);
@@ -210,6 +214,7 @@ Facilitates passing the current object as a parameter, enabling seamless interac
 Example : 
 
 ```java
+
 class Example {
 private String message = "Hello, World!";
 // Static method

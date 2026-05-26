@@ -135,6 +135,7 @@ Description: This class represents vehicles entering the parking lot.
 ‍
 
 ```java
+
 public abstract class Vehicle {
 protected String licensePlate; 
 protected VehicleType type; 
@@ -152,6 +153,7 @@ Description: This class manages the allocation and release of parking slots.
 ‍
 
 ```java
+
 public class ParkingLot {
 private List<ParkingSlot> slots; 
 }
@@ -168,6 +170,7 @@ Description: A slot has a type (Bike, Car, Truck) and an availability status.
 ‍
 
 ```java
+
 public class ParkingSlot {
 private VehicleType slotType;
 private boolean isOccupied; 
@@ -185,6 +188,7 @@ Description: This class processes payments before exit.
 ‍
 
 ```java
+
 public interface PaymentStrategy { 
 boolean processPayment(double amount);
 }
@@ -269,6 +273,7 @@ Defines a common interface for different parking fee calculation strategies.
 ‍
 
 ```java
+
 // Interface for Parking Fee Calculation Strategy
 public interface ParkingFeeStrategy {
 /**
@@ -292,6 +297,7 @@ Specifies the type of duration for parking (HOURS or DAYS).
 ‍
 
 ```java
+
 // Enum to specify duration type
 public enum DurationType {
 HOURS, 
@@ -310,6 +316,7 @@ Concrete strategy for basic hourly rates. Rates vary based on vehicle type.
 ‍
 
 ```java
+
 // Concrete Strategy for Basic Hourly Rates
 public class BasicHourlyRateStrategy implements ParkingFeeStrategy {
 @Override
@@ -349,6 +356,7 @@ Concrete strategy for premium rates. Premium rates have higher multipliers.
 ‍
 
 ```java
+
 // Concrete Strategy for Premium Rates
 public class PremiumRateStrategy implements ParkingFeeStrategy {
 @Override
@@ -394,6 +402,7 @@ Vehicle.java: Common Abstract Class for vehicles : 
 ‍
 
 ```java
+
 // Abstract class representing a vehicle
 public abstract class Vehicle {  
 private String licensePlate; // Stores the vehicle's license plate number
@@ -429,6 +438,7 @@ CarVehicle.java : 
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 import FareStrategyPattern.ParkingFeeStrategy;
 import VehicleFactoryPattern.Vehicle;
@@ -447,6 +457,7 @@ super(licensePlate, vehicleType, feeStrategy);
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 import FareStrategyPattern.ParkingFeeStrategy;
 import VehicleFactoryPattern.Vehicle;
@@ -469,6 +480,7 @@ super(licensePlate, vehicleType, feeStrategy);
 ‍
 
 ```java
+
 package VehicleFactoryPattern.ConcreteVehicles;
 import FareStrategyPattern.ParkingFeeStrategy;
 import VehicleFactoryPattern.Vehicle;
@@ -487,6 +499,7 @@ super(licensePlate, vehicleType, feeStrategy);
 ‍
 
 ```java
+
 package VehicleFactoryPattern;
 
 import FareStrategyPattern.ParkingFeeStrategy;
@@ -519,6 +532,7 @@ PaymentStrategy.java, Common Interface for Different Payment Strategies : 
 ‍
 
 ```java
+
 public interface PaymentStrategy {
 void processPayment(double amount);
 }
@@ -533,6 +547,7 @@ CashPayment.java : 
 ‍
 
 ```java
+
 package PaymentStrategyPattern.ConcretePaymentStrategies;
 import PaymentStrategyPattern.PaymentStrategy;
 
@@ -554,6 +569,7 @@ System.out.println("Processing cash payment of $" + amount);
 ‍
 
 ```java
+
 package PaymentStrategyPattern.ConcretePaymentStrategies;
 import PaymentStrategyPattern.PaymentStrategy;
 
@@ -574,6 +590,7 @@ System.out.println("Processing credit card payment of $" + amount);
 ‍
 
 ```java
+
 public class Payment {
 private double amount;
 private PaymentStrategy paymentStrategy; // Payment strategy interface
@@ -608,6 +625,7 @@ Abstract Parking Spot Class: This class will serve as the base class for all typ
 ‍
 
 ```java
+
 public abstract class ParkingSpot {
 private int spotNumber;
 private boolean isOccupied;
@@ -672,6 +690,7 @@ return spotType;
 CarParkingSpot.java : 
 
 ```java
+
 package ParkingSpots.ConcreteParkingSpots;
 import ParkingSpots.ParkingSpot;
 import VehicleFactoryPattern.Vehicle;
@@ -692,6 +711,7 @@ return "Car".equalsIgnoreCase(vehicle.getVehicleType());
   b.   BikeParkingSpot.java : 
 
 ```java
+
 package ParkingSpots.ConcreteParkingSpots;
 import ParkingSpots.ParkingSpot;
 import VehicleFactoryPattern.Vehicle;
@@ -722,6 +742,7 @@ ParkingLot.java : 
 ‍
 
 ```java
+
 public class ParkingLot {
 private List<ParkingSpot> parkingSpots;
 // Constructor to initialize the parking lot with parking spots
@@ -785,6 +806,7 @@ return parkingSpots;
 ‍
 
 ```java
+
 public class ParkingLotMain {
 public static void main(String[] args) {
 // Initialize parking spots
@@ -898,6 +920,7 @@ ParkingFloor.java : 
 ‍
 
 ```java
+
 public class ParkingFloor {
 // List of parking spots on this floor
 private List<ParkingSpot> spots;
@@ -941,6 +964,7 @@ return floorNumber;
 ‍
 
 ```java
+
 /**
 - Builder class for creating a flexible and extensible parking lot.
 - Provides a fluent interface for constructing multi-floor parking lots.
@@ -1001,6 +1025,7 @@ return new ParkingLot(floors);
 ‍
 
 ```java
+
 import java.util.List;
 
 // Class representing a parking lot with multiple floors
@@ -1073,6 +1098,7 @@ return floors;
 ‍
 
 ```java
+
 // Demonstrates the usage of the flexible parking lot builder.
 public class ParkingLotMain {
 public static void main(String[] args) {

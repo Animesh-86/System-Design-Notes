@@ -93,6 +93,7 @@ Reusable and modular code is often easier to test since specific functionalities
 Example : 
 
 ```java
+
 public
 class NumberSwapper {
 // Non-DRY approach - repeating swap logic multiple places
@@ -150,6 +151,7 @@ Example : 
 ‍
 
 ```java
+
 // SubmitButton class with its own onClick() implementation
 class SubmitButton {
 void onClick() { System.out.println("Form submitted."); }
@@ -186,6 +188,7 @@ In this approach, if you introduce new buttons, you would need to repeat the onC
 ‍
 
 ```java
+
 // Base class
 abstract class Button {
 abstract void onClick();
@@ -231,6 +234,7 @@ In this approach, if you introduce new buttons, you do not need to repeat the on
 Example : 
 
 ```java
+
 // Reusable method for button rendering
 public
 class Button {
@@ -264,6 +268,7 @@ cancelButton.render();  // Output: Rendering button: Cancel
 Example : 
 
 ```java
+
 #Before
 public
 class Main {

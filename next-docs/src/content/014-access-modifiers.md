@@ -104,6 +104,7 @@ PublicClassExample.java : 
 ‍
 
 ```java
+
 package utilityClasses; // Declared in the utilityClasses package
 public class PublicClassExample {
 public void display() {
@@ -121,6 +122,7 @@ DemoClass.java : 
 • Located in the demoPackage package, demonstrating the usage of the public method:
 
 ```java
+
 package demoPackage; // Declared in the demoPackage package
 import utilityClasses.PublicClassExample; // Importing the PublicClassExample from another package
 
@@ -178,6 +180,7 @@ PrivateClassExample.java : 
 Located in the utilityClasses package
 
 ```java
+
 package utilityClasses;
 
 public class PrivateClassExample {
@@ -200,6 +203,7 @@ DemoClass.java : 
 Located in the demoPackage package, demonstrating the usage of the private method
 
 ```java
+
 package demoPackage;
 import utilityClasses.PrivateClassExample;
 
@@ -258,6 +262,7 @@ ProtectedClassExample.java : 
 Located in the utilityClasses package
 
 ```java
+
 package utilityClasses;
 
 public class ProtectedClassExample {
@@ -276,6 +281,7 @@ DemoClass.java : 
 • Located in the demoPackage package, demonstrating the usage of the protected method:
 
 ```java
+
 package demoPackage;
 import utilityClasses.ProtectedClassExample;
 
@@ -312,6 +318,7 @@ This will allow us to access the display() method of the ProtectedClassExample.
 Code : 
 
 ```java
+
 package demoPackage;
 import utilityClasses.ProtectedClassExample;
 
@@ -356,6 +363,7 @@ DefaultClassExample.java : 
 • Located in the utilityClasses package:
 
 ```java
+
 package utilityClasses;
 
 public class DefaultClassExample {
@@ -374,6 +382,7 @@ DemoClass.java : 
 • Located in the demoPackage package, demonstrating the usage of the default method:
 
 ```java
+
 package demoPackage;
 import utilityClasses.DefaultClassExample;
 

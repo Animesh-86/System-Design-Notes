@@ -212,6 +212,7 @@ Does this align with what you're looking for? 
 ‍
 
 ```java
+
 public interface CacheStorage<K, V> { 
 void put(K key, V value) throws Exception; 
 V get(K key) throws Exception; 
@@ -228,6 +229,7 @@ int getCapacity(); 
     
 
 ```java
+
 public interface DBStorage<K, V> { 
 void write(K key, V value) throws Exception; 
 V read(K key) throws Exception; 
@@ -243,6 +245,7 @@ void delete(K key) throws Exception; 
     
 
 ```java
+
 public class InMemoryCacheStorage<K, V> implements CacheStorage<K, V> { 
 private final Map<K, V> cache; 
 private final int capacity; 
@@ -296,6 +299,7 @@ return capacity; 
     
 
 ```java
+
 public class SimpleDBStorage<K, V> implements DBStorage<K, V> { 
 // This is a simple mock database using a ConcurrentHashMap. 
 private final Map<K, V> database = new ConcurrentHashMap<>(); 
@@ -331,6 +335,7 @@ database.remove(key); 
     
 
 ```java
+
 public interface WritePolicy<K, V> { 
 /** 
 - Write a key/value pair to both cache storage and DB storage concurrently. 
@@ -348,6 +353,7 @@ void write(K key, V value, CacheStorage<K, V> cacheStorage, DBStorage<K,
     
 
 ```java
+
 public class WriteThroughPolicy<K, V> implements WritePolicy<K, V> { 
 @Override 
 public void write(K key, V value, CacheStorage<K, V> cacheStorage, DBStorage<K, V> dbStorage) throws Exception { 
@@ -380,6 +386,7 @@ CompletableFuture.allOf(cacheFuture, dbFuture).join(); 
     
 
 ```java
+
 public interface EvictionAlgorithm<K> { 
 /** 
 - Notifies the eviction algorithm that the given key was accessed. 
@@ -401,6 +408,7 @@ K evictKey() throws Exception; 
     
 
 ```java
+
 public class DoublyLinkedListNode<K> { 
 private final K value; 
 DoublyLinkedListNode<K> prev; 
@@ -425,6 +433,7 @@ return value; 
     
 
 ```java
+
 public class DoublyLinkedList<K> { 
 private DoublyLinkedListNode<K> head; 
 private DoublyLinkedListNode<K> tail; 
@@ -502,6 +511,7 @@ tail = null; 
     
 
 ```java
+
 public class LRUEvictionAlgorithm<K> implements EvictionAlgorithm<K> { 
 // A custom doubly linked list to track the LRU order. 
 private final DoublyLinkedList<K> dll; 
@@ -552,6 +562,7 @@ return evictKey; 
 **3.Implementing Executor :**  
 
 ```java
+
 public class KeyBasedExecutor { 
 private final ExecutorService[] executors; 
 private final int numExecutors; 
@@ -599,6 +610,7 @@ executor.shutdown(); 
     
 
 ```java
+
 public class Cache<K, V> { 
 private final CacheStorage<K, V> cacheStorage; 
 private final DBStorage<K, V> dbStorage; 
@@ -702,6 +714,7 @@ keyBasedExecutor.shutdown(); 
 **4.) Client Code to Run the System :**  
 
 ```java
+
 public class Main { 
 public static void main(String[] args) { 
 try { 

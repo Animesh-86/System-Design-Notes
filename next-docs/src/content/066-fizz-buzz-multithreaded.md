@@ -148,6 +148,7 @@ Each thread will wait for its respective semaphore before printing and then rele
 ## 📝 Implementation : 
 
 ```java
+
 class FizzBuzz { 
 // Number up to which FizzBuzz needs to be calculated
 private int n; 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { BookOpen, Clock, CheckCircle2, StickyNote, ArrowRight, BarChart3, Trophy } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle2, StickyNote, ArrowRight, BarChart3, Trophy, Share2, BookmarkCheck } from 'lucide-react';
 import type { ContentItem } from '@/lib/content';
 import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
@@ -26,15 +26,24 @@ interface NoteEntry {
   created_at: string;
 }
 
+interface BookmarkEntry {
+  id: string;
+  slug: string;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 interface DashboardClientProps {
   progress: ProgressEntry[];
   checklist: ChecklistEntry[];
   recentNotes: NoteEntry[];
+  recentBookmarks: BookmarkEntry[];
   contentItems: ContentItem[];
   userName: string;
 }
 
-export function DashboardClient({ progress, checklist, recentNotes, contentItems, userName }: DashboardClientProps) {
+export function DashboardClient({ progress, checklist, recentNotes, recentBookmarks, contentItems, userName }: DashboardClientProps) {
   const totalItems = contentItems.length;
   const completedCount = checklist.filter(c => c.status === 'completed').length;
   const totalReadTime = progress.reduce((sum, p) => sum + (p.read_time_seconds || 0), 0);
@@ -197,23 +206,77 @@ export function DashboardClient({ progress, checklist, recentNotes, contentItems
           ) : (
             <div className="space-y-3">
               {recentNotes.slice(0, 5).map((note) => (
-                <Link
+                <div
                   key={note.id}
-                  href={`/docs/${note.slug}`}
-                  className="block p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 hover:bg-amber-500/10 transition-all"
+                  className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 hover:bg-amber-500/10 transition-all"
                 >
-                  <p className="text-xs text-gray-700 dark:text-gray-300 line-clamp-2">{note.content}</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-[10px] text-gray-400 truncate max-w-[60%]">{findTitle(note.slug)}</span>
-                    <span className="text-[10px] text-gray-400 font-mono">
-                      {new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </span>
+                  <Link href={`/docs/${note.slug}`} className="block">
+                    <p className="text-xs text-gray-700 dark:text-gray-300 line-clamp-2">{note.content}</p>
+                  </Link>
+                  <div className="flex items-center justify-between mt-2 gap-2">
+                    <span className="text-[10px] text-gray-400 truncate max-w-[45%]">{findTitle(note.slug)}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-gray-400 font-mono">
+                        {new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const url = `${window.location.origin}/docs/${note.slug}`;
+                          try {
+                            await navigator.clipboard.writeText(url);
+                          } catch {
+                            // noop
+                          }
+                        }}
+                        className="inline-flex items-center gap-1 px-1.5 py-1 rounded-md text-[10px] text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                      >
+                        <Share2 className="w-3 h-3" />
+                        Share
+                      </button>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
         </div>
+      </div>
+
+      {/* Recent Bookmarks */}
+      <div className="bg-white/60 dark:bg-[#0e0e11]/80 border border-black/5 dark:border-white/10 rounded-2xl p-6 backdrop-blur-lg">
+        <h2 className="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-4">
+          <BookmarkCheck className="w-4 h-4 text-blue-500" />
+          Recent Bookmarks
+        </h2>
+        {recentBookmarks.length === 0 ? (
+          <p className="text-xs text-gray-400 py-6 text-center">Bookmark lessons while reading to pin them here.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {recentBookmarks.slice(0, 6).map((bookmark) => (
+              <Link
+                key={bookmark.id}
+                href={`/docs/${bookmark.slug}`}
+                className="block p-3 rounded-xl bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-all"
+              >
+                <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">
+                  {findTitle(bookmark.slug)}
+                </p>
+                {bookmark.note && (
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
+                    {bookmark.note}
+                  </p>
+                )}
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-[10px] text-gray-400 truncate max-w-[55%]">/{bookmark.slug}</span>
+                  <span className="text-[10px] text-gray-400 font-mono">
+                    {new Date(bookmark.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Completion Grid */}

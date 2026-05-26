@@ -33,6 +33,7 @@ This promotes code reuse, reduces redundancy, and supports polymorphism, making 
 Example : 
 
 ```java
+
 class Animal {
 void eat() {
 System.out.println("This animal eats food.");
@@ -75,6 +76,7 @@ dog.bark();
 Example : 
 
 ```java
+
 class Animal {
 void eat() {
 System.out.println("This animal eats food.");
@@ -126,6 +128,7 @@ dog.bark();
 Example : 
 
 ```java
+
 class Animal {
 void eat() {
 System.out.println("This animal eats food.");
@@ -185,6 +188,7 @@ The diamond problem arises in languages that allow multiple inheritance with cla
 **Problem Example :** 
 
 ```java
+
 class Animal {
 public void sound() {
 System.out.println("Animal makes a sound");
@@ -234,6 +238,7 @@ When a class implements multiple interfaces, it must provide implementations for
 Solution Example : 
 
 ```java
+
 interface Dog {
 void sound();
 }
@@ -284,6 +289,7 @@ In Java, hybrid inheritance is achieved by combining classes and interfaces. Sin
 Example :
 
 ```java
+
 // Single inheritance
 class Animal {
 void eat() {
@@ -344,6 +350,7 @@ Enables reuse of existing code, reducing redundancy and effort.
 Example :
 
 ```java
+
 class Animal {
 public void eat() {
 System.out.println("Animal is eating");
@@ -373,6 +380,7 @@ Centralizes common functionality, making updates and bug fixes more manageable.
 Example :
 
 ```java
+
 class Animal {
 public void eat() {
 System.out.println("Animal is eating");
@@ -414,6 +422,7 @@ Allows developers to extend functionality without altering existing code.
 Example : 
 
 ```java
+
 class Animal {
 public void sleep() {
 System.out.println("Animal is sleeping");
@@ -469,6 +478,7 @@ Facilitates runtime polymorphism, enabling dynamic behaviour.
 Example : 
 
 ```java
+
 class Animal {
 public void sound() {
 System.out.println("Animal makes a sound");
@@ -513,6 +523,7 @@ Creates a tightly coupled relationship between classes, making changes in the su
 Example : 
 
 ```java
+
 class Animal {
 public void eat() {
 System.out.println("Animal eats");
@@ -546,6 +557,7 @@ Overuse of inheritance can lead to overly complex and hard-to-maintain hierarchi
 Example :
 
 ```java
+
 class Animal {}
 class Mammal extends Animal {}
 class Dog extends Mammal {}
@@ -573,6 +585,7 @@ A subclass is heavily dependent on the implementation of its superclass, which m
 Example :
 
 ```java
+
 class Animal {
 public void sleep() {
 System.out.println("Animal is sleeping");

@@ -71,6 +71,7 @@ However, if the baker is also responsible for managing the inventory, ordering s
 ‍
 
 ```java
+
 // Class with multiple responsibilities
 class BreadBaker {
 public
@@ -115,6 +116,7 @@ To adhere to the SRP, the bakery could assign different roles to different indiv
 ‍
 
 ```java
+
 // Class for baking bread
 class BreadBaker {
 public
@@ -222,6 +224,7 @@ The Open/Closed Principle states that software entities should be open for exten
 ‍
 
 ```java
+
 // Incorrect approach
 class Shape {
 private
@@ -253,6 +256,7 @@ Instead, we can implement the Open/Closed principle correctly by creating and ab
 ‍
 
 ```java
+
 // Better approach following Open/Closed Principle
 abstract class Shape {
 abstract double calculateArea();
@@ -331,6 +335,7 @@ The principle was introduced by Barbara Liskov in 1987 and according to this pri
 Consider a Vehicle class and a Car subclass. If the Vehicle class has a startEngine method, a subclass like Car would work fine but if a subclass Bicycle is created, then it will violate LSP because bicycles do not have engines.
 
 ```java
+
 // Problematic approach that violates LSP
 class Vehicle {
 public
@@ -385,6 +390,7 @@ This design flaw also makes the code less flexible and harder to extend. If new 
 To properly implement the Liskov Substitution Principle, we can restructure the vehicle hierarchy through a more refined abstraction. The base Vehicle class serves as the foundation, with two specialized abstract classes: EngineVehicle and NonEngineVehicle. This segregation creates a clear distinction between motorized and non-motorized transport.
 
 ```java
+
 // Better approach following LSP
 abstract class Vehicle {
 // Common vehicle behaviors
@@ -485,6 +491,7 @@ The fundamental issue arises when a BasicPrinter class, which is designed solely
 ‍
 
 ```java
+
 // Problematic approach that violates ISP
 interface Machine {
 void print();
@@ -532,6 +539,7 @@ This design flaw also makes the code less flexible and harder to extend. If new 
 To adhere to the Interface Segregation Principle, we can split the interface into smaller, more focused interfaces:
 
 ```java
+
 // Better approach following ISP
 interface Printer {
 void print();
@@ -623,6 +631,7 @@ In simpler terms, the DIP suggests that classes should rely on abstractions (e.g
 Consider an enterprise e-commerce system where order processing requires various types of notifications to be sent to customers, administrators, and inventory systems
 
 ```java
+
 // Problematic approach that violates DIP
 class EmailNotifier {
 public void sendEmail(String message) {
@@ -686,6 +695,7 @@ To adhere to the Dependency Inversion Principle, we can introduce abstractions a
 ‍
 
 ```java
+
 // Better approach following DIP
 interface NotificationService {
 void sendNotification(String message);

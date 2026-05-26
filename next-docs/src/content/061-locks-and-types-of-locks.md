@@ -91,6 +91,7 @@ It is used when you need advanced control over locking 🧠 (e.g., trying to acq
 Example : 
 
 ```java
+
 public class ReentrantLockExecutorExample {
 private int counter = 0;
 
@@ -188,6 +189,7 @@ It is used to improve performance in scenarios with many more read operations th
 ‍
 
 ```java
+
 public class ReadWriteLogExample { 
 private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock(); 
 private int logValue = 0; 
@@ -342,6 +344,7 @@ ReentrantLock:
 ‍
 
 ```java
+
 public class ReentrantLockTryLockExample { 
 private final ReentrantLock lock = new ReentrantLock(); 
 // Task that holds the lock for an extended period. 

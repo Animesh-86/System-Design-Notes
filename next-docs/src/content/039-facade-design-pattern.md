@@ -37,6 +37,7 @@ Here’s how you might approach the problem in a straightforward but inflexible 
 ‍
 
 ```java
+
 import java.util.Scanner;
 public class MultimediaApp {
 public static void main(String[] args) {
@@ -99,6 +100,7 @@ While the traditional approach works for small systems, it quickly becomes unma
 ‍
 
 ```java
+
 import java.util.Scanner;
 
 public class MultimediaApp {
@@ -183,6 +185,7 @@ Each subsystem represents a specific functionality of the multimedia application
 MusicPlayer.java
 
 ```java
+
 import java.util.Scanner;
 public class MusicPlayer {
 public void initializeAudioDrivers() {
@@ -202,6 +205,7 @@ System.out.println("Music playback started.");
 VideoPlayer.java
 
 ```java
+
 import java.util.Scanner;
 public class VideoPlayer {
 public void setupRenderingEngine() {
@@ -221,6 +225,7 @@ System.out.println("Video playback started.");
 ImageViewer.java
 
 ```java
+
 import java.util.Scanner;
 public class ImageViewer {
 public void loadImageFile() {
@@ -246,6 +251,7 @@ The facade provides a unified interface to interact with the subsystems. By usin
 MediaFacade.java
 
 ```java
+
 import java.util.Scanner;
 public class MediaFacade {
 private MusicPlayer musicPlayer;
@@ -291,6 +297,7 @@ The client interacts with the facade instead of the subsystems directly. By doin
 MultiMediaApp.java
 
 ```java
+
 import java.util.Scanner;
 public class MultimediaApp {
 public static void main(String[] args) {

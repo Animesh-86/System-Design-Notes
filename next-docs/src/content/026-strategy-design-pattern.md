@@ -55,6 +55,7 @@ Now, we don't want to keep writing a bunch of different methods for each payment
 ### Code Example: Traditional Payment Processor 💻
 
 ```java
+
 public class PaymentProcessor {
 // This method will process payment based on payment method type
 public void processPayment(String paymentMethod) {
@@ -96,6 +97,7 @@ If we were using the above approach, we’d have to modify the processPayment() 
 ‍
 
 ```java
+
 public class PaymentProcessor {
 // This method will process payment based on payment method type
 public void processPayment(String paymentMethod) {
@@ -152,6 +154,7 @@ Instead of hardcoding the payment methods inside the PaymentProcessor class, we 
 ‍
 
 ```java
+
 // PaymentMethod interface (defines the common method for all payment types)
 public interface PaymentMethod {
 void processPayment(); // Abstract method for processing payments
@@ -167,6 +170,7 @@ Now, let's create separate classes for each payment method, and each class will 
 Concrete Payment Method Classes
 
 ```java
+
 public class CreditCardPayment implements PaymentMethod {
 public void processPayment() {
 System.out.println("Processing credit card payment...");
@@ -203,6 +207,7 @@ Now that we have modularized the payment methods into separate classes, the next
 However, here’s the catch: while this is better, we still need to modify the PaymentProcessor class every time a new payment method is added.
 
 ```java
+
 public class PaymentProcessor {
 // This method processes payment based on the payment method type
 public void processPayment(String paymentMethod) {
@@ -246,6 +251,7 @@ To add a new payment method, like Apple Pay, we would need to:
 Here's how we would do it:
 
 ```java
+
 public class PaymentProcessor {
 // This method processes payment based on the payment method type
 public void processPayment(String paymentMethod) {
@@ -304,6 +310,7 @@ The first step is to define a common interface that all the payment methods will
 ‍
 
 ```java
+
 // PaymentStrategy interface (defines the common method for all payment types)
 public interface PaymentStrategy {
 void processPayment(); // Abstract method for processing payments
@@ -323,6 +330,7 @@ Now, we create the concrete payment strategies. These are the actual implementat
 ‍
 
 ```java
+
 // Concrete strategy for credit card payment
 public class CreditCardPayment implements PaymentStrategy {
 public void processPayment() {
@@ -367,6 +375,7 @@ The key idea in the Strategy Pattern is that we will delegate the payment proces
 Here’s how we do that:
 
 ```java
+
 public class PaymentProcessor {
 private PaymentStrategy paymentStrategy; // Reference to a payment strategy
 // Constructor to set the payment strategy
@@ -412,6 +421,7 @@ Here’s how it works:
 ‍
 
 ```java
+
 public class Main {
 public static void main(String[] args) {
 // Create strategy instances for each payment type

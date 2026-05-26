@@ -121,6 +121,7 @@ Is this the kind of game flow you had in mind? 
 ‍
 
 ```java
+
 public enum Symbol {
 X, O, EMPTY
 }
@@ -137,6 +138,7 @@ X, O, EMPTY
 ‍
 
 ```java
+
 public class Board {
 
 }
@@ -153,6 +155,7 @@ public class Board {
 ‍
 
 ```java
+
 public class Player {
 Symbol symbol;
 PlayerStrategy playerStrategy;
@@ -181,6 +184,7 @@ return playerStrategy;
 Description: This class encapsulates the position on the board. It is used to represent the location of a move and supports equality checks and readable formatting.
 
 ```java
+
 public class Position {
 public int row;
 public int col;
@@ -314,6 +318,7 @@ The Strategy Pattern allows defining a family of algorithms or strategies and ma
 ‍
 
 ```java
+
 // Strategy Interface for Player Moves
 // Defines a makeMove(Board board) method.
 public interface PlayerStrategy {
@@ -393,6 +398,7 @@ public interface GameState {
 Next, implement concrete state classes for each game state: XTurnState and OTurnState.
 
 ```java
+
 // Concrete State: XTurnState
 public class XTurnState implements GameState {
 @Override
@@ -463,6 +469,7 @@ Create a GameContext class that maintains a reference to the current state and d
 ‍
 
 ```java
+
 // GameContext Class
 public class GameContext {
 private GameState currentState;
@@ -497,6 +504,7 @@ The Board class represents the game board for a Tic-Tac-Toe game and includes me
 ‍
 
 ```java
+
 // Board Representation
 public class Board {
 private final int rows;
@@ -622,6 +630,7 @@ The TicTacToeGame class handles the game's flow. It takes care of the game board
 ‍
 
 ```java
+
 interface BoardGames {
 // This interface illustrates how a large game company can manage multiple
 // types of games, including board games and non-board games. Tic Tac Toe is
@@ -716,6 +725,7 @@ System.out.println("It's a draw!");
 ‍
 
 ```java
+
 // The main method serves as the entry point for the Tic-Tac-Toe game
 // application. It initializes the player strategies and starts the game.
 public class Main {
@@ -759,6 +769,7 @@ To allow different board sizes, the Board class accepts a variable grid size. Th
 ‍
 
 ```java
+
 // Board Representation 
 public class Board {
 private Symbol[][] grid;
@@ -786,6 +797,7 @@ Instead of restricting the game to just two players (X and O), the design can su
 Instead of Having Multiple Players like the below code : 
 
 ```java
+
 // Game Orchestration
 public class TicTacToeGame {
 private Board board;
@@ -806,6 +818,7 @@ currentPlayer = playerX;
 We can just have a list of players and list of strategies.
 
 ```java
+
 // Game Orchestration
 public class TicTacToeGame {
 private Board board;
@@ -835,6 +848,7 @@ Implement the Observer Pattern to notify users about each move, the current stat
 ### 1.) Implement the GameEventListener Interface and Concrete Listener Class.
 
 ```java
+
 // GameEventListener Interface
 public interface GameEventListener {
 void onMoveMade(Position position, Symbol symbol);
@@ -863,6 +877,7 @@ i.) Implement the new Notification methods in the Main class : 
 ‍
 
 ```java
+
 // Integration in the Board Class
 public class Board {
 private final int rows;
@@ -902,6 +917,7 @@ listener.onGameStateChanged(state);
 ii.) makeMove() Method : 
 
 ```java
+
 public void makeMove(Position pos, Symbol symbol) {
 grid[pos.row][pos.col] = symbol;
 notifyMoveMade(pos, symbol); // Notify listeners when a move is made
@@ -913,6 +929,7 @@ notifyMoveMade(pos, symbol); // Notify listeners when a move is made
 iii.) CheckGameState() Method : 
 
 ```java
+
 public void checkGameState(GameContext context) {
 // Row and Column Win condition checks
 for (int i = 0; i < rows; i++) {
@@ -1001,6 +1018,7 @@ Implement the Factory Pattern to create players with consistent interfaces, maki
 i.) Creation of Factory interface and Concrete Factory class : 
 
 ```java
+
 // PlayerFactory Interface
 public interface PlayerFactory {
 Player createPlayer(Symbol symbol, PlayerStrategy strategy);
@@ -1022,6 +1040,7 @@ return new Player(symbol, strategy);
 ii.) Usage in TicTacToeGame Class : 
 
 ```java
+
 // Usage in TicTacToeGame Class
 public class TicTacToeGame {
 private Board board;

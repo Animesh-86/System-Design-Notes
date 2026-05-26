@@ -37,6 +37,7 @@ Think of it like a family tree—just as a Dog is an Animal, a subclass extends 
 ‍‍
 
 ```java
+
 // Parent class
 class Animal {
 void eat() {
@@ -79,6 +80,7 @@ Association is a general relationship where one class knows about or uses anothe
 ‍
 
 ```java
+
 // A Person can have a Car.
 class Car {
 String model;
@@ -134,6 +136,7 @@ Think of a Team and its Players: a team has players, yet the players can exist e
 ‍
 
 ```java
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,6 +204,7 @@ Composition is a stronger form of aggregation with full ownership—if the whole
 ‍
 
 ```java
+
 class Room {
 String name;
 Room(String name) {
@@ -252,6 +256,7 @@ Dependency represents a temporary relationship where one class uses another clas
 ‍‍
 
 ```java
+
 class Printer {
 void print(String message) {
 System.out.println("Printing: " + message);
@@ -311,6 +316,7 @@ Realization represents a relationship where a class implements an interface. It�
 ‍
 
 ```java
+
 interface Payment {
 void pay();
 }

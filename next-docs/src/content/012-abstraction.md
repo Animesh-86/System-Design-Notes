@@ -33,6 +33,7 @@ Imagine we want to create multiple animal types (Dog, Cat, Bird, etc.) where eac
 For example : 
 
 ```java
+
 class Dog {
 void makeSound() {
 System.out.println("Bark");
@@ -122,6 +123,7 @@ It can include both abstract methods (declared but not implemented) and concrete
 ‍
 
 ```java
+
 // Abstract Class Animal
 abstract class Animal {
 // Abstract method for unique behaviors
@@ -171,6 +173,7 @@ By focusing on essential details, abstraction makes code easier to maintain and 
 Example : 
 
 ```java
+
 abstract class Animal {
 abstract void makeSound();
 void eat() {
@@ -209,6 +212,7 @@ Changes to the internal implementation do not affect the external interface, all
 Example : 
 
 ```java
+
 abstract class Animal {
 void makeSound();
 }
@@ -241,6 +245,7 @@ Abstract classes and interfaces promote code reuse by defining common behaviors 
 ‍
 
 ```java
+
 abstract class Animal {
 void eat() {
 System.out.println("Animal is eating...");
@@ -280,6 +285,7 @@ Hiding implementation details reduces the risk of accidental interference with i
 Example : 
 
 ```java
+
 abstract class Animal {
 private String secret = "Sensitive data";
 abstract void makeSound();
@@ -323,6 +329,7 @@ Example: Imagine you're designing an abstraction for animals. If the abstraction
 ‍
 
 ```java
+
 abstract class Animal {
 abstract void makeSound();
 // Poorly thought-out abstraction: Adding unrelated behaviors
@@ -363,6 +370,7 @@ System.out.println("Dog is swimming");
 ‍
 
 ```java
+
 abstract class Animal {
 abstract void makeSound();
 }
@@ -408,6 +416,7 @@ Example: Let’s say you’re building a simple system to play animal sounds. Us
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 }
@@ -453,6 +462,7 @@ cat.makeSound(); // Outputs: Meow
 ‍
 
 ```java
+
 class Dog {
 void makeSound() {
 System.out.println("Bark");
@@ -502,6 +512,7 @@ Unlike abstract classes, interfaces focus purely on behavior and do not include 
 Example : 
 
 ```java
+
 // Interface Animal
 interface Animal {
 void makeSound(); // Abstract method
@@ -553,6 +564,7 @@ myCat.sleep(); // Outputs: Sleeping...
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 void sleep();
@@ -592,6 +604,7 @@ By using interfaces, the Dog and Cat classes are decoupled from the Animal inter
 ‍
 
 ```java
+
 class Bird implements Animal {
 @Override
 public void makeSound() {
@@ -616,6 +629,7 @@ New animal types like Bird can be easily added by implementing the Animal interf
 ‍
 
 ```java
+
 public class Zoo {
 public static void main(String[] args) {
 Animal dog = new Dog();
@@ -641,6 +655,7 @@ The Zoo class can interact with any Animal implementation, ensuring consistent b
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 void sleep();
@@ -680,6 +695,7 @@ In small projects, the added complexity of defining and implementing interfaces 
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 void sleep();
@@ -782,6 +798,7 @@ Interfaces are purely designed to define a contract for classes to implement. Th
 ‍
 
 ```java
+
 abstract class Animal {
 void eat() {
 System.out.println("Eating...");
@@ -815,6 +832,7 @@ The Animal abstract class contains shared code for eat(), and both Dog and Cat e
 ‍
 
 ```java
+
 abstract class Animal {
 protected String name;
 abstract void makeSound();
@@ -845,6 +863,7 @@ The Animal abstract class has a non-static field name and methods to access and 
 ‍
 
 ```java
+
 abstract class Animal {
 protected int age;
 abstract void makeSound();
@@ -875,6 +894,7 @@ System.out.println("Meow");
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 void sleep();
@@ -901,6 +921,7 @@ The Animal interface defines the methods makeSound() and sleep(), and the Dog cl
 • A class can implement more than one interface. It is called multiple inheritances.
 
 ```java
+
 interface Animal {
 void makeSound();
 }
@@ -932,6 +953,7 @@ The Dog class implements both Animal and Pet interfaces, providing implementatio
 ‍
 
 ```java
+
 interface Animal {
 void makeSound();
 void sleep();
@@ -976,6 +998,7 @@ Abstract classes are used when classes share common functionality and state, whe
 ‍
 
 ```java
+
 abstract class Animal {
 String name;
 Animal(String name) {
@@ -1022,6 +1045,7 @@ Yes, an abstract class can implement an interface to provide partial implementat
 ‍
 
 ```java
+
 interface Pet {
 void play();
 }
@@ -1068,6 +1092,7 @@ Abstract classes are incomplete blueprints meant to be extended. Allowing instan
 ‍
 
 ```java
+
 abstract class Animal {
 abstract void sound();
 }
@@ -1101,6 +1126,7 @@ Abstract classes allow single inheritance only, whereas interfaces can be implem
 Abstract Class Example (Multiple Inheritance Error):
 
 ```java
+
 abstract class Animal {
 abstract void sound();
 void commonMethod() {
@@ -1136,6 +1162,7 @@ void commonMethod() {
 Interface Example (No Error):
 
 ```java
+
 interface Animal {
 void sound();
 default void commonMethod() {
@@ -1190,6 +1217,7 @@ Avoid interfaces when the implementing classes share common functionality or sta
 ‍
 
 ```java
+
 abstract class Animal {
 void eat() {
 System.out.println("Eating...");
@@ -1231,6 +1259,7 @@ Default methods are methods in interfaces that have a body (implementation). The
 ‍
 
 ```java
+
 interface Animal {
 void sound() {
 System.out.println("This is a default animal sound.");
@@ -1260,6 +1289,7 @@ Abstract methods have no body and must be implemented by a class that implements
 ‍
 
 ```java
+
 interface Animal {
 void eat(); // Abstract method
 default void sound() {
@@ -1294,6 +1324,7 @@ Default methods allow interfaces to add new behavior without forcing all impleme
 ‍
 
 ```java
+
 interface Animal {
 default void sound() {
 System.out.println("This is a default animal sound.");
@@ -1331,6 +1362,7 @@ Yes, a class can implement an interface without overriding its default methods. 
 ‍
 
 ```java
+
 interface Animal {
 default void sound() {
 System.out.println("This is a default animal sound.");
@@ -1360,6 +1392,7 @@ The method from the superclass takes priority over the default method in the int
 ‍
 
 ```java
+
 interface Animal {
 default void sound() {
 System.out.println("This is a default animal sound.");
@@ -1401,6 +1434,7 @@ Imagine two interfaces, DogBehaviour and CatBehaviour, both of which have a make
 ‍
 
 ```java
+
 interface DogBehavior {
 default void makeSound() {
 System.out.println("Dog barks.");
@@ -1471,6 +1505,7 @@ No, a default method cannot be overridden and made abstract. Once a default meth
 ‍
 
 ```java
+
 interface Animal {
 default void sound() {
 System.out.println("This is a default animal sound.");
@@ -1503,6 +1538,7 @@ No, default methods cannot access instance variables of the implementing class b
 ‍
 
 ```java
+
 interface Animal {
 default void sound() {
 System.out.println("This is a default animal sound.");
@@ -1540,6 +1576,7 @@ dog.sound(); // Output: This is a default animal sound.
 ‍
 
 ```java
+
 // Abstract class example showcasing fields, constructors, and abstract methods
 abstract class Animal {
 String name; // Instance variable

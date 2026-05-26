@@ -217,6 +217,7 @@ Log Level Enum: Represents different logging severity levels (DEBUG, INFO, ERROR
 ‍
 
 ```java
+
 // Enum representing different log severity levels
 public enum LogLevel {
 DEBUG(1),   // Debug-level messages (least severe)
@@ -248,6 +249,7 @@ return this.value >= other.value;
 ‍
 
 ```java
+
 public class LogMessage {
 // Log level of the message (e.g., INFO, DEBUG, ERROR)
 private final LogLevel level;
@@ -294,6 +296,7 @@ Log Handler Abstract Class: Serves as the base for log handlers, defining the ch
 ‍
 
 ```java
+
 // Abstract logger defining the chain behavior
 abstract class LogHandler {
 public static final int INFO = 1;
@@ -358,6 +361,7 @@ Info Logger : 
 ‍
 
 ```java
+
 // Logger for INFO level messages
 class InfoLogger extends LogHandler {
 public InfoLogger(int level, LogAppender appender) {
@@ -378,6 +382,7 @@ System.out.println("INFO: " + message);
 ‍
 
 ```java
+
 // Logger for DEBUG level messages
 class DebugLogger extends LogHandler {
 public DebugLogger(int level, LogAppender appender) {
@@ -398,6 +403,7 @@ System.out.println("DEBUG: " + message);
 ‍
 
 ```java
+
 // Logger for ERROR level messages
 class ErrorLogger extends LogHandler {
 public ErrorLogger(int level, LogAppender appender) {
@@ -420,6 +426,7 @@ Log Appender Interface: Defines a contract for appending log messages.
 ‍
 
 ```java
+
 public interface LogAppender {
 void append(LogMessage logMessage);
 }
@@ -434,6 +441,7 @@ a. File Appender Class : 
 ‍
 
 ```java
+
 // Appends log messages to a file
 public class FileAppender implements LogAppender {
 private final String filePath; // Path to the log file
@@ -463,6 +471,7 @@ b. Console Appender Class : 
 ‍
 
 ```java
+
 // Prints log messages to the console
 public class ConsoleAppender implements LogAppender {
 // Appends a log message to the console
@@ -482,6 +491,7 @@ Logger Config: Manages configuration details like log level and appender, making
 ‍
 
 ```java
+
 public class LoggerConfig {
 private LogLevel logLevel;
 private LogAppender logAppender;
@@ -517,6 +527,7 @@ Logger: Ensures a single, globally accessible instance of the logger, supporting
 ‍
 
 ```java
+
 public class Logger {
 private static final ConcurrentHashMap<String, Logger> instances = new ConcurrentHashMap<>();
 private LoggerConfig config;
@@ -570,6 +581,7 @@ Demonstrates the logging system by initializing loggers, selecting appenders, an
 ‍
 
 ```java
+
 // Client class to demonstrate logging system
 public class Main {
 // Build the chain of loggers: INFO -> DEBUG -> ERROR
@@ -662,6 +674,7 @@ Log Formatter Interface: Defines the contract for log formatters.
 ‍
 
 ```java
+
 // Interface for log formatters
 public interface LogFormatter {
 String format(LogMessage logEntry);
@@ -675,6 +688,7 @@ String format(LogMessage logEntry);
 ‍
 
 ```java
+
 // A simple log formatter
 public class SimpleLogFormatter implements LogFormatter {
 @Override
@@ -694,6 +708,7 @@ logEntry.getMessage());
 ‍
 
 ```java
+
 import java.util.Date;
 import java.util.Map;
 // A JSON log formatter that converts log entries into JSON format
@@ -757,6 +772,7 @@ return sb.toString();
 ‍
 
 ```java
+
 public class ChainPatternDemo {
 // Build the chain of loggers: INFO -> DEBUG -> ERROR
 private static LogHandler getChainOfLoggers(LogAppender appender) {

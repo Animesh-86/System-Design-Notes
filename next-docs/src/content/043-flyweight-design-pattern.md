@@ -41,6 +41,7 @@ Here's a naive implementation where each particle is created as a separate objec
 Particle.java
 
 ```java
+
 // Particle.java
 public class Particle {
 private String color;
@@ -71,6 +72,7 @@ System.out.println(
 G‍ame.java
 
 ```java
+
 // Game.java
 public class Game {
 public static void main(String[] args) {
@@ -122,6 +124,7 @@ Let's say we try to optimize by caching some properties:
 ParticleSystem.java
 
 ```java
+
 public class ParticleSystem {
 private Map<String, String> spriteCache = new HashMap<>();
 private List<Particle> particles = new ArrayList<>();
@@ -193,6 +196,7 @@ First, we create the ParticleType class that will act as our flyweight. This cla
 ParticleType.java
 
 ```java
+
 // ParticleType.java (Flyweight)
 public class ParticleType {
 private final String color;
@@ -220,6 +224,7 @@ The factory is crucial for the Flyweight pattern - it ensures we don't create du
 ParticleTypeFactory.java
 
 ```java
+
 // ParticleTypeFactory.java
 public class ParticleTypeFactory {
 private Map<String, ParticleType> particleTypes = new HashMap<>();
@@ -242,6 +247,7 @@ Now we create the actual Particle class that players will see in the game. Inste
 Particle.java
 
 ```java
+
 // Particle.java
 public class Particle {
 private ParticleType type; // reference to flyweight
@@ -274,6 +280,7 @@ Finally, we bring it all together in the game. Notice how we create just one Par
 Game.java
 
 ```java
+
 // Game.java
 public class Game {
 public static void main(String[] args) {
