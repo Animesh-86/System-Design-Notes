@@ -8,6 +8,10 @@ export async function getAuthOptions(): Promise<NextAuthOptions> {
 
   return {
     adapter: MongoDBAdapter(clientPromise),
+    pages: {
+      signIn: '/auth/login',
+      error: '/auth/error',
+    },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',

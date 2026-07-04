@@ -25,6 +25,7 @@ export default function LoginPage() {
 function LoginPageInner() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const authError = searchParams.get('error');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
@@ -37,6 +38,16 @@ function LoginPageInner() {
       router.push(callbackUrl);
     }
   }, [session, callbackUrl, router]);
+
+  const authErrorMessage = authError
+    ? {
+        OAuthAccountNotLinked: 'This Google account is not linked yet. Try the same account you used before, or contact the site owner.',
+        AccessDenied: 'Google sign-in was denied. Please try again with the allowed account.',
+        Configuration: 'Authentication is not configured correctly on the server.',
+        Callback: 'Google sign-in failed while returning from the provider.',
+        Default: 'Google sign-in failed. Please try again.',
+      }[authError] || 'Google sign-in failed. Please try again.'
+    : null;
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -59,8 +70,8 @@ function LoginPageInner() {
 
         <p className="mt-4 text-sm text-slate-300">Sign in with your Google account to access notes and the dashboard.</p>
 
-        {error && (
-          <div className="mt-4 rounded-md bg-rose-600/10 border border-rose-500/20 p-3 text-sm text-rose-300">{error}</div>
+        {(error || authErrorMessage) && (
+          <div className="mt-4 rounded-md bg-rose-600/10 border border-rose-500/20 p-3 text-sm text-rose-300">{error || authErrorMessage}</div>
         )}
 
         <button
