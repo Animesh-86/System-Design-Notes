@@ -1,13 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import getMongoClient from './mongodbClient';
 
-export async function getAuthOptions(): Promise<NextAuthOptions> {
-  const clientPromise = getMongoClient();
-
-  return {
-    adapter: MongoDBAdapter(clientPromise),
+export const authOptions: NextAuthOptions = {
     pages: {
       signIn: '/auth/login',
       error: '/auth/error',
@@ -32,5 +26,6 @@ export async function getAuthOptions(): Promise<NextAuthOptions> {
       return session;
     },
   },
-  };
-}
+};
+
+export default authOptions;
