@@ -9,6 +9,9 @@ import Profile from '@/lib/models/Profile';
 import Highlight from '@/lib/models/Highlight';
 import { getUserIdFromSession } from '@/lib/authServer';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function DashboardPage() {
   await connectToMongo();
 

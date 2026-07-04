@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/nextAuthOptions';
+import { getAuthOptions } from '@/lib/nextAuthOptions';
 
 export async function signInWithEmail(formData?: FormData) {
   void formData;
@@ -26,6 +26,6 @@ export async function signOut() {
 }
 
 export async function getSession() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(await getAuthOptions());
   return session;
 }

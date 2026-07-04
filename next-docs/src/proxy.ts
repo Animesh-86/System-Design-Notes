@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 
 // Protect all pages behind authentication except the login page itself
 // and NextAuth API routes.
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Always allow: login page, NextAuth API routes
