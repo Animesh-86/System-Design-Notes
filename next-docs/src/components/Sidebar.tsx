@@ -341,6 +341,13 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
               <Link href="/dashboard" className="text-xs px-3 py-1 rounded-md bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10">Dashboard</Link>
             </div>
           </div>
+          <p className="mt-2 text-[11px] leading-4 text-gray-500 dark:text-gray-400">
+            Content credited to{' '}
+            <Link href="https://codewitharyan.com/" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-gray-300">
+              codewitharyan.com
+            </Link>{' '}
+            and the CodeWithAryan YouTube channel.
+          </p>
         </div>
       </aside>
     </>

@@ -1,4 +1,5 @@
 import { BookOpen, Layers, LayoutTemplate } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -33,6 +34,14 @@ export default function Home() {
           <p className="text-sm text-gray-500 dark:text-gray-400">Roadmaps, top 20 questions, and ultimate interview prep guides.</p>
         </div>
       </div>
+
+      <p className="text-xs text-gray-500 dark:text-gray-400 max-w-2xl leading-5">
+        Content in this site is credited to{' '}
+        <Link href="https://codewitharyan.com/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-300 underline underline-offset-4 hover:opacity-80">
+          codewitharyan.com
+        </Link>{' '}
+        and the CodeWithAryan YouTube channel.
+      </p>
     </div>
   );
 }

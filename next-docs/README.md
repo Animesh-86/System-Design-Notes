@@ -1,3 +1,7 @@
+
+## Credits
+
+This site’s learning content is credited to [codewitharyan.com](https://codewitharyan.com/) and the CodeWithAryan YouTube channel.
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

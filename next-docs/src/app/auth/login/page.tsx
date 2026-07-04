@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -42,7 +43,7 @@ function LoginPageInner() {
     setError(null);
 
     try {
-      await signIn('google', { callbackUrl });
+      await signIn('google', { callbackUrl, prompt: 'select_account' });
     } catch {
       setError('Google sign-in could not start. Check GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NEXTAUTH_URL, and the Google redirect URI settings.');
       setLoading(false);
@@ -80,6 +81,13 @@ function LoginPageInner() {
         </button>
 
         <p className="mt-3 text-xs text-slate-500">You will be redirected to Google, then returned to your requested page.</p>
+        <p className="mt-6 text-xs leading-5 text-slate-500">
+          Content and examples in this project are credited to{' '}
+          <Link href="https://codewitharyan.com/" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline underline-offset-4">
+            codewitharyan.com
+          </Link>{' '}
+          and the CodeWithAryan YouTube channel.
+        </p>
       </div>
     </div>
   );
