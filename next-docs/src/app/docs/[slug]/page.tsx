@@ -62,42 +62,46 @@ export default async function DocPage(props: { params: Promise<{ slug: string }>
         </div>
       ) : item.type === 'docx' ? (
         <InteractiveReader slug={params.slug}>
-          <div className="prose dark:prose-invert prose-blue max-w-none bg-white/60 dark:bg-[#0e0e11]/80 p-6 md:p-12 rounded-3xl border border-black/5 dark:border-white/10 backdrop-blur-lg shadow-2xl select-text">
-            <h1 className="text-3xl font-extrabold tracking-tight mb-8 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-              {item.title}
-            </h1>
-            <div 
-              className="docx-render space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed font-sans"
-              dangerouslySetInnerHTML={{ __html: parsedDocxContent }} 
-            />
+          <div className="max-h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar pr-2 rounded-3xl">
+            <div className="prose dark:prose-invert prose-blue max-w-none bg-white/60 dark:bg-[#0e0e11]/80 p-6 md:p-12 rounded-3xl border border-black/5 dark:border-white/10 backdrop-blur-lg shadow-2xl select-text">
+              <h1 className="text-3xl font-extrabold tracking-tight mb-8 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                {item.title}
+              </h1>
+              <div 
+                className="docx-render space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed font-sans"
+                dangerouslySetInnerHTML={{ __html: parsedDocxContent }} 
+              />
+            </div>
           </div>
         </InteractiveReader>
       ) : (
         <InteractiveReader slug={params.slug}>
-          <article className="prose dark:prose-invert prose-blue prose-headings:text-gray-800 dark:prose-headings:text-gray-100 prose-a:text-blue-500 dark:prose-a:text-blue-400 prose-img:rounded-2xl max-w-none bg-white/60 dark:bg-[#0e0e11]/80 p-6 md:p-12 rounded-3xl border border-black/5 dark:border-white/10 backdrop-blur-lg shadow-2xl select-text">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-              components={{
-                h1: ({ ...props }) => <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mt-0 mb-6" {...props} />,
-                h2: ({ ...props }) => <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100 mt-8 mb-4 border-b border-black/5 dark:border-white/5 pb-2" {...props} />,
-                h3: ({ ...props }) => <h3 className="text-xl font-semibold tracking-tight text-gray-700 dark:text-gray-200 mt-6 mb-3" {...props} />,
-                p: ({ ...props }) => <p className="text-gray-600 dark:text-gray-300 leading-relaxed my-4" {...props} />,
-                ul: ({ ...props }) => <ul className="list-disc pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
-                ol: ({ ...props }) => <ol className="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
-                li: ({ ...props }) => <li className="text-gray-600 dark:text-gray-300" {...props} />,
-                code: (props: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) => {
-                  const { inline, className, children, ...rest } = props;
-                  if (inline) {
-                    return <code className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono" {...rest}>{children}</code>;
+          <div className="max-h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar pr-2 rounded-3xl">
+            <article className="prose dark:prose-invert prose-blue prose-headings:text-gray-800 dark:prose-headings:text-gray-100 prose-a:text-blue-500 dark:prose-a:text-blue-400 prose-img:rounded-2xl max-w-none bg-white/60 dark:bg-[#0e0e11]/80 p-6 md:p-12 rounded-3xl border border-black/5 dark:border-white/10 backdrop-blur-lg shadow-2xl select-text">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeHighlight]}
+                components={{
+                  h1: ({ ...props }) => <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mt-0 mb-6" {...props} />,
+                  h2: ({ ...props }) => <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100 mt-8 mb-4 border-b border-black/5 dark:border-white/5 pb-2" {...props} />,
+                  h3: ({ ...props }) => <h3 className="text-xl font-semibold tracking-tight text-gray-700 dark:text-gray-200 mt-6 mb-3" {...props} />,
+                  p: ({ ...props }) => <p className="text-gray-600 dark:text-gray-300 leading-relaxed my-4" {...props} />,
+                  ul: ({ ...props }) => <ul className="list-disc pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
+                  ol: ({ ...props }) => <ol className="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-300 my-4" {...props} />,
+                  li: ({ ...props }) => <li className="text-gray-600 dark:text-gray-300" {...props} />,
+                  code: (props: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) => {
+                    const { inline, className, children, ...rest } = props;
+                    if (inline) {
+                      return <code className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-mono" {...rest}>{children}</code>;
+                    }
+                    return <CodeBlock language={className}>{children}</CodeBlock>;
                   }
-                  return <CodeBlock language={className}>{children}</CodeBlock>;
-                }
-              }}
-            >
-              {item.content}
-            </ReactMarkdown>
-          </article>
+                }}
+              >
+                {item.content}
+              </ReactMarkdown>
+            </article>
+          </div>
         </InteractiveReader>
       )}
     </div>
