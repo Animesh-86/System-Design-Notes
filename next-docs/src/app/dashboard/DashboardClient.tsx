@@ -41,10 +41,9 @@ interface DashboardClientProps {
   recentBookmarks: BookmarkEntry[];
   contentItems: ContentItem[];
   userName: string;
-  loadError?: string | null;
 }
 
-export function DashboardClient({ progress, checklist, recentNotes, recentBookmarks, contentItems, userName, loadError }: DashboardClientProps) {
+export function DashboardClient({ progress, checklist, recentNotes, recentBookmarks, contentItems, userName }: DashboardClientProps) {
   const totalItems = contentItems.length;
   const completedCount = checklist.filter(c => c.status === 'completed').length;
   const totalReadTime = progress.reduce((sum, p) => sum + (p.read_time_seconds || 0), 0);
@@ -70,12 +69,6 @@ export function DashboardClient({ progress, checklist, recentNotes, recentBookma
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 pb-20 max-w-5xl mx-auto space-y-8 pt-4">
-      {loadError && (
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-          {loadError}
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>

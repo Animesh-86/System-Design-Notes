@@ -49,7 +49,6 @@ export default async function DashboardPage() {
   let notes: DashboardNote[] = [];
   let bookmarks: DashboardBookmark[] = [];
   let profile: DashboardProfile = null;
-  let loadError: string | null = null;
 
   const userId = await getUserIdFromSession();
   if (!userId) return null;
@@ -90,7 +89,6 @@ export default async function DashboardPage() {
     profile = profileResult;
   } catch (error) {
     console.error('Dashboard load failed:', error);
-    loadError = 'Dashboard data could not be loaded right now. The page is still available, but progress and notes are temporarily unavailable.';
   }
 
   const contentItems = getAllContent();
@@ -110,7 +108,6 @@ export default async function DashboardPage() {
       }))}
       contentItems={contentItems}
       userName={userName}
-      loadError={loadError}
     />
   );
 }
