@@ -60,26 +60,28 @@ export function ReaderToolbar({ slug }: { slug: string }) {
       <ReadingProgressBar slug={slug} />
 
       {/* Floating toolbar */}
-      <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-        <ChecklistToggle slug={slug} />
+      <div className="sticky top-4 z-40 mb-6 rounded-2xl border border-black/5 dark:border-white/10 bg-white/85 dark:bg-[#0e0e11]/85 backdrop-blur-xl shadow-lg px-4 py-3">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <ChecklistToggle slug={slug} />
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleBookmarkToggle}
-            disabled={bookmarkLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-500/10 disabled:opacity-60 transition-all cursor-pointer"
-          >
-            {isBookmarked ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
-            {isBookmarked ? 'Bookmarked' : 'Bookmark'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleBookmarkToggle}
+              disabled={bookmarkLoading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-500/10 disabled:opacity-60 transition-all cursor-pointer"
+            >
+              {isBookmarked ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+              {isBookmarked ? 'Bookmarked' : 'Bookmark'}
+            </button>
 
-          <button
-            onClick={() => setNotesPanel(!notesPanel)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:bg-amber-500/10 active:scale-[0.98] transition-all cursor-pointer"
-          >
-            <StickyNote className="w-3.5 h-3.5" />
-            Notes
-          </button>
+            <button
+              onClick={() => setNotesPanel(!notesPanel)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:bg-amber-500/10 active:scale-[0.98] transition-all cursor-pointer"
+            >
+              <StickyNote className="w-3.5 h-3.5" />
+              {notesPanel ? 'Hide Notes' : 'Show Notes'}
+            </button>
+          </div>
         </div>
       </div>
 
