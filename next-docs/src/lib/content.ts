@@ -13,7 +13,11 @@ export interface ContentItem {
   content: string;
 }
 
+let cachedContentItems: ContentItem[] | null = null;
+
 export function getAllContent(dir: string = contentDir): ContentItem[] {
+  if (cachedContentItems) return cachedContentItems;
+
   if (!fs.existsSync(dir)) return [];
 
   const files = fs
@@ -45,13 +49,15 @@ export function getAllContent(dir: string = contentDir): ContentItem[] {
     })
     .filter((item): item is ContentItem => item !== null);
 
-  return items.sort((a, b) => {
+  cachedContentItems = items.sort((a, b) => {
     if (a.type !== b.type) {
       const typeOrder: Record<string, number> = { lld: 1, docx: 2, pdf: 3, resource: 4, other: 5 };
       return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
     }
     return a.order - b.order;
   });
+
+  return cachedContentItems;
 }
 
 export function getContentBySlug(slug: string, dir?: string): ContentItem | null {

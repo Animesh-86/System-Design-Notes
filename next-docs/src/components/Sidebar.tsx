@@ -66,10 +66,17 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
       setBookmarkedSlugs(bookmarked);
     }
 
-    loadEngagementData();
+    const schedule = window.requestIdleCallback
+      ? window.requestIdleCallback(() => loadEngagementData())
+      : window.setTimeout(() => loadEngagementData(), 300);
 
     return () => {
       cancelled = true;
+      if (window.cancelIdleCallback) {
+        window.cancelIdleCallback(schedule as number);
+      } else {
+        window.clearTimeout(schedule as number);
+      }
     };
   }, [pathname]);
 

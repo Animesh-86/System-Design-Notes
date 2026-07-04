@@ -56,17 +56,22 @@ export default async function DashboardPage() {
   try {
     await connectToMongo();
 
-    // --- MIGRATION: Fix stuck "local-user" data ---
-    // Any data saved before the session bug was fixed got assigned to "local-user".
-    // This reassigns those orphans to the current authenticated user.
-    await Promise.all([
-      Highlight.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-      Note.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-      Bookmark.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-      ReadingProgress.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-      ChecklistItem.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-    ]);
-    // ----------------------------------------------
+    const existingProfile = await Profile.findOne({ id: userId }).lean();
+
+    if (existingProfile && !existingProfile.migrated_local_user_data) {
+      // --- MIGRATION: Fix stuck "local-user" data ---
+      // Any data saved before the session bug was fixed got assigned to "local-user".
+      // This runs once per user to move those records to the authenticated account.
+      await Promise.all([
+        Highlight.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+        Note.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+        Bookmark.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+        ReadingProgress.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+        ChecklistItem.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+      ]);
+      await Profile.updateOne({ id: userId }, { $set: { migrated_local_user_data: true } });
+      // ----------------------------------------------
+    }
 
     const [progressResult, checklistResult, notesResult, bookmarksResult, profileResult] = await Promise.all([
       ReadingProgress.find({ user_id: userId }).sort({ last_read_at: -1 }).limit(100).lean(),
