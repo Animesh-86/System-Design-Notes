@@ -12,48 +12,96 @@ import { getUserIdFromSession } from '@/lib/authServer';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+type DashboardChecklistItem = {
+  slug: string;
+  status: 'pending' | 'in_progress' | 'completed';
+};
+
+type DashboardNote = {
+  _id?: unknown;
+  slug: string;
+  content: string;
+  created_at: Date | string;
+};
+
+type DashboardBookmark = {
+  _id?: unknown;
+  slug: string;
+  note?: string | null;
+  created_at: Date | string;
+  updated_at: Date | string;
+};
+
+type DashboardProfile = {
+  display_name?: string | null;
+  email?: string | null;
+} | null;
+
 export default async function DashboardPage() {
-  await connectToMongo();
+  let progress: Array<{
+    slug: string;
+    scroll_percentage: number;
+    is_completed: boolean;
+    read_time_seconds: number;
+    last_read_at: string;
+  }> = [];
+  let checklist: DashboardChecklistItem[] = [];
+  let notes: DashboardNote[] = [];
+  let bookmarks: DashboardBookmark[] = [];
+  let profile: DashboardProfile = null;
+  let loadError: string | null = null;
 
   const userId = await getUserIdFromSession();
   if (!userId) return null;
 
-  // --- MIGRATION: Fix stuck "local-user" data ---
-  // Any data saved before the session bug was fixed got assigned to "local-user".
-  // This reassigns those orphans to the current authenticated user.
-  await Promise.all([
-    Highlight.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-    Note.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-    Bookmark.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-    ReadingProgress.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-    ChecklistItem.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
-  ]);
-  // ----------------------------------------------
+  try {
+    await connectToMongo();
 
-  const [progress, checklist, notes, bookmarks, profile] = await Promise.all([
-    ReadingProgress.find({ user_id: userId }).sort({ last_read_at: -1 }).limit(100).lean(),
-    ChecklistItem.find({ user_id: userId }).lean(),
-    Note.find({ user_id: userId }).sort({ created_at: -1 }).limit(10).lean(),
-    Bookmark.find({ user_id: userId }).sort({ updated_at: -1 }).limit(10).lean(),
-    Profile.findOne({ id: userId }).lean(),
-  ]);
+    // --- MIGRATION: Fix stuck "local-user" data ---
+    // Any data saved before the session bug was fixed got assigned to "local-user".
+    // This reassigns those orphans to the current authenticated user.
+    await Promise.all([
+      Highlight.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+      Note.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+      Bookmark.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+      ReadingProgress.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+      ChecklistItem.updateMany({ user_id: 'local-user' }, { $set: { user_id: userId } }),
+    ]);
+    // ----------------------------------------------
+
+    const [progressResult, checklistResult, notesResult, bookmarksResult, profileResult] = await Promise.all([
+      ReadingProgress.find({ user_id: userId }).sort({ last_read_at: -1 }).limit(100).lean(),
+      ChecklistItem.find({ user_id: userId }).lean(),
+      Note.find({ user_id: userId }).sort({ created_at: -1 }).limit(10).lean(),
+      Bookmark.find({ user_id: userId }).sort({ updated_at: -1 }).limit(10).lean(),
+      Profile.findOne({ id: userId }).lean(),
+    ]);
+
+    progress = progressResult.map(p => ({
+      slug: p.slug,
+      scroll_percentage: p.scroll_percentage,
+      is_completed: p.is_completed,
+      read_time_seconds: p.read_time_seconds,
+      last_read_at: p.last_read_at ? new Date(p.last_read_at).toISOString() : new Date().toISOString(),
+    }));
+    checklist = checklistResult || [];
+    notes = notesResult || [];
+    bookmarks = bookmarksResult || [];
+    profile = profileResult;
+  } catch (error) {
+    console.error('Dashboard load failed:', error);
+    loadError = 'Dashboard data could not be loaded right now. The page is still available, but progress and notes are temporarily unavailable.';
+  }
 
   const contentItems = getAllContent();
-
   const userName = profile?.display_name || profile?.email?.split('@')[0] || 'Learner';
 
   return (
     <DashboardClient
-      progress={(progress || []).map(p => ({
-        slug: p.slug,
-        scroll_percentage: p.scroll_percentage,
-        is_completed: p.is_completed,
-        read_time_seconds: p.read_time_seconds,
-        last_read_at: p.last_read_at ? new Date(p.last_read_at).toISOString() : new Date().toISOString(),
-      }))}
+      progress={progress}
       checklist={checklist || []}
-      recentNotes={(notes || []).map(n => ({ id: String(n._id || ''), slug: n.slug, content: n.content, created_at: n.created_at ? new Date(n.created_at).toISOString() : new Date().toISOString() }))}
-      recentBookmarks={(bookmarks || []).map(b => ({
+      recentNotes={notes.map(n => ({ id: String(n._id || ''), slug: n.slug, content: n.content, created_at: n.created_at ? new Date(n.created_at).toISOString() : new Date().toISOString() }))}
+      recentBookmarks={bookmarks.map(b => ({
         id: String(b._id || ''),
         slug: b.slug,
         note: b.note ?? null,
@@ -62,6 +110,7 @@ export default async function DashboardPage() {
       }))}
       contentItems={contentItems}
       userName={userName}
+      loadError={loadError}
     />
   );
 }

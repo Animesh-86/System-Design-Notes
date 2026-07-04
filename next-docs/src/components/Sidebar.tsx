@@ -21,7 +21,6 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
   const [bookmarkedSlugs, setBookmarkedSlugs] = useState<Set<string>>(new Set());
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const { sidebarOpen, setSidebarOpen, checklist } = useAppStore();
-  const { notesPanel, setNotesPanel } = useAppStore();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     lld: false,
     docx: true,
@@ -339,13 +338,6 @@ export function Sidebar({ items }: { items: ContentItem[] }) {
           <div className="flex items-center gap-2 justify-between">
             <UserMenu />
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setNotesPanel(!notesPanel)}
-                className="text-xs px-3 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/15"
-              >
-                {notesPanel ? 'Hide Notes' : 'Show Notes'}
-              </button>
               <Link href="/dashboard" className="text-xs px-3 py-1 rounded-md bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10">Dashboard</Link>
             </div>
           </div>
